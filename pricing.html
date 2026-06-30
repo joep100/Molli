@@ -11,7 +11,7 @@
   <style>
     .price-hero { padding: 72px 40px 32px; text-align: center; }
     .price-hero .from { font-size: 15px; color: var(--soft); font-weight: 600; margin-top: 18px; letter-spacing: .04em; }
-    .price-hero h1 { font-size: 168px; line-height: .85; letter-spacing: -0.05em; font-weight: 800; margin: 4px auto 18px; max-width: 1100px; color: var(--accent); }
+    .price-hero h1 { font-family: var(--font-mono); font-size: 156px; line-height: .85; letter-spacing: -0.07em; font-weight: 700; margin: 4px auto 18px; max-width: 1100px; color: var(--accent); }
     .price-hero p { font-size: 18px; color: var(--soft); max-width: 580px; margin: 0 auto; line-height: 1.55; font-weight: 600; }
 
     .calc {
@@ -23,9 +23,9 @@
     .calc-left .glow { position: absolute; right: -120px; top: -120px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(var(--accent-rgb), .1), transparent 70%); pointer-events: none; }
     .calc-left .inner { position: relative; }
     .calc-cap { font-size: 11px; color: var(--soft); font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
-    .base-strike { font-size: 24px; font-weight: 600; color: var(--soft); margin-top: 14px; text-decoration: line-through; opacity: 0; transition: opacity .3s; }
+    .base-strike { font-family: var(--font-mono); font-size: 22px; font-weight: 500; color: var(--soft); margin-top: 14px; text-decoration: line-through; opacity: 0; transition: opacity .3s; }
     .base-strike.show { opacity: .5; }
-    .big-total { font-size: 156px; font-weight: 800; letter-spacing: -0.05em; line-height: .9; color: var(--accent); margin: -12px 0 0; }
+    .big-total { font-family: var(--font-mono); font-size: 144px; font-weight: 700; letter-spacing: -0.07em; line-height: .9; color: var(--accent); margin: -12px 0 0; }
     .total-sub { font-size: 14px; color: var(--soft); margin-top: 4px; }
     .ledger { margin-top: 24px; padding: 14px 16px; background: var(--bg); border-radius: 10px; border: 1px solid var(--line); font-size: 13px; color: var(--soft); }
     .ledger .row { display: flex; justify-content: space-between; margin-bottom: 6px; }
@@ -114,11 +114,10 @@
       <span class="logo-word">CityPost</span>
     </a>
     <nav class="topnav">
-      <a href="index.html">Send a parcel</a>
-      <a href="pricing.html" class="active">Business</a>
       <a href="pricing.html" class="active">Pricing</a>
+      <a href="pricing.html#business">Business</a>
       <a href="account.html">Track</a>
-      <a href="pricing.html">Help</a>
+      <a href="pricing.html#faqs">Help</a>
     </nav>
     <div class="topbar-cta">
       <a class="signin" href="account.html">Sign in</a>
@@ -184,7 +183,7 @@
 
   <!-- BUSINESS CALLOUT -->
   <section class="section--tight" style="padding-top:0">
-    <div class="biz">
+    <div class="biz" id="business">
       <div class="glow"></div>
       <div class="inner">
         <div class="eyebrow">For business</div>

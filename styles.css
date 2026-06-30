@@ -104,9 +104,9 @@ ul { list-style: none; }
 
 /* ---------- Stats strip ---------- */
 .stats { display: grid; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.stat { padding: 24px 28px; border-right: 1px solid var(--line); }
+.stat { padding: 24px 40px; border-right: 1px solid var(--line); }
 .stat:last-child { border-right: none; }
-.stat .num { font-size: 38px; font-weight: 800; letter-spacing: -0.03em; color: var(--accent); }
+.stat .num { font-family: var(--font-mono); font-size: 36px; font-weight: 700; letter-spacing: -0.03em; color: var(--accent); }
 .stat .lbl { font-size: 13px; color: var(--soft); margin-top: 4px; }
 
 /* ---------- Footer ---------- */

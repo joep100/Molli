@@ -17,15 +17,18 @@
       -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000);
       mask-image: linear-gradient(90deg, transparent, #000 14%, #000);
     }
-    .hero-inner { position: relative; }
+    .hero-inner { position: relative; z-index: 1; }
+    .hero-top { display: grid; grid-template-columns: minmax(0, 1fr) 560px; gap: 48px; align-items: center; margin-bottom: 36px; }
+    .hero-board { position: relative; z-index: 1; min-width: 0; }
+    .hero-board .dep-board { max-width: none; }
     .hero h1 {
-      font-size: 124px; line-height: .88; letter-spacing: -0.04em;
-      font-weight: 800; margin: 20px 0 24px; max-width: 1100px;
+      font-size: 76px; line-height: .95; letter-spacing: -0.03em;
+      font-weight: 800; margin: 18px 0 22px;
     }
-    .hero .blurb { font-size: 18px; color: var(--soft); max-width: 620px; margin: 0 0 20px; line-height: 1.5; font-weight: 600; }
-    .from-line { display: flex; align-items: baseline; gap: 12px; margin: 0 0 28px; }
+    .hero .blurb { font-size: 18px; color: var(--soft); max-width: 520px; margin: 0 0 20px; line-height: 1.5; font-weight: 600; }
+    .from-line { display: flex; align-items: baseline; gap: 12px; margin: 0; }
     .from-line .lbl { font-size: 15px; color: var(--soft); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
-    .from-line .price { font-size: 56px; font-weight: 800; color: var(--accent); letter-spacing: -0.04em; line-height: 1; }
+    .from-line .price { font-family: var(--font-mono); font-size: 52px; font-weight: 700; color: var(--accent); letter-spacing: -0.05em; line-height: 1; }
     .from-line .unit { font-size: 15px; color: var(--muted); }
 
     .booking-widget {
@@ -39,9 +42,31 @@
     .bw-field .v { font-size: 15px; font-weight: 600; margin-top: 4px; }
     .bw-est { font-size: 12px; color: var(--soft); margin-top: 12px; font-family: var(--font-mono); }
 
-    .trust { margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 36px; flex-wrap: wrap; }
+    .trust { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 36px; flex-wrap: wrap; }
     .trust .lbl { font-size: 11px; color: var(--muted); letter-spacing: .14em; text-transform: uppercase; font-weight: 600; }
     .trust .name { font-size: 18px; font-weight: 700; color: var(--muted); letter-spacing: -0.01em; }
+
+    /* ===== Live departures board ===== */
+    .dep-board { font-family: var(--font-mono); background: #0c0f0c; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; max-width: 1100px; margin: 0 auto; }
+    .dep-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 22px; background: rgba(var(--accent-rgb), .07); border-bottom: 1px solid var(--line); }
+    .dep-head .ttl { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 10px; }
+    .dep-head .ttl .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px rgba(var(--accent-rgb), .7); }
+    .dep-head .clk { font-size: 13px; color: var(--soft); letter-spacing: .12em; }
+    .dep-colhead, .dep-row { display: grid; grid-template-columns: 100px minmax(0,1fr) 158px; gap: 16px; padding: 9px 20px; align-items: center; }
+    .dep-colhead { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); }
+    .dep-row { padding: 13px 20px; border-bottom: 1px solid var(--line); perspective: 500px; }
+    .dep-row:last-child { border-bottom: none; }
+    .dep-row .cell { font-size: 14px; letter-spacing: .04em; }
+    .dep-row .code { color: var(--soft); font-size: 13px; }
+    .dep-row .dest { color: #fff; font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dep-row .eta { color: var(--soft); }
+    .dep-row .status { justify-self: start; padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: .05em; white-space: nowrap; position: relative; transform-origin: center; }
+    .dep-row .status::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(0,0,0,.45); }
+    .s-collected, .s-enroute { background: rgba(var(--accent-rgb), .16); color: var(--accent); }
+    .s-out { background: var(--accent); color: #06140d; }
+    .s-delivered { background: rgba(255,255,255,.07); color: var(--soft); }
+    .dep-row .flip { animation: flap .5s ease; }
+    @keyframes flap { 0% { transform: rotateX(0deg); } 46% { transform: rotateX(-90deg); } 54% { transform: rotateX(90deg); } 100% { transform: rotateX(0deg); } }
 
     .stats { grid-template-columns: repeat(3, 1fr); }
 
@@ -109,7 +134,7 @@
     .tier .name { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-top: 6px; }
     .tier .blurb { font-size: 13px; color: var(--soft); margin-top: 4px; }
     .tier.featured .blurb { color: var(--bg); opacity: .85; }
-    .tier .price { margin-top: 22px; font-size: 32px; font-weight: 800; letter-spacing: -0.03em; color: var(--accent); }
+    .tier .price { font-family: var(--font-mono); margin-top: 22px; font-size: 30px; font-weight: 700; letter-spacing: -0.01em; color: var(--accent); }
     .tier.featured .price { color: var(--bg); }
 
     .coverage-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 22px; }
@@ -123,9 +148,45 @@
     .cta-strip .k { font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; opacity: .7; }
     .cta-strip .h { font-size: 48px; font-weight: 800; letter-spacing: -0.03em; margin-top: 8px; line-height: 1; }
 
+    /* ===== Light sections — break up the dark for rhythm ===== */
+    .light {
+      --bg: #f4f3ee;
+      --panel: #ffffff;
+      --panel2: #edefe9;
+      --ink: #14181a;
+      --soft: #565d59;
+      --muted: #9aa19c;
+      --line: rgba(18, 28, 22, .10);
+      --line-strong: rgba(18, 28, 22, .16);
+      background: var(--bg);
+      color: var(--ink);
+    }
+    .light .eyebrow { color: #14181a; }
+    .light h2 .accent { color: inherit; }
+    .light .tier .price { color: #14181a; }
+    /* lime-filled cards: force dark ink so text stays legible on light pages */
+    .light .usp-card.us,
+    .light .usp-card.us h3,
+    .light .usp-card.us .k,
+    .light .usp-card.us ul li,
+    .light .tier.featured,
+    .light .tier.featured .name,
+    .light .tier.featured .blurb,
+    .light .tier.featured .price { color: #06140d; }
+    .light .usp-card.us .k { opacity: .7; }
+    /* badges/flags on lime fills: dark chip, lime text */
+    .light .us-badge,
+    .light .tier.featured .tier-flag { background: #06140d; color: var(--accent); }
+    .light .tier-flag { color: #06140d; }
+
+    @media (max-width: 1120px) {
+      .hero-top { grid-template-columns: 1fr; gap: 32px; }
+      .hero-board .dep-board { max-width: 720px; }
+    }
     @media (max-width: 860px) {
       .hero { padding: 40px 20px; }
-      .hero h1 { font-size: 56px; }
+      .hero h1 { font-size: 48px; }
+      .hero-top { grid-template-columns: 1fr; gap: 28px; }
       .hero-map { display: none; }
       .booking-widget { grid-template-columns: 1fr 1fr; }
       .stats, .usp-grid, .how, .tiers, .coverage { grid-template-columns: 1fr; }
@@ -145,11 +206,10 @@
       <span class="logo-word">CityPost</span>
     </a>
     <nav class="topnav">
-      <a href="index.html" class="active">Send a parcel</a>
-      <a href="pricing.html">Business</a>
       <a href="pricing.html">Pricing</a>
+      <a href="pricing.html#business">Business</a>
       <a href="account.html">Track</a>
-      <a href="pricing.html">Help</a>
+      <a href="pricing.html#faqs">Help</a>
     </nav>
     <div class="topbar-cta">
       <a class="signin" href="account.html">Sign in</a>
@@ -159,64 +219,48 @@
 
   <!-- HERO -->
   <section class="hero">
-    <div class="hero-map" aria-hidden="true">
-      <svg viewBox="80 40 500 400" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;display:block">
-        <path d="M 560 40 Q 540 130 560 200 Q 580 270 555 340 Q 535 410 560 460" fill="none" stroke="var(--accent)" stroke-width="1.5" opacity=".35" />
-        <text x="572" y="250" fill="var(--accent)" opacity=".3" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="2" transform="rotate(90 572 250)">DUBLIN BAY</text>
-        <path d="M 120 220 Q 250 235 360 210 Q 470 188 560 205" fill="none" stroke="var(--accent)" stroke-width="3" opacity=".28" />
-        <text x="140" y="212" fill="var(--accent)" opacity=".32" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="2">RIVER LIFFEY</text>
-        <path d="M 360 30 Q 130 45 100 240 Q 110 435 360 450" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 6" opacity=".5" />
-        <text x="250" y="436" fill="var(--accent)" opacity=".6" font-family="'JetBrains Mono', monospace" font-size="11" letter-spacing="2" font-weight="600">M50</text>
-        <g stroke="var(--accent)" stroke-width="1" opacity=".16" fill="none" stroke-dasharray="3 5">
-          <path d="M 250 150 L 360 175 L 470 150" />
-          <path d="M 250 250 L 380 245 L 500 250" />
-          <path d="M 360 175 L 380 245" />
-          <path d="M 330 320 L 380 390 L 470 400" />
-          <path d="M 210 340 L 330 320" />
-          <path d="M 150 110 L 250 150" />
-          <path d="M 430 95 L 470 150" />
-        </g>
-        <g id="map-nodes"></g>
-        <circle r="13" fill="var(--accent)" opacity=".15"><animateMotion dur="5s" repeatCount="indefinite" path="M 250 250 Q 320 200 360 175 T 470 150" /></circle>
-        <circle r="5" fill="var(--accent)" stroke="var(--bg)" stroke-width="2"><animateMotion dur="5s" repeatCount="indefinite" path="M 250 250 Q 320 200 360 175 T 470 150" /></circle>
-      </svg>
+
+    <div class="hero-top">
+      <div class="hero-inner">
+        <span class="pill">
+          <span class="dot dot--pulse"></span>
+          Live &middot; <span class="mono-num" id="live-count">247</span> parcels moving in Dublin right now
+        </span>
+
+        <h1>Collect today<br />Deliver tomorrow<br /><span class="accent">Guaranteed</span></h1>
+
+        <p class="blurb">No post office queue. No next-day collection wait. Book before 2pm and we'll be at your door this afternoon — and you pick the collection and delivery slot that suits you.</p>
+
+        <div class="from-line">
+          <span class="lbl">Pricing from</span>
+          <span class="price">&euro;7.99</span>
+          <span class="unit">per parcel</span>
+        </div>
+
+        <a class="btn btn--accent btn--lg" href="booking.html" style="margin-top: 26px;">Send a parcel &rarr;</a>
+      </div>
+
+      <div class="hero-board">
+        <div class="dep-board">
+          <div class="dep-head">
+            <span class="ttl"><span class="dot"></span>CityPost &middot; Live departures</span>
+            <span class="clk" id="dep-clock">--:--</span>
+          </div>
+          <div class="dep-colhead"><span>Tracking</span><span>Destination</span><span>Status</span></div>
+          <div class="dep-grid" id="dep-grid"></div>
+        </div>
+      </div>
     </div>
 
-    <div class="hero-inner">
-      <span class="pill">
-        <span class="dot dot--pulse"></span>
-        Live &middot; <span class="mono-num" id="live-count">247</span> parcels moving in Dublin right now
-      </span>
-
-      <h1>Collect today, deliver tomorrow.<br /><span class="accent">Guaranteed.</span></h1>
-
-      <p class="blurb">No post office queue. No next-day collection wait. Book before 2pm and we'll be at your door this afternoon — and you pick the collection and delivery slot that suits you.</p>
-
-      <div class="from-line">
-        <span class="lbl">Pricing from</span>
-        <span class="price">&euro;7.99</span>
-        <span class="unit">per parcel</span>
-      </div>
-
-      <div class="booking-widget">
-        <div class="bw-field"><div class="k">From</div><div class="v">D02 — Dame Street</div></div>
-        <div class="bw-field"><div class="k">To</div><div class="v">D15 — Castleknock</div></div>
-        <div class="bw-field"><div class="k">Parcel size</div><div class="v">Package</div></div>
-        <div class="bw-field"><div class="k">When</div><div class="v">Tomorrow</div></div>
-        <a class="btn btn--accent" href="booking.html" style="padding:0 28px;font-size:15px">Get price &rarr;</a>
-      </div>
-      <div class="bw-est">&rarr; Estimated <span class="accent">&euro;8.99</span> &middot; Collected today, delivered next working day</div>
-
-      <div class="trust">
-        <span class="lbl">Trusted by Dublin shops &rarr;</span>
-        <span class="name">Boojum</span>
-        <span class="name">Avoca</span>
-        <span class="name">Carraig</span>
-        <span class="name">Bewley's</span>
-        <span class="name">Sostrene</span>
-        <span class="name">Storyful</span>
-        <span class="name">Stable</span>
-      </div>
+    <div class="trust">
+      <span class="lbl">Trusted by Dublin shops &rarr;</span>
+      <span class="name">Boojum</span>
+      <span class="name">Avoca</span>
+      <span class="name">Carraig</span>
+      <span class="name">Bewley's</span>
+      <span class="name">Sostrene</span>
+      <span class="name">Storyful</span>
+      <span class="name">Stable</span>
     </div>
   </section>
 
@@ -228,7 +272,7 @@
   </div>
 
   <!-- USP -->
-  <section class="section usp">
+  <section class="section usp light">
     <div class="eyebrow">Why CityPost</div>
     <h2>The only parcel service that <span class="accent">collects same day and delivers next day.</span></h2>
     <div class="usp-grid">
@@ -312,10 +356,10 @@
             </div>
             <div class="phone-progress"><div></div></div>
             <div class="phone-stops">
-              <div class="phone-stop done"><span class="time">8:14</span><span class="bullet"></span><span class="label">Picked up &middot; Dame St</span></div>
-              <div class="phone-stop done"><span class="time">8:42</span><span class="bullet"></span><span class="label">At Crumlin sorting hub</span></div>
-              <div class="phone-stop done"><span class="time">9:33</span><span class="bullet"></span><span class="label">Out for delivery with Eamon</span></div>
-              <div class="phone-stop pending"><span class="time">~9:55</span><span class="bullet"></span><span class="label">Castleknock &middot; drop-off</span></div>
+              <div class="phone-stop done"><span class="time">Mon</span><span class="bullet"></span><span class="label">Picked up &middot; Dame St</span></div>
+              <div class="phone-stop done"><span class="time">Mon</span><span class="bullet"></span><span class="label">At Crumlin sorting hub</span></div>
+              <div class="phone-stop done"><span class="time">Tue</span><span class="bullet"></span><span class="label">Out for delivery with Eamon</span></div>
+              <div class="phone-stop pending"><span class="time">Tue</span><span class="bullet"></span><span class="label">Castleknock &middot; drop-off</span></div>
             </div>
           </div>
         </div>
@@ -324,7 +368,7 @@
   </section>
 
   <!-- TIERS -->
-  <section class="section divider-top">
+  <section class="section divider-top light">
     <div class="tiers-head">
       <h2>Simple pricing. <span class="accent">Starts with the size.</span></h2>
       <span class="note">No subscriptions. No hidden fees.</span>
@@ -379,34 +423,6 @@
       }, 2200);
     })();
 
-    // Hero map district nodes
-    (function () {
-      var districts = [
-        ['D7',250,150],['D1',360,175],['D3',470,150],['D9',430,95],['D15',150,110],
-        ['D8',250,250],['D2',380,245],['D4',500,250],['D6',330,320],['D12',210,340],
-        ['D14',380,390],['D24',200,430],['D18',470,400]
-      ];
-      var ns = 'http://www.w3.org/2000/svg';
-      var g = document.getElementById('map-nodes');
-      if (!g) return;
-      districts.forEach(function (d) {
-        var c1 = document.createElementNS(ns, 'circle');
-        c1.setAttribute('cx', d[1]); c1.setAttribute('cy', d[2]); c1.setAttribute('r', 3.5);
-        c1.setAttribute('fill', 'var(--accent)'); c1.setAttribute('opacity', '.55');
-        var c2 = document.createElementNS(ns, 'circle');
-        c2.setAttribute('cx', d[1]); c2.setAttribute('cy', d[2]); c2.setAttribute('r', 9);
-        c2.setAttribute('fill', 'none'); c2.setAttribute('stroke', 'var(--accent)');
-        c2.setAttribute('stroke-width', '1'); c2.setAttribute('opacity', '.22');
-        var tx = document.createElementNS(ns, 'text');
-        tx.setAttribute('x', d[1] + 11); tx.setAttribute('y', d[2] + 3.5);
-        tx.setAttribute('fill', 'var(--accent)'); tx.setAttribute('opacity', '.4');
-        tx.setAttribute('font-family', "'JetBrains Mono', monospace");
-        tx.setAttribute('font-size', '9'); tx.setAttribute('font-weight', '600');
-        tx.textContent = d[0];
-        g.appendChild(c1); g.appendChild(c2); g.appendChild(tx);
-      });
-    })();
-
     // Coverage grid
     (function () {
       var coverage = [
@@ -423,6 +439,52 @@
         d.innerHTML = '<span class="b">&#9679;</span>' + p;
         wrap.appendChild(d);
       });
+    })();
+  </script>
+
+  <script>
+    // Live departures board — split-flap status updates
+    (function () {
+      var grid = document.getElementById('dep-grid');
+      var clock = document.getElementById('dep-clock');
+      if (!grid) return;
+      var places = [['Rathmines','D6'],['Ballsbridge','D4'],['Tallaght','D24'],['Dame St','D2'],['Castleknock','D15'],['Howth','D13'],['Phibsboro','D7'],['Sandyford','D18'],['Drumcondra','D9'],['Clontarf','D3'],['Ranelagh','D6'],['Stoneybatter','D7'],['Blackrock','A94'],['Swords','K67']];
+      var stages = [['COLLECTED','s-collected'],['EN ROUTE','s-enroute'],['OUT FOR DELIVERY','s-out'],['DELIVERED','s-delivered']];
+      function pad(n){ return n < 10 ? '0' + n : '' + n; }
+      function rnd(a){ return a[Math.floor(Math.random() * a.length)]; }
+      function tnow(){ var d = new Date(); return pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+      function code(){ return 'CP-' + (90000 + Math.floor(Math.random() * 9999)); }
+      var rows = [];
+      for (var i = 0; i < 6; i++) {
+        var p = places[i % places.length];
+        var si = Math.floor(Math.random() * stages.length);
+        var row = document.createElement('div'); row.className = 'dep-row';
+        row.innerHTML = '<span class="cell code" data-k="code">' + code() + '</span>'
+          + '<span class="cell dest" data-k="dest">' + p[0] + ' &middot; ' + p[1] + '</span>'
+          + '<span class="cell status ' + stages[si][1] + '" data-k="status">' + stages[si][0] + '</span>';
+        grid.appendChild(row);
+        rows.push({ el: row, si: si, place: p });
+      }
+      function flip(cell, html, cls) {
+        cell.classList.add('flip');
+        setTimeout(function () {
+          cell.innerHTML = html;
+          if (cls !== undefined) { cell.className = 'cell status ' + cls; cell.classList.add('flip'); }
+        }, 230);
+        setTimeout(function () { cell.classList.remove('flip'); }, 520);
+      }
+      function tick() {
+        var r = rnd(rows);
+        r.si++;
+        if (r.si >= stages.length) {
+          r.si = 0; r.place = rnd(places);
+          flip(r.el.querySelector('[data-k="dest"]'), r.place[0] + ' &middot; ' + r.place[1]);
+          flip(r.el.querySelector('[data-k="code"]'), code());
+        }
+        flip(r.el.querySelector('[data-k="status"]'), stages[r.si][0], stages[r.si][1]);
+      }
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(tick, 2200);
+      if (clock) { function ck(){ clock.textContent = tnow(); } ck(); setInterval(ck, 10000); }
     })();
   </script>
 </body>

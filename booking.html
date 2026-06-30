@@ -338,6 +338,18 @@
             display: none;
         }
 
+        /* Size gauge */
+        .sizer-hint { font-size: 12px; color: var(--soft); margin-bottom: 12px; line-height: 1.5; }
+        .sizer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; }
+        .sizer-grid label { display: block; font-size: 11px; color: var(--soft); margin-bottom: 4px; }
+        .sizer-grid input { width: 100%; padding: 8px 10px; border: 1px solid rgba(255,255,255,.12); border-radius: 6px; background: var(--bg); color: #fff; font-family: var(--font-mono); font-size: 15px; }
+        .sizer-grid input:focus { outline: none; border-color: #7FE001; }
+        .gauge { display: flex; justify-content: center; padding: 6px 0 14px; }
+        .sizer-verdict { text-align: center; font-weight: 700; font-size: 14px; padding: 11px; border-radius: 8px; line-height: 1.4; }
+        .sizer-verdict.ok { color: #7FE001; background: rgba(127,224,1,.1); }
+        .sizer-verdict.bad { color: #ff8a8a; background: rgba(255,90,90,.1); }
+        .sizer-verdict.idle { color: var(--soft); background: rgba(255,255,255,.03); }
+
         /* Validation */
         .form-group input.invalid,
         .form-group textarea.invalid {
@@ -530,7 +542,7 @@
 
     <main>
         <div class="step-counter">
-            <span id="step-counter">Step 1 of 6</span>
+            <span id="step-counter">Step 1 of 7</span>
         </div>
 
         <!-- PAGE 1: GUEST OR ACCOUNT -->
@@ -745,11 +757,11 @@
             </div>
         </div>
 
-        <!-- PAGE 4: DELIVERY TIME -->
+        <!-- PAGE 4: ITEM TYPE -->
         <div id="page-4" class="page">
             <div class="page-content">
-                <h1>When do you need it delivered?</h1>
-                <p class="subtitle">Choose your preferred delivery window</p>
+                <h1>What are we sending?</h1>
+                <p class="subtitle">Choose your parcel size</p>
 
                 <div class="form-section">
                     <label style="display: block; margin-bottom: 8px; font-size: 17px; font-weight: 700; color: #fff;">Item Type</label>
@@ -796,6 +808,32 @@
                     </div>
                 </div>
 
+                <div class="form-section sizer">
+                    <label style="display: block; margin-bottom: 6px; font-size: 17px; font-weight: 700; color: #fff;">Will it fit?</label>
+                    <p class="sizer-hint">Enter your parcel's size. If it's bigger than the limit for the size you picked, we can't collect it.</p>
+                    <div class="sizer-grid">
+                        <div><label>Length cm</label><input type="number" id="dim-l" min="0" placeholder="0"></div>
+                        <div><label>Width cm</label><input type="number" id="dim-w" min="0" placeholder="0"></div>
+                        <div><label>Height cm</label><input type="number" id="dim-h" min="0" placeholder="0"></div>
+                        <div><label>Weight kg</label><input type="number" id="dim-kg" min="0" step="0.1" placeholder="0"></div>
+                    </div>
+                    <div class="gauge"><svg id="gauge-svg" width="240" height="180" viewBox="0 0 240 180"></svg></div>
+                    <div id="sizer-verdict" class="sizer-verdict idle">Enter your parcel size to check it fits</div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-secondary" onclick="prevPage()">Back</button>
+                    <button class="btn-primary" onclick="nextPage()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 5: DELIVERY WINDOW -->
+        <div id="page-5" class="page">
+            <div class="page-content">
+                <h1>When do you want it delivered?</h1>
+                <p class="subtitle">Choose your preferred delivery window</p>
+
                 <div class="form-section">
                     <label style="display: block; margin-bottom: 8px; font-size: 17px; font-weight: 700; color: #fff;">Delivery Time Window</label>
                     <div class="option-grid-2">
@@ -823,8 +861,8 @@
             </div>
         </div>
 
-        <!-- PAGE 5: WHAT TO SEND -->
-        <div id="page-5" class="page">
+        <!-- PAGE 6: WHAT TO SEND -->
+        <div id="page-6" class="page">
             <div class="page-content">
                 <h1>What are you sending?</h1>
                 <p class="subtitle">Add optional services to your delivery</p>
@@ -914,8 +952,8 @@
             </div>
         </div>
 
-        <!-- PAGE 6: GUEST USER DETAILS -->
-        <div id="page-6" class="page">
+        <!-- PAGE 7: GUEST USER DETAILS -->
+        <div id="page-7" class="page">
             <div class="page-content">
                 <h1>Your Details</h1>
                 <p class="subtitle">Confirm your contact information</p>
@@ -1179,7 +1217,7 @@
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(`page-${page}`).classList.add('active');
             
-            document.getElementById('step-counter').textContent = `Step ${page} of 6`;
+            document.getElementById('step-counter').textContent = `Step ${page} of 7`;
             
             // Update guest/account sections on page 2
             if (page === 2) {
@@ -1192,6 +1230,7 @@
             if (page === 4) {
                 updateZoneFromAddresses();
                 updateItemPrice();
+                checkFit();
             }
 
             // Restrict collection time on page 3 (today = PM only)
@@ -1199,13 +1238,13 @@
                 updateCollectionTimeOptions();
             }
 
-            // Update price summary when arriving at page 5 or 6
-            if (page === 5 || page === 6) {
+            // Update price summary when arriving at the add-ons or details step
+            if (page === 5 || page === 6 || page === 7) {
                 updateTotal();
             }
 
-            // Populate the recipient recap on page 6
-            if (page === 6) {
+            // Populate the recipient recap on the details step
+            if (page === 7) {
                 const nm = (document.getElementById('recipient-name')?.value || '').trim();
                 const ph = (document.getElementById('recipient-phone')?.value || '').trim();
                 const ec = (document.getElementById('recipient-eircode')?.value || '').trim().toUpperCase();
@@ -1226,7 +1265,7 @@
                 if (firstBad && firstBad.focus) firstBad.focus();
                 return;
             }
-            if (currentPage < 6) {
+            if (currentPage < 7) {
                 showPage(currentPage + 1);
             }
         }
@@ -1271,13 +1310,13 @@
             const raw = el.value.trim().toUpperCase();
             if (!raw) return setErr(el, msg || 'Enter an Eircode');
             // Strip spaces for testing
-            const code = raw.replace(/\s+/g, '');
-            // Dublin district shorthand: D1–D24, D6W (used for the demo zone picker)
-            const isDublinDistrict = /^D(\d{1,2}|6W)$/.test(code);
-            // Full Eircode: routing key (letter + 2 alphanumerics) + 4-char identifier
-            const isFullEircode = /^[AC-FHKNPRTV-Y][0-9]{1}[0-9W][0-9AC-FHKNPRTV-Y]{4}$/.test(code);
+            const code = raw.replace(/\s+/g, '');   // tolerate Eircodes with OR without a space
+            // Dublin district shorthand (demo zone picker): D1–D24, plus D6W
+            const isDublinDistrict = /^D(?:[1-9]|1[0-9]|2[0-4]|6W)$/.test(code);
+            // Full Eircode: routing key (letter + digit + digit/W) + 4-char unique identifier
+            const isFullEircode = /^[AC-FHKNPRTV-Y][0-9][0-9W][0-9AC-FHKNPRTV-Y]{4}$/.test(code);
             if (!isDublinDistrict && !isFullEircode) {
-                return setErr(el, 'Enter a valid Eircode (e.g. D02 or D02 X285)');
+                return setErr(el, 'Enter a valid Eircode — e.g. D02X285 or D02 X285');
             }
             clearErr(el); return true;
         }
@@ -1317,7 +1356,9 @@
                         ok = false;
                     }
                 }
-            } else if (page === 6) {
+            } else if (page === 4) {
+                if (!window.__fitsOk) { checkFit(); ok = false; }
+            } else if (page === 7) {
                 ok = reqField('guest-name-page6', 'Enter your name') && ok;
                 ok = validPhone('guest-phone-page6') && ok;
                 ok = validEmail('guest-email-page6') && ok;
@@ -1497,6 +1538,11 @@
             // Add listeners to item type radio buttons
             document.querySelectorAll('input[name="item-type"]').forEach(radio => {
                 radio.addEventListener('change', updateItemPrice);
+                radio.addEventListener('change', checkFit);
+            });
+            ['dim-l', 'dim-w', 'dim-h', 'dim-kg'].forEach(function (id) {
+                var el = document.getElementById(id);
+                if (el) el.addEventListener('input', checkFit);
             });
 
             // Add listeners to delivery time radio buttons
@@ -1670,6 +1716,60 @@
             }
         }
 
+        var SIZE_LIMITS = {
+            letter:  { l: 33, w: 23, h: 3,  kg: 0.5 },
+            package: { l: 45, w: 35, h: 20, kg: 2 },
+            box:     { l: 60, w: 40, h: 40, kg: 10 }
+        };
+        window.__fitsOk = false;
+        function drawGauge(lim, parcel) {
+            var svg = document.getElementById('gauge-svg'); if (!svg) return;
+            var W = 240, H = 180, padX = 30, padTop = 30, padBot = 18, dco = 0.45;
+            var scale = Math.min((W - 2 * padX) / (lim.w + lim.l * dco), (H - padTop - padBot) / (lim.h + lim.l * dco));
+            function box(s, fx, fy, wv, hv, lv, stroke, fill, dash) {
+                var bw = wv * scale, bh = hv * scale, ox = lv * scale * dco, oy = lv * scale * dco;
+                var bx = fx + ox, by = fy - oy, d = dash ? ' stroke-dasharray="5 4"' : '';
+                var fo = fill || 'none';
+                s += '<polygon points="' + fx + ',' + fy + ' ' + (fx + bw) + ',' + fy + ' ' + (bx + bw) + ',' + by + ' ' + bx + ',' + by + '" fill="' + fo + '" fill-opacity="' + (fill ? 0.1 : 0) + '" stroke="' + stroke + '" stroke-width="1.5"' + d + '/>';
+                s += '<polygon points="' + (fx + bw) + ',' + fy + ' ' + (fx + bw) + ',' + (fy + bh) + ' ' + (bx + bw) + ',' + (by + bh) + ' ' + (bx + bw) + ',' + by + '" fill="' + fo + '" fill-opacity="' + (fill ? 0.16 : 0) + '" stroke="' + stroke + '" stroke-width="1.5"' + d + '/>';
+                s += '<rect x="' + fx + '" y="' + fy + '" width="' + bw + '" height="' + bh + '" fill="' + fo + '" fill-opacity="' + (fill ? 0.22 : 0) + '" stroke="' + stroke + '" stroke-width="2"' + d + '/>';
+                return s;
+            }
+            var cw = lim.w * scale, ch = lim.h * scale, cox = lim.l * scale * dco;
+            var totalW = cw + cox, totalH = ch + cox;
+            var fx = (W - totalW) / 2, fy = padTop + cox + (H - padTop - padBot - totalH) / 2;
+            var s = '<text x="120" y="13" fill="#7FE001" font-size="10" text-anchor="middle" font-family="monospace" letter-spacing="1">MAX ' + lim.w + '\u00d7' + lim.h + '\u00d7' + lim.l + ' cm</text>';
+            s = box(s, fx, fy, lim.w, lim.h, lim.l, '#7FE001', null, true);
+            if (parcel) {
+                var fits = parcel.w <= lim.w && parcel.h <= lim.h && parcel.l <= lim.l;
+                var col = fits ? '#7FE001' : '#ff5a5a';
+                var ph = parcel.h * scale;
+                var py = fy + (ch - ph);
+                s = box(s, fx, py, parcel.w, parcel.h, parcel.l, col, col, false);
+            }
+            svg.innerHTML = s;
+        }
+        function checkFit() {
+            var t = (document.querySelector('input[name="item-type"]:checked') || {}).value || 'letter';
+            var lim = SIZE_LIMITS[t];
+            var l = parseFloat(document.getElementById('dim-l').value);
+            var w = parseFloat(document.getElementById('dim-w').value);
+            var h = parseFloat(document.getElementById('dim-h').value);
+            var kg = parseFloat(document.getElementById('dim-kg').value);
+            var v = document.getElementById('sizer-verdict');
+            var filled = [l, w, h, kg].every(function (x) { return !isNaN(x) && x > 0; });
+            drawGauge(lim, filled ? { w: w, h: h, l: l } : null);
+            if (!filled) { window.__fitsOk = false; v.className = 'sizer-verdict idle'; v.textContent = 'Enter your parcel size to check it fits'; return; }
+            var over = [];
+            if (l > lim.l) over.push('length');
+            if (w > lim.w) over.push('width');
+            if (h > lim.h) over.push('height');
+            if (kg > lim.kg) over.push('weight');
+            var name = t.charAt(0).toUpperCase() + t.slice(1);
+            if (over.length) { window.__fitsOk = false; v.className = 'sizer-verdict bad'; v.textContent = '\u2717 Too big for ' + name + ' \u2014 ' + over.join(', ') + ' over the limit. This can\u2019t be collected.'; }
+            else { window.__fitsOk = true; v.className = 'sizer-verdict ok'; v.textContent = '\u2713 Fits the ' + name + ' limit \u2014 good to go.'; }
+        }
+
         function updateItemPrice() {
             const selectedItem = document.querySelector('input[name="item-type"]:checked').value;
 
@@ -1722,8 +1822,8 @@
         }
 
         function processPayment() {
-            if (!validatePage(6)) {
-                const firstBad = document.querySelector('#page-6 .invalid');
+            if (!validatePage(7)) {
+                const firstBad = document.querySelector('#page-7 .invalid');
                 if (firstBad && firstBad.focus) firstBad.focus();
                 return;
             }

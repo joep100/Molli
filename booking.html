@@ -1827,19 +1827,26 @@
                 if (firstBad && firstBad.focus) firstBad.focus();
                 return;
             }
-            showConfirmation();
+            startCheckout();
         }
 
-        function showConfirmation() {
-            // Tracking number
-            const tn = 'CP-' + Math.floor(90000 + Math.random() * 9999) + '-D';
-            document.getElementById('confirm-tracking').textContent = tn;
+        // Collect the current booking into a plain object (for Stripe + confirmation).
+        function collectCart() {
+            const size = document.querySelector('input[name="item-type"]:checked')?.value || 'letter';
+            const am = (document.querySelector('input[name="delivery-time"]:checked')?.value === 'am');
+            const zone2 = (getAutoDetectedZone() === 'zone2');
+            const addons = [];
+            if (document.getElementById('addon-insurance')?.checked) addons.push('signature');
+            if (document.getElementById('addon-photo')?.checked) addons.push('photo');
+            if (document.getElementById('addon-additional-insurance')?.checked) addons.push('insurance');
+            if (document.getElementById('addon-sms')?.checked) addons.push('sms');
+            return { size, am, zone2, addons };
+        }
 
-            // Total
+        // Build the confirmation summary from the live form, so we can show it again
+        // after returning from Stripe (the form is empty on reload).
+        function buildConfirmData() {
             const totalEl = document.getElementById('total-price-summary');
-            document.getElementById('confirm-total').textContent = totalEl ? totalEl.textContent : '€0.00';
-
-            // Collection date + window
             const dateVal = (document.getElementById('collection-date') || {}).value || '';
             let dateLabel = dateVal;
             try {
@@ -1847,18 +1854,52 @@
             } catch (e) {}
             const ctime = document.querySelector('input[name="collection-time"]:checked');
             const ctimeLabel = ctime ? (ctime.value === 'am' ? '9am – 1pm' : '1pm – 5pm') : '';
-            document.getElementById('confirm-collection').textContent = [dateLabel, ctimeLabel].filter(Boolean).join(' · ') || 'Today';
-
-            // Delivery window
             const dtime = document.querySelector('input[name="delivery-time"]:checked');
-            document.getElementById('confirm-delivery').textContent = (dtime && dtime.value === 'am')
-                ? 'Next working day · before 1pm'
-                : 'Next working day · anytime';
-
-            // Recipient name into subtitle
             const rname = ((document.getElementById('recipient-name') || {}).value || '').trim();
-            document.getElementById('confirm-sub').textContent = rname
-                ? ('We\'ll collect from you and deliver to ' + rname + ' the next working day.')
+            return {
+                total: totalEl ? totalEl.textContent : '€0.00',
+                collection: [dateLabel, ctimeLabel].filter(Boolean).join(' · ') || 'Today',
+                delivery: (dtime && dtime.value === 'am') ? 'Next working day · before 1pm' : 'Next working day · anytime',
+                recipient: rname,
+            };
+        }
+
+        // Hand off to Stripe Checkout. Falls back to the local confirmation screen
+        // if no backend is reachable (e.g. opening the file directly, no Stripe key).
+        async function startCheckout() {
+            const payBtn = document.querySelector('#page-7 .btn-primary');
+            // Persist the summary so we can show it after returning from Stripe.
+            try { sessionStorage.setItem('cp_confirm', JSON.stringify(buildConfirmData())); } catch (e) {}
+
+            if (payBtn) { payBtn.disabled = true; payBtn.textContent = 'Connecting to secure checkout…'; }
+            try {
+                const resp = await fetch('/api/create-checkout-session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(collectCart()),
+                });
+                if (!resp.ok) throw new Error('Checkout unavailable');
+                const data = await resp.json();
+                if (data && data.url) { window.location.href = data.url; return; }
+                throw new Error('No checkout URL');
+            } catch (err) {
+                // No backend (local preview / Stripe not set up yet) — show confirmation directly.
+                console.warn('Stripe checkout not reachable, showing local confirmation:', err);
+                if (payBtn) { payBtn.disabled = false; payBtn.textContent = 'Pay'; }
+                showConfirmation();
+            }
+        }
+
+        function showConfirmation(data) {
+            const d = data || buildConfirmData();
+            // Tracking number
+            const tn = 'CP-' + Math.floor(90000 + Math.random() * 9999) + '-D';
+            document.getElementById('confirm-tracking').textContent = tn;
+            document.getElementById('confirm-total').textContent = d.total || '€0.00';
+            document.getElementById('confirm-collection').textContent = d.collection || 'Today';
+            document.getElementById('confirm-delivery').textContent = d.delivery || 'Next working day · anytime';
+            document.getElementById('confirm-sub').textContent = d.recipient
+                ? ('We\'ll collect from you and deliver to ' + d.recipient + ' the next working day.')
                 : 'We\'ll collect and deliver the next working day.';
 
             // Swap views
@@ -1867,6 +1908,17 @@
             document.getElementById('step-counter').textContent = 'Done';
             window.scrollTo(0, 0);
         }
+
+        // If we've just come back from a successful Stripe payment, show confirmation.
+        (function handleStripeReturn() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('paid') === '1') {
+                let stored = null;
+                try { stored = JSON.parse(sessionStorage.getItem('cp_confirm') || 'null'); } catch (e) {}
+                // Defer until the DOM/confirmation page exists.
+                window.addEventListener('DOMContentLoaded', function () { showConfirmation(stored || {}); });
+            }
+        })();
 
         function resetBooking() {
             showPage(1);

@@ -126,6 +126,17 @@
         .add-card:hover { border-color: var(--accent); color: var(--accent); }
         .add-card .plus { font-size: 26px; line-height: 1; }
 
+        /* Saved addresses */
+        .addr-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .addr-card { position: relative; background: var(--panel); border: 1px solid var(--line-soft); border-radius: 14px; padding: 18px 20px; }
+        .addr-card.default { border-color: var(--accent); }
+        .addr-card .tag { font-size: 13px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; display: block; margin-bottom: 8px; }
+        .addr-card .tag.home { color: var(--accent); }
+        .addr-card .lines { font-size: 13px; color: var(--soft); line-height: 1.55; }
+        .addr-card .badge-default { position: absolute; top: 16px; right: 16px; background: var(--accent); color: #0a0a0a; font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; }
+        .add-addr { border: 1.5px dashed var(--line); border-radius: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--soft); cursor: pointer; background: transparent; font-family: inherit; font-weight: 600; transition: all .15s; padding: 18px; }
+        .add-addr:hover { border-color: var(--accent); color: var(--accent); }
+
         /* Bookings */
         .booking {
             display: grid; grid-template-columns: auto 1fr auto auto; gap: 18px; align-items: center;
@@ -291,6 +302,33 @@
             </button>
         </section>
 
+        <!-- Saved addresses -->
+        <section class="block">
+            <div class="section-label">Saved addresses</div>
+            <div class="addr-row">
+                <div class="addr-card default">
+                    <span class="badge-default">Default</span>
+                    <span class="tag home">Home</span>
+                    <div class="lines">Aoife Brennan<br />42 Grafton Street<br />Dublin 2 &middot; D02 X285</div>
+                </div>
+                <div class="addr-card">
+                    <span class="tag">Work &middot; Brennan &amp; Co</span>
+                    <div class="lines">17 Dame Street<br />Dublin 2 &middot; D02 AF30</div>
+                </div>
+                <div class="addr-card">
+                    <span class="tag">Niall &Oacute; Conaill</span>
+                    <div class="lines">5 Camden Street<br />Dublin 8 &middot; D08 R7K2</div>
+                </div>
+                <div class="addr-card">
+                    <span class="tag">M&eacute;abh Kelly</span>
+                    <div class="lines">5 Laurel Avenue, Castleknock<br />Dublin 15 &middot; D15 PX40</div>
+                </div>
+            </div>
+            <button class="add-addr" style="width: 100%; margin-top: 14px; min-height: 56px;">
+                <span style="font-size: 22px; line-height: 1;">+</span><span>Add a new address</span>
+            </button>
+        </section>
+
         <!-- Bookings -->
         <section class="block">
             <div class="section-label">All bookings</div>
@@ -372,6 +410,7 @@
 
     <script>
         let signedIn = false;
+        try { signedIn = localStorage.getItem('cp_signedin') === '1'; } catch (e) {}
         function applyAuth() {
             document.getElementById('signup-view').style.display = signedIn ? 'none' : 'block';
             document.getElementById('account-view').style.display = signedIn ? 'block' : 'none';
@@ -381,6 +420,7 @@
         }
         function toggleAuth() {
             signedIn = !signedIn;
+            try { localStorage.setItem('cp_signedin', signedIn ? '1' : '0'); } catch (e) {}
             applyAuth();
         }
         applyAuth();

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="design_doc_mode" content="canvas" />
+  <title>CityPost — Design Directions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; }
+
+    .frame { position: absolute; overflow: hidden; box-shadow: 0 30px 80px -30px rgba(0,0,0,.5); }
+    .frame-label {
+      position: absolute; top: -42px; left: 0; font-family: 'JetBrains Mono', monospace;
+      font-size: 14px; font-weight: 600; color: #444; letter-spacing: .04em;
+    }
+    .frame-label b { color: #111; }
+    .frame-label .tag { color: #888; font-weight: 400; }
+
+    /* ============ shared inner helpers ============ */
+    .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer; font-weight: 600; }
+
+    /* ============ D1 — SPRINT EVOLVED (dark / bold / techy) ============ */
+    #d1 { background: #0a0d0b; color: #fff; font-family: 'Inter Tight', sans-serif; }
+    #d1 .bar { display: flex; justify-content: space-between; align-items: center; padding: 22px 44px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    #d1 .logo { display: flex; align-items: center; gap: 10px; }
+    #d1 .mark { width: 30px; height: 30px; background: #2FA968; border-radius: 6px; display: flex; align-items: center; justify-content: center; transform: skewX(-12deg); }
+    #d1 .mark span { color: #06140d; font-weight: 900; font-size: 18px; transform: skewX(12deg); }
+    #d1 .word { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+    #d1 .nav { display: flex; gap: 26px; font-size: 14px; color: #8a978f; font-weight: 500; }
+    #d1 .cta { background: #2FA968; color: #06140d; padding: 9px 18px; border-radius: 6px; font-size: 13px; }
+    #d1 .hero { padding: 60px 44px; position: relative; }
+    #d1 .pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background: rgba(47,169,104,.14); border: 1px solid rgba(47,169,104,.35); border-radius: 999px; font-size: 11px; color: #43c47e; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+    #d1 .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: #43c47e; }
+    #d1 h1 { font-size: 96px; line-height: .9; letter-spacing: -0.045em; font-weight: 800; margin: 22px 0 22px; }
+    #d1 h1 .g { color: #2FA968; }
+    #d1 .blurb { font-size: 18px; color: #8a978f; max-width: 560px; line-height: 1.5; font-weight: 500; }
+    #d1 .from { display: flex; align-items: baseline; gap: 12px; margin: 26px 0 26px; }
+    #d1 .from .l { font-size: 14px; color: #8a978f; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+    #d1 .from .p { font-size: 50px; font-weight: 800; color: #2FA968; letter-spacing: -0.04em; }
+    #d1 .widget { background: #12161300; border: 1px solid rgba(255,255,255,.1); border-radius: 14px; padding: 14px; display: grid; grid-template-columns: 1.2fr 1.2fr 1fr auto; gap: 8px; background: #111512; }
+    #d1 .wf { background: #0a0d0b; border: 1px solid rgba(255,255,255,.08); border-radius: 10px; padding: 10px 14px; }
+    #d1 .wf .k { font-size: 10px; color: #8a978f; text-transform: uppercase; letter-spacing: .14em; font-weight: 600; }
+    #d1 .wf .v { font-size: 15px; font-weight: 600; margin-top: 4px; }
+    #d1 .wbtn { background: #2FA968; color: #06140d; border-radius: 8px; padding: 0 26px; font-size: 15px; font-weight: 700; display: flex; align-items: center; }
+    #d1 .stats { display: grid; grid-template-columns: repeat(3,1fr); border-top: 1px solid rgba(255,255,255,.08); }
+    #d1 .stat { padding: 22px 44px; border-right: 1px solid rgba(255,255,255,.08); }
+    #d1 .stat:last-child { border-right: none; }
+    #d1 .stat .n { font-size: 34px; font-weight: 800; color: #2FA968; letter-spacing: -0.03em; }
+    #d1 .stat .s { font-size: 12px; color: #8a978f; margin-top: 2px; }
+    #d1 .mapwrap { position: absolute; right: -20px; top: 40px; width: 460px; height: 360px; opacity: .5; -webkit-mask-image: linear-gradient(90deg, transparent, #000 40%); mask-image: linear-gradient(90deg, transparent, #000 40%); pointer-events: none; }
+
+    /* ============ D2 — QUAY (light / premium / minimal) ============ */
+    #d2 { background: #f6f5f1; color: #1a1d1b; font-family: 'Inter', sans-serif; }
+    #d2 .bar { display: flex; justify-content: space-between; align-items: center; padding: 30px 56px; }
+    #d2 .word { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; color: #14342a; }
+    #d2 .word .dot { color: #1C6B4A; }
+    #d2 .nav { display: flex; gap: 34px; font-size: 14px; color: #6b716d; font-weight: 500; }
+    #d2 .cta { background: #14342a; color: #fff; padding: 11px 22px; border-radius: 999px; font-size: 13px; }
+    #d2 .hero { padding: 70px 56px 56px; }
+    #d2 .eyebrow { color: #1C6B4A; margin-bottom: 30px; }
+    #d2 h1 { font-size: 82px; line-height: 1.02; letter-spacing: -0.035em; font-weight: 600; max-width: 900px; color: #14342a; }
+    #d2 h1 .g { color: #1C6B4A; }
+    #d2 .blurb { font-size: 19px; color: #565c58; max-width: 520px; line-height: 1.6; margin-top: 28px; font-weight: 400; }
+    #d2 .actions { display: flex; gap: 14px; margin-top: 38px; align-items: center; }
+    #d2 .b1 { background: #1C6B4A; color: #fff; padding: 16px 30px; border-radius: 999px; font-size: 15px; }
+    #d2 .b2 { color: #14342a; font-size: 15px; font-weight: 600; display: inline-flex; gap: 8px; align-items: center; }
+    #d2 .meta { margin-top: 64px; display: flex; gap: 56px; border-top: 1px solid rgba(20,52,42,.12); padding-top: 30px; }
+    #d2 .meta .n { font-size: 30px; font-weight: 600; letter-spacing: -0.02em; color: #14342a; }
+    #d2 .meta .s { font-size: 13px; color: #6b716d; margin-top: 4px; }
+
+    /* ============ D3 — COURIER (light / editorial / big type) ============ */
+    #d3 { background: #ece7dc; color: #211d16; font-family: 'Inter', sans-serif; }
+    #d3 .bar { display: flex; justify-content: space-between; align-items: center; padding: 26px 52px; border-bottom: 1px solid rgba(33,29,22,.14); }
+    #d3 .word { font-family: 'Spectral', serif; font-size: 24px; font-weight: 500; letter-spacing: -0.01em; color: #1d3b2a; }
+    #d3 .nav { display: flex; gap: 30px; font-size: 13px; color: #6a6457; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; }
+    #d3 .cta { background: #1d3b2a; color: #ece7dc; padding: 10px 20px; font-size: 12px; text-transform: uppercase; letter-spacing: .1em; font-weight: 600; }
+    #d3 .hero { padding: 56px 52px; }
+    #d3 .kick { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #1d3b2a; display: flex; gap: 14px; align-items: center; }
+    #d3 .kick .line { height: 1px; width: 60px; background: #1d3b2a; opacity: .4; }
+    #d3 h1 { font-family: 'Spectral', serif; font-size: 104px; line-height: .96; letter-spacing: -0.02em; font-weight: 400; margin: 26px 0 0; color: #1d3b2a; }
+    #d3 h1 em { font-style: italic; color: #b5562b; }
+    #d3 .blurb { font-size: 18px; color: #4f4a3f; max-width: 540px; line-height: 1.6; margin-top: 30px; }
+    #d3 .actions { display: flex; gap: 22px; margin-top: 36px; align-items: center; }
+    #d3 .b1 { background: #1d3b2a; color: #ece7dc; padding: 16px 30px; font-size: 14px; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
+    #d3 .b2 { font-family: 'Spectral', serif; font-style: italic; font-size: 18px; color: #1d3b2a; }
+    #d3 .rule { margin-top: 60px; border-top: 1px solid rgba(33,29,22,.18); padding-top: 26px; display: grid; grid-template-columns: repeat(3,1fr); gap: 30px; }
+    #d3 .ritem .n { font-family: 'Spectral', serif; font-size: 40px; font-weight: 400; color: #1d3b2a; letter-spacing: -0.01em; }
+    #d3 .ritem .s { font-size: 13px; color: #6a6457; margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+  <!-- ===================== D1: SPRINT EVOLVED ===================== -->
+  <div class="frame" id="d1" style="left:0; top:0; width:1280px; height:900px;">
+    <div class="frame-label"><b>01 — Sprint Evolved</b> &nbsp;<span class="tag">dark · bold · techy</span></div>
+    <div class="bar">
+      <div class="logo"><span class="mark"><span>&rsaquo;</span></span><span class="word">CityPost</span></div>
+      <nav class="nav"><span>Send a parcel</span><span>Business</span><span>Pricing</span><span>Track</span></nav>
+      <span class="cta">Send a parcel &rarr;</span>
+    </div>
+    <div class="hero">
+      <div class="mapwrap" aria-hidden="true">
+        <svg viewBox="80 40 500 400" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%">
+          <path d="M 120 220 Q 250 235 360 210 Q 470 188 560 205" fill="none" stroke="#2FA968" stroke-width="3" opacity=".4" />
+          <path d="M 360 30 Q 130 45 100 240 Q 110 435 360 450" fill="none" stroke="#2FA968" stroke-width="2" stroke-dasharray="5 6" opacity=".5" />
+          <g fill="#2FA968"><circle cx="250" cy="150" r="3.5"/><circle cx="360" cy="175" r="3.5"/><circle cx="470" cy="150" r="3.5"/><circle cx="380" cy="245" r="3.5"/><circle cx="330" cy="320" r="3.5"/><circle cx="210" cy="340" r="3.5"/></g>
+          <circle r="5" fill="#43c47e"><animateMotion dur="5s" repeatCount="indefinite" path="M 250 250 Q 320 200 360 175 T 470 150" /></circle>
+        </svg>
+      </div>
+      <span class="pill"><span class="dot"></span>Live · 247 parcels moving in Dublin right now</span>
+      <h1>Collect today,<br />deliver <span class="g">tomorrow.</span></h1>
+      <p class="blurb">No post office queue. Book before 2pm and we're at your door this afternoon — you pick the collection and delivery slot.</p>
+      <div class="from"><span class="l">Pricing from</span><span class="p">&euro;7.99</span></div>
+      <div class="widget">
+        <div class="wf"><div class="k">From</div><div class="v">D02 — Dame Street</div></div>
+        <div class="wf"><div class="k">To</div><div class="v">D15 — Castleknock</div></div>
+        <div class="wf"><div class="k">When</div><div class="v">Tomorrow AM</div></div>
+        <div class="wbtn">Get price &rarr;</div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="n">98.4%</div><div class="s">On-time, last 90 days</div></div>
+      <div class="stat"><div class="n">12,400</div><div class="s">Parcels every week</div></div>
+      <div class="stat"><div class="n">4.8 / 5</div><div class="s">Customer rating</div></div>
+    </div>
+  </div>
+
+  <!-- ===================== D2: QUAY ===================== -->
+  <div class="frame" id="d2" style="left:1380px; top:0; width:1280px; height:900px;">
+    <div class="frame-label"><b>02 — Quay</b> &nbsp;<span class="tag">light · premium · minimal</span></div>
+    <div class="bar">
+      <span class="word">CityPost<span class="dot">.</span></span>
+      <nav class="nav"><span>Send</span><span>Business</span><span>Pricing</span><span>Track</span><span>Help</span></nav>
+      <span class="cta">Send a parcel</span>
+    </div>
+    <div class="hero">
+      <div class="eyebrow">Dublin courier · same-day collection</div>
+      <h1>Collect today,<br />deliver tomorrow. <span class="g">Guaranteed.</span></h1>
+      <p class="blurb">We collect from your door this afternoon and deliver the next working day, anywhere in Dublin. Choose the windows that suit you.</p>
+      <div class="actions">
+        <span class="b1">Send a parcel</span>
+        <span class="b2">See pricing &rarr;</span>
+      </div>
+      <div class="meta">
+        <div><div class="n">From €7.99</div><div class="s">Per parcel, all in</div></div>
+        <div><div class="n">98.4%</div><div class="s">On-time, last 90 days</div></div>
+        <div><div class="n">24 codes</div><div class="s">All of Dublin covered</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== D3: COURIER ===================== -->
+  <div class="frame" id="d3" style="left:2760px; top:0; width:1280px; height:900px;">
+    <div class="frame-label"><b>03 — Courier</b> &nbsp;<span class="tag">light · editorial · big type</span></div>
+    <div class="bar">
+      <span class="word">CityPost</span>
+      <nav class="nav"><span>Send</span><span>Business</span><span>Pricing</span><span>Track</span></nav>
+      <span class="cta">Send a parcel</span>
+    </div>
+    <div class="hero">
+      <div class="kick"><span class="line"></span>Dublin · est. 2024 · all 24 codes</div>
+      <h1>Collect today.<br />Deliver <em>tomorrow.</em></h1>
+      <p class="blurb">The only Dublin courier that collects same-day and delivers the next morning. No post office. No queue. Just booked, collected, delivered.</p>
+      <div class="actions">
+        <span class="b1">Send a parcel</span>
+        <span class="b2">or see pricing →</span>
+      </div>
+      <div class="rule">
+        <div class="ritem"><div class="n">From €7.99</div><div class="s">Per parcel, collected today</div></div>
+        <div class="ritem"><div class="n">98.4%</div><div class="s">On-time, last 90 days</div></div>
+        <div class="ritem"><div class="n">12,400</div><div class="s">Parcels every week</div></div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

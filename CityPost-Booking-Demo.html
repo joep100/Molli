@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CityPost — Sprint direction</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Black&display=swap" />
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; background: #efece6; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+    .artboard-host { width: 100%; height: 100%; overflow: hidden; background: #0a0a0a; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script src="artboards/shared-content.js"></script>
+  <script type="text/babel" src="design-canvas.jsx"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel" src="animations.jsx"></script>
+  <script type="text/babel" src="artboards/sprint-theme.jsx"></script>
+  <script type="text/babel" src="artboards/sprint.jsx"></script>
+  <script type="text/babel" src="artboards/sprint-pricing.jsx"></script>
+  <script type="text/babel" src="artboards/sprint-app.jsx"></script>
+  <script type="text/babel" src="artboards/sprint-motion.jsx"></script>
+
+  <!-- Other directions still available for reference -->
+  <script type="text/babel" src="artboards/civic.jsx"></script>
+  <script type="text/babel" src="artboards/concierge.jsx"></script>
+  <script type="text/babel" src="artboards/marquee.jsx"></script>
+
+  <script type="text/babel" data-presets="react">
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "accent": "#7FE001",
+      "showAlternates": false
+    }/*EDITMODE-END*/;
+
+    const ART_W = 1280;
+
+    function App() {
+      const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+      return (
+        <React.Fragment>
+          <DesignCanvas>
+            <DCSection
+              id="sprint"
+              title="CityPost · Sprint direction"
+              subtitle="Energy, speed, urgency. Dark canvas, electric accent, Inter Tight ultra-bold. Tweak the accent →">
+
+              <DCArtboard id="sprint-landing" label="Landing" width={ART_W} height={2700}>
+                <div className="artboard-host" data-screen-label="Sprint Landing">
+                  <window.SprintLanding accent={t.accent} />
+                </div>
+              </DCArtboard>
+
+              <DCArtboard id="sprint-pricing" label="Pricing & Business" width={ART_W} height={2400}>
+                <div className="artboard-host" data-screen-label="Sprint Pricing">
+                  <window.SprintPricing accent={t.accent} />
+                </div>
+              </DCArtboard>
+
+              <DCArtboard id="sprint-app" label="Mobile app" width={ART_W} height={950}>
+                <div className="artboard-host" data-screen-label="Sprint App">
+                  <window.SprintApp accent={t.accent} />
+                </div>
+              </DCArtboard>
+
+              <DCArtboard id="sprint-motion" label="Motion treatment — 8s hero loop" width={1280} height={720}>
+                <div className="artboard-host" data-screen-label="Sprint Motion">
+                  <window.SprintMotion accent={t.accent} />
+                </div>
+              </DCArtboard>
+            </DCSection>
+
+            {t.showAlternates && (
+              <DCSection
+                id="alternates"
+                title="Other directions (reference)"
+                subtitle="The other three explorations, kept for comparison.">
+
+                <DCArtboard id="civic" label="02 · Civic" width={ART_W} height={2400}>
+                  <div className="artboard-host" data-screen-label="02 Civic">
+                    <window.CivicArt />
+                  </div>
+                </DCArtboard>
+                <DCArtboard id="concierge" label="03 · Concierge" width={ART_W} height={2400}>
+                  <div className="artboard-host" data-screen-label="03 Concierge">
+                    <window.ConciergeArt />
+                  </div>
+                </DCArtboard>
+                <DCArtboard id="marquee" label="04 · Marquee" width={ART_W} height={2400}>
+                  <div className="artboard-host" data-screen-label="04 Marquee">
+                    <window.MarqueeArt />
+                  </div>
+                </DCArtboard>
+              </DCSection>
+            )}
+          </DesignCanvas>
+
+          <TweaksPanel>
+            <TweakSection label="Sprint accent" />
+            <TweakColor
+              label="Accent color"
+              value={t.accent}
+              options={['#9CFF2E', '#5CB308', '#00FF87', '#C4FF00', '#7FE001']}
+              onChange={(v) => setTweak('accent', v)} />
+            <TweakSection label="Canvas" />
+            <TweakToggle
+              label="Show other directions"
+              value={t.showAlternates}
+              onChange={(v) => setTweak('showAlternates', v)} />
+          </TweaksPanel>
+        </React.Fragment>
+      );
+    }
+
+    function mount() {
+      const ready = window.SprintLanding && window.SprintPricing && window.SprintApp
+        && window.SprintMotion
+        && window.DesignCanvas && window.TweaksPanel && window.useTweaks
+        && window.makeSprintTheme && window.CityPostBrand;
+      if (ready) {
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+      } else {
+        setTimeout(mount, 50);
+      }
+    }
+    mount();
+  </script>
+</body>
+</html>

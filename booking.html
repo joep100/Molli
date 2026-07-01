@@ -342,6 +342,9 @@
 
         /* Size gauge */
         .sizer-hint { font-size: 12px; color: var(--soft); margin-bottom: 14px; line-height: 1.5; }
+        .restricted-note { display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; padding: 12px 14px; background: rgba(255,255,255,.03); border: 1px solid var(--line); border-radius: 10px; font-size: 12px; color: var(--soft); line-height: 1.5; }
+        .restricted-note svg { flex-shrink: 0; margin-top: 1px; }
+        .restricted-note b { color: #fff; font-weight: 700; }
         .slider-rows { display: flex; flex-direction: column; gap: 15px; margin-bottom: 16px; }
         .slider-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 7px; }
         .slider-top label { font-size: 12px; color: var(--soft); font-weight: 600; }
@@ -808,7 +811,7 @@
                                     <line x1="26" y1="10" x2="26" y2="16" stroke="#7FE001" stroke-width="1.5"/>
                                 </svg>
                                 <div class="option-card-title">Box</div>
-                                <div class="option-card-sub" style="margin-top: 3px; font-size: 10px; line-height: 1.3;">Wine case, hamper<br>Up to 30kg</div>
+                                <div class="option-card-sub" style="margin-top: 3px; font-size: 10px; line-height: 1.3;">Wine case, hamper<br>Up to 10kg</div>
                                 <div class="option-card-price" id="price-box">€9.99</div>
                             </div>
                         </div>
@@ -817,7 +820,7 @@
 
                 <div class="form-section sizer" id="sizer-section">
                     <label style="display: block; margin-bottom: 6px; font-size: 17px; font-weight: 700; color: #fff;">Will it fit?</label>
-                    <p class="sizer-hint">Just like the bag sizer at the airport — if it fits the frame, we can carry it. Everything travels by cargo bike or motorbike, so set length &amp; width and the height can only go so far.</p>
+                    <p class="sizer-hint">Just like the bag sizer at the airport — if it fits the frame, we can carry it. Everything travels by bike, so it has to fit the box: up to 60&times;40&times;40&nbsp;cm, 10&nbsp;kg.</p>
                     <div class="slider-rows">
                         <div class="slider-row">
                             <div class="slider-top"><label>Length</label><span class="slider-val" id="val-l">30 cm</span></div>
@@ -839,6 +842,10 @@
                     <div class="gauge"><svg id="gauge-svg" width="360" height="276" viewBox="0 0 360 276"></svg></div>
                     <div class="vol-line" id="vol-line"></div>
                     <div id="sizer-verdict" class="sizer-verdict idle">Slide to check your parcel fits</div>
+                    <div class="restricted-note">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.2 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.2a2 2 0 0 0-3.4 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        <span><b>Some things we can't carry.</b> The fit finder covers size &amp; weight — but we can't take <b>hazardous goods</b> (batteries, aerosols, flammables) or <b>restricted items</b> (cash, alcohol, anything illegal). If in doubt, ask us first.</span>
+                    </div>
                 </div>
 
 
@@ -1831,25 +1838,14 @@
             updateBoxAvailability();
         }
 
-        // Box only travels by cargo bike (City-Centre-only routes). If either end is
-        // Greater Dublin (motorbike), offer just Letter and Parcel.
+        // One universal capacity for every route — Box travels on any route now,
+        // so it's always offered.
         function updateBoxAvailability() {
-            var colEc = (document.getElementById('collection-eircode')?.value
-                || document.getElementById('collection-eircode-other')?.value || '').toUpperCase();
-            var recEc = (document.getElementById('recipient-eircode')?.value || '').toUpperCase();
-            var motorbike = (getZoneFromPostcode(colEc) === 'zone2' || getZoneFromPostcode(recEc) === 'zone2');
             var optBox = document.getElementById('opt-box');
             if (!optBox) return;
-            optBox.style.display = motorbike ? 'none' : '';
+            optBox.style.display = '';
             var grid = optBox.parentElement;
-            if (grid) grid.style.gridTemplateColumns = motorbike ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)';
-            if (motorbike) {
-                var boxR = document.querySelector('input[name="item-type"][value="box"]');
-                if (boxR && boxR.checked) {
-                    var pk = document.querySelector('input[name="item-type"][value="package"]');
-                    if (pk) { pk.checked = true; if (typeof updateItemPrice === 'function') updateItemPrice(); }
-                }
-            }
+            if (grid) grid.style.gridTemplateColumns = 'repeat(3, 1fr)';
         }
 
         var SIZE_LIMITS = {
@@ -1926,24 +1922,12 @@
             var chargeable = Math.max(kg, volWeight);
             window.__chargeableKg = chargeable;
 
-            // Which carrier does this route use? A job that both collects AND delivers
-            // in the City Centre (D1–D8) goes by cargo bike, which carries much more.
-            var colEc = (document.getElementById('collection-eircode') || {}).value
-                || (document.getElementById('collection-eircode-other') || {}).value || '';
-            var recEc = (document.getElementById('recipient-eircode') || {}).value || '';
-            // Cargo bike unless the route is KNOWN to touch Greater Dublin (D9–D24).
-            // (Optimistic: a blank/unrecognised Eircode keeps the larger capacity.)
-            var motorbikeRoute = (getZoneFromPostcode(colEc.toUpperCase()) === 'zone2'
-                || getZoneFromPostcode(recEc.toUpperCase()) === 'zone2');
-            var cargoBike = !motorbikeRoute;
-
-            // Capacity caps per tier. The Box tier expands on a cargo-bike route.
+            // One universal capacity for every route — a "yes" is always a yes,
+            // regardless of where it's going.
             var CAPS = {
-                small:   { maxLong: 35,  maxSide: 25, kg: 1,  vcap: 15000 },
-                package: { maxLong: 60,  maxSide: 60, kg: 2,  vcap: 31500 },
-                box: cargoBike
-                    ? { maxLong: 100, maxSide: 60, kg: 30, vcap: 360000 }
-                    : { maxLong: 60,  maxSide: 40, kg: 10, vcap: 96000 }
+                small:   { maxLong: 35, maxSide: 25, kg: 1,  vcap: 15000 },
+                package: { maxLong: 60, maxSide: 60, kg: 2,  vcap: 31500 },
+                box:     { maxLong: 60, maxSide: 40, kg: 10, vcap: 96000 }
             };
             function fitsCap(cap) {
                 var d = [l, w, h].slice().sort(function (a, b) { return b - a; });
@@ -1955,7 +1939,7 @@
             }
 
             // Which tier will we charge? An item too big for its tier but still
-            // fitting the next one up (for this carrier) is auto-upgraded.
+            // fitting the next one up is auto-upgraded.
             var order = ['small', 'package', 'box'];
             var startIdx = Math.max(0, order.indexOf(t));
             var effective = t, upgraded = false, fits = false;
@@ -1975,9 +1959,7 @@
             ['dim-l', 'dim-w', 'dim-h', 'dim-kg'].forEach(function (id) { document.getElementById(id).classList.toggle('over', !fits); });
             ['val-l', 'val-w', 'val-h', 'val-kg'].forEach(function (id) { document.getElementById(id).classList.toggle('over', !fits); });
 
-            var carrierTxt = cargoBike
-                ? 'Cargo-bike route \u00b7 fits up to 100\u00d760\u00d760 cm, 30 kg'
-                : 'Motorbike route \u00b7 fits up to 60\u00d740\u00d740 cm, 10 kg';
+            var carrierTxt = 'Fits any Molli route \u00b7 up to 60\u00d740\u00d740 cm, 10 kg';
             var volEl = document.getElementById('vol-line');
             if (volEl) {
                 volEl.innerHTML = '<span style="color:#7FE001;font-weight:700">' + carrierTxt + '</span>';
@@ -2000,7 +1982,7 @@
                 if (d[1] > cap.maxSide || d[2] > cap.maxSide) reasons.push('over ' + cap.maxSide + ' cm on a side');
                 if (kg > cap.kg) reasons.push('over ' + cap.kg + ' kg');
                 if (vol > cap.vcap + 1) reasons.push('too bulky');
-                v.textContent = '\u2717 Too big for the ' + (cargoBike ? 'cargo bike' : 'motorbike') + ' \u2014 '
+                v.textContent = '\u2717 Too big for a bike run \u2014 '
                     + reasons.join('; ') + '. Please split it into smaller parcels.';
             }
             // Refresh price against the effective (possibly upgraded) tier

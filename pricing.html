@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CityPost — Pricing</title>
+  <title>Molli — Pricing</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#0a0a0a" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -53,6 +55,9 @@
     .opt.on .tag { color: var(--accent); }
     .opt.size .tag { margin-top: 6px; font-size: 14px; }
     .addons { display: flex; flex-direction: column; gap: 8px; }
+    #box-kg { -webkit-appearance: none; appearance: none; height: 6px; border-radius: 3px; background: var(--panel2); outline: none; cursor: pointer; }
+    #box-kg::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); cursor: pointer; border: 3px solid var(--bg); box-shadow: 0 0 0 1px var(--line); }
+    #box-kg::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--accent); cursor: pointer; border: 3px solid var(--bg); }
     .addon { all: unset; display: block; cursor: pointer; padding: 14px 18px; border-radius: 12px; background: var(--bg); border: 1.5px solid var(--line); transition: all .15s ease; }
     .addon.on { background: var(--accent-tint); border-color: var(--accent); }
     .addon .grid { display: grid; grid-template-columns: 24px 1fr auto; gap: 14px; align-items: center; }
@@ -111,11 +116,11 @@
   <header class="topbar">
     <a class="logo" href="index.html">
       <span class="logo-mark"><span>&rsaquo;</span></span>
-      <span class="logo-word">CityPost</span>
+      <span class="logo-word">Molli</span>
     </a>
     <nav class="topnav">
       <a href="pricing.html" class="active">Pricing</a>
-      <a href="pricing.html#business">Business</a>
+      <a href="business.html">Business</a>
       <a href="account.html">Track</a>
       <a href="pricing.html#faqs">Help</a>
     </nav>
@@ -130,7 +135,7 @@
     <div class="eyebrow">Pricing</div>
     <div class="from">Parcels across Dublin from</div>
     <h1>&euro;7.99</h1>
-    <p>That's a letter, collected from your door today and delivered the next working day. Bigger parcel or extra services? Build your price below.</p>
+    <p>That's a small parcel, collected on the next run and delivered <b>the same day</b> when you order by 2pm. Bigger parcel or extra services? Build your price below.</p>
   </section>
 
   <!-- CALCULATOR -->
@@ -165,12 +170,20 @@
 
         <div class="group-cap" style="margin-top:22px">Item size</div>
         <div class="opt-row-3" id="sizes"></div>
+        <div id="box-weight" style="display:none; margin: -6px 0 18px; padding: 14px 16px; background: var(--bg); border: 1px solid var(--line); border-radius: 12px;">
+          <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:9px;">
+            <label style="font-size:12px; color:var(--soft); font-weight:600;">Box weight (chargeable)</label>
+            <span id="box-kg-val" style="font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--accent);">1 kg</span>
+          </div>
+          <input type="range" id="box-kg" min="1" max="30" value="1" step="1" style="width:100%;">
+          <div style="font-size:11px; color:var(--muted); margin-top:8px; line-height:1.5;">Heavier or bulkier boxes step up in price — as long as it fits the box, we’ll carry it.</div>
+        </div>
 
         <div class="group-cap">Delivery zone</div>
         <div class="opt-row-2" id="zones"></div>
 
-        <div class="group-cap">Delivery window</div>
-        <div class="opt-row-2" id="windows"></div>
+        <div class="group-cap">Delivery</div>
+        <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 18px; font-size: 13px; color: var(--soft); line-height: 1.5;"><b style="color:var(--accent)">Same-day included.</b> Order by 2pm and it's delivered today; after 2pm, before 1pm tomorrow. Same flat price either way.</div>
 
         <div class="group-cap">Optional add-ons</div>
         <div class="addons" id="addons"></div>
@@ -228,30 +241,34 @@
   <!-- FOOTER -->
   <footer class="footer">
     <div>
-      <a class="logo" href="index.html"><span class="logo-mark"><span>&rsaquo;</span></span><span class="logo-word">CityPost</span></a>
-      <div class="tag">We collect today. We deliver tomorrow.</div>
+      <a class="logo" href="index.html"><span class="logo-mark"><span>&rsaquo;</span></span><span class="logo-word">Molli</span></a>
+      <div class="tag">molli.ie · Dublin's same-day parcel network</div>
     </div>
     <div class="col"><div class="col-title">Send</div><a href="booking.html">Parcels</a><a href="booking.html">Documents</a><a href="booking.html">Same-day</a><a href="pricing.html">Bulk &amp; API</a></div>
     <div class="col"><div class="col-title">Business</div><a href="pricing.html">Account pricing</a><a href="pricing.html">API &amp; integrations</a><a href="pricing.html">Case studies</a><a href="pricing.html">Contact sales</a></div>
     <div class="col"><div class="col-title">Company</div><a href="#">About</a><a href="#">Jobs</a><a href="#">Sustainability</a><a href="#">Press</a></div>
     <div class="col"><div class="col-title">Help</div><a href="account.html">Track a parcel</a><a href="pricing.html">Pricing</a><a href="#">Contact</a><a href="pricing.html">FAQ</a></div>
   </footer>
-  <div class="legal">&copy; 2026 CityPost Logistics Ltd. &middot; 23 Sir John Rogerson's Quay, Dublin 2 &middot; CRO 612 884</div>
+  <div class="legal">&copy; 2026 Molli Logistics Ltd. &middot; 23 Sir John Rogerson's Quay, Dublin 2 &middot; CRO 612 884</div>
 
   <script>
     var SIZES = [
-      { id: 'letter',  label: 'Letter',  blurb: 'Max 500g · A4 size',     price: 7.99 },
-      { id: 'package', label: 'Package', blurb: 'Max 2kg · 45×35×20cm',   price: 8.99 },
-      { id: 'box',     label: 'Box',     blurb: 'Max 10kg · 60×40×40cm',  price: 9.99 }
+      { id: 'small',   label: 'Small parcel', blurb: 'Perfume box, phone · Max 1kg', price: 7.99 },
+      { id: 'package', label: 'Parcel',  blurb: 'Shoebox, a book · Max 2kg',   price: 8.99 },
+      { id: 'box',     label: 'Box',     blurb: 'Wine case, hamper · up to 30kg', price: 9.99 }
     ];
-    var ZONE2_FEE = 2.00, AM_FEE = 4.99;
+    var ZONE2_FEE = 2.00;
+    // Box: stepped by chargeable weight — €9.99 base, +€1 per 2 kg, up to €24.99 at 30 kg.
+    function boxBasePrice(kg) {
+      return 9.99 + Math.min(15, Math.floor(kg / 2));
+    }
     var ADDONS = [
       { id: 'signature', label: 'Signature required',   blurb: 'Recipient signs on delivery', price: 1.99 },
       { id: 'photo',     label: 'Photo proof',          blurb: 'Delivery photo sent to you',  price: 0.99 },
       { id: 'insure',    label: 'Additional insurance', blurb: 'Cover up to €500',            price: 4.99 }
     ];
 
-    var state = { size: 'letter', zone2: false, am: false, selected: [] };
+    var state = { size: 'small', zone2: false, am: false, selected: [], boxKg: 1 };
 
     function money(n) { return '€' + n.toFixed(2); }
 
@@ -263,10 +280,22 @@
         var on = state.size === sz.id;
         var b = document.createElement('button');
         b.className = 'opt size' + (on ? ' on' : '');
-        b.innerHTML = '<div class="t">' + sz.label + '</div><div class="s">' + sz.blurb + '</div><div class="tag">' + money(sz.price) + '</div>';
+        var tag = sz.id === 'box' ? 'from ' + money(sz.price) : money(sz.price);
+        b.innerHTML = '<div class="t">' + sz.label + '</div><div class="s">' + sz.blurb + '</div><div class="tag">' + tag + '</div>';
         b.onclick = function () { state.size = sz.id; render(); };
         sizesEl.appendChild(b);
       });
+
+      // Box weight slider (only for Box)
+      var bw = document.getElementById('box-weight');
+      bw.style.display = state.size === 'box' ? 'block' : 'none';
+      var kgInput = document.getElementById('box-kg');
+      if (kgInput && !kgInput.__wired) {
+        kgInput.addEventListener('input', function () { state.boxKg = parseInt(this.value, 10); render(); });
+        kgInput.__wired = true;
+      }
+      if (kgInput) kgInput.value = state.boxKg;
+      document.getElementById('box-kg-val').textContent = state.boxKg + ' kg';
 
       // Zones
       var zonesEl = document.getElementById('zones');
@@ -281,21 +310,6 @@
         b.innerHTML = '<div><div class="t">' + opt.label + '</div><div class="s">' + opt.sub + '</div></div><span class="tag">' + opt.tag + '</span>';
         b.onclick = function () { state.zone2 = opt.z; render(); };
         zonesEl.appendChild(b);
-      });
-
-      // Windows
-      var winEl = document.getElementById('windows');
-      winEl.innerHTML = '';
-      [
-        { a: false, label: 'Anytime', sub: 'Next working day', tag: 'Included' },
-        { a: true,  label: 'Before 1pm', sub: 'Next working day', tag: '+' + money(AM_FEE) }
-      ].forEach(function (opt) {
-        var on = state.am === opt.a;
-        var b = document.createElement('button');
-        b.className = 'opt' + (on ? ' on' : '');
-        b.innerHTML = '<div><div class="t">' + opt.label + '</div><div class="s">' + opt.sub + '</div></div><span class="tag">' + opt.tag + '</span>';
-        b.onclick = function () { state.am = opt.a; render(); };
-        winEl.appendChild(b);
       });
 
       // Add-ons
@@ -316,10 +330,10 @@
 
       // Totals
       var sizeObj = SIZES.filter(function (x) { return x.id === state.size; })[0] || SIZES[0];
-      var base = sizeObj.price;
+      var base = state.size === 'box' ? boxBasePrice(state.boxKg) : sizeObj.price;
       var extrasArr = ADDONS.filter(function (a) { return state.selected.indexOf(a.id) > -1; });
       var extras = extrasArr.reduce(function (s, a) { return s + a.price; }, 0)
-        + (state.zone2 ? ZONE2_FEE : 0) + (state.am ? AM_FEE : 0);
+        + (state.zone2 ? ZONE2_FEE : 0);
       var total = base + extras;
 
       document.getElementById('big-total').textContent = money(total);
@@ -327,9 +341,9 @@
       strike.textContent = money(base);
       strike.classList.toggle('show', extras > 0);
 
-      var ledger = '<div class="row"><span>Base · ' + sizeObj.label + '</span><span class="amt">' + money(base) + '</span></div>';
+      var baseLabel = state.size === 'box' ? 'Base · Box (' + state.boxKg + ' kg)' : 'Base · ' + sizeObj.label;
+      var ledger = '<div class="row"><span>' + baseLabel + '</span><span class="amt">' + money(base) + '</span></div>';
       if (state.zone2) ledger += '<div class="row"><span>+ Greater Dublin (D9–D24)</span><span class="amt accent">' + money(ZONE2_FEE) + '</span></div>';
-      if (state.am) ledger += '<div class="row"><span>+ Before 1pm delivery</span><span class="amt accent">' + money(AM_FEE) + '</span></div>';
       extrasArr.forEach(function (a) {
         ledger += '<div class="row"><span>+ ' + a.label + '</span><span class="amt accent">' + money(a.price) + '</span></div>';
       });
@@ -344,7 +358,7 @@
     (function () {
       var faqs = [
         { q: 'Do I need to drop it at a post office?', a: 'No — that\u2019s the whole point. We collect from your door. Book before 2pm and a courier is with you this afternoon. No queues, no ID, no paperwork.' },
-        { q: 'How is "next-day" defined?', a: 'Book before 2pm — we collect today and deliver the next working day, anywhere in Dublin\u2019s 24 postal codes. Need it before 1pm? Add it for €4.99.' },
+        { q: 'How does same-day work?', a: 'We run two collection waves a day. Order by 2pm and it\u2019s collected and delivered the same day, anywhere in Dublin\u2019s 24 postal codes. Order after 2pm and it\u2019s there before 1pm the next day \u2014 same flat price either way.' },
         { q: 'What if I send 10+ a week?', a: 'Open a Business account — same per-parcel pricing, plus invoicing, API, CSV bulk-booking, and a named contact. No subscription.' },
         { q: 'What can\u2019t I send?', a: 'Hazardous goods, restricted items, anything heavier than 8kg, or anything that won\u2019t fit in a 60×40×40cm box.' },
         { q: 'How does the signed-for option work?', a: 'Add Signature required for €1.99 — we capture the recipient\u2019s signature on delivery alongside the photo. No trip to the post office required.' },

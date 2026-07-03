@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Same-day at checkout — Molli for Shopify &amp; WooCommerce</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .in-hero { max-width: 1080px; margin: 0 auto; padding: 56px 40px 20px; }
+    .in-hero h1 { font-size: 52px; line-height: 1.02; letter-spacing: -0.03em; font-weight: 800; margin: 16px 0 16px; max-width: 760px; }
+    .in-hero .lead { font-size: 18px; color: var(--soft); max-width: 600px; line-height: 1.55; font-weight: 600; }
+    .plat-row { display: flex; align-items: center; gap: 22px; margin-top: 24px; flex-wrap: wrap; }
+    .plat-row .lbl { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+    .plat-row .p { font-size: 15px; font-weight: 700; color: var(--soft); letter-spacing: -0.01em; }
+
+    .in-grid { max-width: 1080px; margin: 0 auto; padding: 32px 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }
+    .demo-card { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 26px; }
+    .demo-card h3 { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--soft); font-weight: 600; margin-bottom: 8px; }
+    .demo-card p.note { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+    /* mock checkout */
+    .checkout { background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); color: #14210a; }
+    .co-bar { background: #14210a; color: #fff; padding: 12px 18px; font-size: 13px; font-weight: 600; letter-spacing: .04em; display: flex; justify-content: space-between; align-items: center; }
+    .co-bar .step { font-size: 11px; opacity: .65; letter-spacing: .08em; text-transform: uppercase; }
+    .co-body { padding: 20px; }
+    .co-body .h { font-size: 13px; font-weight: 700; color: #14210a; margin-bottom: 12px; letter-spacing: .02em; }
+    .ship-opt { display: flex; align-items: center; gap: 12px; border: 1px solid #dbe4cd; border-radius: 11px; padding: 13px 15px; margin-bottom: 10px; cursor: pointer; }
+    .ship-opt.on { border-color: #3f7a12; background: #f3f8ec; box-shadow: 0 0 0 1px #3f7a12; }
+    .ship-opt .radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #b7c4a4; flex: none; position: relative; }
+    .ship-opt.on .radio { border-color: #3f7a12; }
+    .ship-opt.on .radio::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: #3f7a12; }
+    .ship-opt .so-main { font-size: 14px; font-weight: 700; }
+    .ship-opt .so-sub { font-size: 12px; color: #5f7050; margin-top: 2px; }
+    .ship-opt .so-price { margin-left: auto; font-family: var(--font-mono); font-size: 15px; font-weight: 700; }
+    .ship-opt.molli { position: relative; }
+    .ship-opt.molli .brand { display: inline-flex; align-items: center; gap: 6px; }
+    .ship-opt.molli .m-badge { font-size: 9px; font-weight: 800; letter-spacing: .1em; background: #14210a; color: #9CFF2E; padding: 2px 6px; border-radius: 5px; }
+    .ship-opt .cd { font-family: var(--font-mono); color: #3f7a12; font-weight: 700; }
+    .co-total { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e4ebd8; margin-top: 8px; padding-top: 14px; font-weight: 700; }
+    .co-total .amt { font-family: var(--font-mono); font-size: 18px; }
+    .co-pay { width: 100%; background: #14210a; color: #fff; border: none; border-radius: 10px; padding: 13px; font-family: var(--font-sans); font-weight: 600; font-size: 14px; cursor: pointer; margin-top: 14px; }
+
+    /* connect panel */
+    .conn .field { margin-bottom: 16px; }
+    .conn label { display: block; font-size: 13px; font-weight: 600; color: var(--soft); margin-bottom: 7px; }
+    .conn input { width: 100%; background: var(--panel2); border: 1px solid var(--line); color: var(--ink); font-family: var(--font-mono); font-size: 14px; padding: 12px 14px; border-radius: 10px; outline: none; }
+    .conn input:focus { border-color: var(--accent); }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 13px 0; border-bottom: 1px solid var(--line); }
+    .toggle-row:last-of-type { border-bottom: none; }
+    .toggle-row .tl { font-size: 14px; font-weight: 600; }
+    .toggle-row .ts { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .sw { width: 42px; height: 24px; border-radius: 999px; background: var(--line); position: relative; cursor: pointer; flex: none; transition: .16s; }
+    .sw::after { content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: .16s; }
+    .sw.on { background: var(--accent); }
+    .sw.on::after { transform: translateX(18px); }
+    .addr-switch { display: inline-flex; gap: 4px; background: var(--panel2); border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+    .as-btn { font-family: inherit; font-size: 11.5px; font-weight: 600; letter-spacing: .01em; color: var(--soft); background: none; border: none; padding: 4px 12px; border-radius: 999px; cursor: pointer; transition: .14s; }
+    .as-btn.on { background: var(--accent); color: #0a0a0a; }
+    .ship-opt.hidden { display: none; }
+    .so-price.free { color: var(--accent); }
+    .so-price .was { color: var(--muted); text-decoration: line-through; font-size: .8em; margin-right: 6px; }
+    .co-fallback { display: none; font-size: 13px; color: var(--soft); background: var(--panel2); border: 1px dashed var(--line-strong); border-radius: 10px; padding: 12px 14px; margin: 4px 0 2px; }
+    .co-fallback.show { display: block; }
+    .conn-status { display: flex; align-items: center; gap: 10px; background: var(--accent-tint); border: 1px solid rgba(156,255,46,.3); border-radius: 11px; padding: 13px 15px; margin-top: 18px; font-size: 13.5px; color: var(--ink); }
+    .conn-status .live { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px rgba(156,255,46,.8); flex: none; }
+    .conn-status b { color: var(--accent); }
+
+    /* how it works */
+    .how { max-width: 1080px; margin: 0 auto; padding: 12px 40px 24px; }
+    .how h2 { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; }
+    .how .sub { font-size: 15px; color: var(--soft); margin-bottom: 26px; }
+    .flow { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+    .flow .step { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
+    .flow .step .n { font-family: var(--font-mono); font-size: 13px; color: var(--accent); font-weight: 700; }
+    .flow .step h4 { font-size: 15px; font-weight: 600; margin: 10px 0 6px; letter-spacing: -0.01em; }
+    .flow .step p { font-size: 13px; color: var(--soft); line-height: 1.5; }
+
+    .rules { max-width: 1080px; margin: 0 auto; padding: 20px 40px 60px; }
+    .rules-card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 6px 26px; }
+    .rule { display: flex; gap: 14px; align-items: flex-start; padding: 18px 0; border-bottom: 1px solid var(--line); }
+    .rule:last-child { border-bottom: none; }
+    .rule .ic { width: 34px; height: 34px; border-radius: 9px; background: var(--accent-tint); display: flex; align-items: center; justify-content: center; flex: none; color: var(--accent); }
+    .rule .t { font-size: 14.5px; font-weight: 600; }
+    .rule .d { font-size: 13.5px; color: var(--soft); margin-top: 3px; line-height: 1.5; }
+
+    @media (max-width: 880px) {
+      .in-hero { padding: 40px 20px 12px; } .in-hero h1 { font-size: 36px; }
+      .in-grid, .how, .rules { padding-left: 20px; padding-right: 20px; }
+      .in-grid { grid-template-columns: 1fr; } .flow { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="logo" href="index.html">
+      <span class="logo-mark"><span>&rsaquo;</span></span>
+      <span class="logo-word">m<span class="o-wheel"></span>lli</span>
+    </a>
+    <nav class="topnav">
+      <a href="business.html">For retailers</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="zones.html">Coverage</a>
+      <a href="fit.html">Fit finder</a>
+      <a href="pricing.html#faqs">Help</a>
+    </nav>
+    <div class="topbar-cta">
+      <a class="signin" href="account.html">Sign in</a>
+      <a class="btn btn--accent btn--sm" href="business.html">Create business account &rarr;</a>
+    </div>
+  </header>
+
+  <section class="in-hero">
+    <span class="pill"><span class="dot"></span> Store integration</span>
+    <h1>Same-day, right there at checkout.</h1>
+    <p class="lead">Connect your store and Molli shows up as a live shipping rate — priced by the customer's Eircode, with a countdown that tells them exactly when it'll arrive. They pick it, you get the order, we collect today.</p>
+    <div class="plat-row">
+      <span class="lbl">Works with</span>
+      <span class="p">Shopify</span>
+      <span class="p">WooCommerce</span>
+      <span class="p">Squarespace</span>
+      <span class="p">Custom · API</span>
+    </div>
+  </section>
+
+  <div class="in-grid">
+    <!-- LIVE CHECKOUT PREVIEW -->
+    <div class="demo-card">
+      <h3>At the checkout · live preview</h3>
+      <p class="note">Molli appears alongside your other rates, priced for this customer's address.</p>
+      <div class="checkout">
+        <div class="co-bar"><span>GRÁ · Checkout</span><span class="step">Shipping</span></div>
+        <div class="co-body">
+          <div class="h" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+            <span>Delivering to <span id="co-addr">D06 XY21 · Rathmines</span></span>
+            <div class="addr-switch">
+              <button type="button" class="as-btn on" data-addr="in">Inside</button>
+              <button type="button" class="as-btn" data-addr="out">Outside</button>
+            </div>
+          </div>
+
+          <div class="ship-opt" data-price="4.50" data-label="Standard post">
+            <span class="radio"></span>
+            <div><div class="so-main">Standard post</div><div class="so-sub">2–3 working days</div></div>
+            <span class="so-price">€4.50</span>
+          </div>
+
+          <div class="ship-opt molli on" id="opt-sameday" data-price="7.99" data-label="Molli same-day">
+            <span class="radio"></span>
+            <div>
+              <div class="so-main brand">Molli <span class="m-badge">SAME-DAY</span></div>
+              <div class="so-sub">Order within <span class="cd" id="co-cd">02:14:00</span> — arrives tonight by 6pm</div>
+            </div>
+            <span class="so-price" id="sameday-price">€7.99</span>
+          </div>
+
+          <div class="ship-opt molli" id="opt-nextam" data-price="7.99" data-label="Molli next-morning">
+            <span class="radio"></span>
+            <div>
+              <div class="so-main brand">Molli <span class="m-badge">NEXT-AM</span></div>
+              <div class="so-sub">Collected today — delivered by 1pm tomorrow</div>
+            </div>
+            <span class="so-price">€7.99</span>
+          </div>
+
+          <div class="ship-opt" data-price="6.95" data-label="Next-day courier">
+            <span class="radio"></span>
+            <div><div class="so-main">Next-day courier</div><div class="so-sub">Tomorrow, all-day window</div></div>
+            <span class="so-price">€6.95</span>
+          </div>
+
+          <div class="co-fallback" id="co-fallback">Outside Molli's area — the customer sees your standard rates only.</div>
+
+          <div class="co-total"><span>Total</span><span class="amt" id="co-total">€75.99</span></div>
+          <button class="co-pay">Pay now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECT PANEL -->
+    <div class="demo-card conn">
+      <h3>Connect your store · 2 minutes</h3>
+      <p class="note">Paste your store URL and set the rules. No developer needed.</p>
+      <div class="field">
+        <label>Store URL</label>
+        <input type="text" value="gra-dublin.myshopify.com" />
+      </div>
+
+      <div class="toggle-row">
+        <div><div class="tl">Show same-day rate</div><div class="ts">Only when the cart fits and it's before cut-off</div></div>
+        <div class="sw on" id="sw-sameday" data-sw></div>
+      </div>
+      <div class="toggle-row">
+        <div><div class="tl">Show next-morning rate</div><div class="ts">After the 2pm same-day cut-off</div></div>
+        <div class="sw on" id="sw-nextam" data-sw></div>
+      </div>
+      <div class="toggle-row">
+        <div><div class="tl">Hide when outside our area</div><div class="ts">Falls back to your other rates for non-Dublin addresses</div></div>
+        <div class="sw on" id="sw-hide" data-sw></div>
+      </div>
+      <div class="toggle-row">
+        <div><div class="tl">Free same-day over €50</div><div class="ts">We invoice you the rate; the customer sees €0</div></div>
+        <div class="sw" id="sw-free" data-sw></div>
+      </div>
+
+      <div class="conn-status"><span class="live"></span> <span><b>Connected.</b> Molli rates are live at your checkout.</span></div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="how">
+    <h2>How the rate is worked out</h2>
+    <p class="sub">Every quote is real-time — no flat guesses, no surprises at collection.</p>
+    <div class="flow">
+      <div class="step"><div class="n">01</div><h4>Read the address</h4><p>At checkout we take the delivery Eircode and find the zone — city centre or greater Dublin.</p></div>
+      <div class="step"><div class="n">02</div><h4>Check the cart</h4><p>Weight and size are matched against what a bike or van can carry. Too big? The rate quietly hides.</p></div>
+      <div class="step"><div class="n">03</div><h4>Check the clock</h4><p>Before 2pm shows same-day; after 2pm shows next-morning by 1pm. Weekends handled automatically.</p></div>
+      <div class="step"><div class="n">04</div><h4>Return the price</h4><p>The exact rate lands in the customer's shipping list in under a second — the same price you'd pay us.</p></div>
+    </div>
+  </div>
+
+  <!-- RULES / TRUST -->
+  <div class="rules">
+    <div class="rules-card">
+      <div class="rule">
+        <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <div><div class="t">Orders flow straight into Molli</div><div class="d">When a customer picks the Molli rate, the order lands in your dashboard ready to collect — no re-keying, no CSV.</div></div>
+      </div>
+      <div class="rule">
+        <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg></div>
+        <div><div class="t">Billed to your credit pack</div><div class="d">Shipping is drawn from your Molli balance, not charged transaction-by-transaction. Auto top-up keeps it running.</div></div>
+      </div>
+      <div class="rule">
+        <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div><div class="t">Your brand, start to finish</div><div class="d">Tracking, the five-minute text and the doorstep photo all go out under your shop's name — not ours.</div></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:26px;">
+      <a class="btn btn--accent btn--md" href="business.html">Create a business account &rarr;</a>
+      <a class="btn btn--ghost btn--md" href="bulk.html">Prefer to bulk-book? &rarr;</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div>
+      <a class="logo" href="index.html"><span class="logo-mark"><span>&rsaquo;</span></span><span class="logo-word">m<span class="o-wheel"></span>lli</span></a>
+      <div class="tag">molli.ie · Dublin's same-day parcel network<br /><span style="color:var(--muted)">Through streets broad &amp; narrow.</span></div>
+    </div>
+    <div class="col"><div class="col-title">Service</div><a href="pricing.html">Pricing</a><a href="zones.html">Coverage</a><a href="fit.html">Fit finder</a><a href="booking.html">Book</a></div>
+    <div class="col"><div class="col-title">Retailers</div><a href="business.html">For retailers</a><a href="bulk.html">Bulk booking</a><a href="integrations.html">Store integration</a><a href="badge.html">Cut-off badge</a></div>
+    <div class="col"><div class="col-title">Account</div><a href="account.html">Sign in</a><a href="track.html">Track a delivery</a><a href="returns.html">Returns</a></div>
+    <div class="col"><div class="col-title">Company</div><a href="index.html#name">The name</a><a href="pricing.html#faqs">Help</a></div>
+  </footer>
+  <div class="legal">© 2026 Molli · molli.ie · Dublin, Ireland</div>
+
+  <script>
+    (function () {
+      var ITEMS = 68.00;
+      var totalEl   = document.getElementById('co-total');
+      var addrEl    = document.getElementById('co-addr');
+      var fallback  = document.getElementById('co-fallback');
+      var optSame   = document.getElementById('opt-sameday');
+      var optNext   = document.getElementById('opt-nextam');
+      var samePrice = document.getElementById('sameday-price');
+      var swSame = document.getElementById('sw-sameday');
+      var swNext = document.getElementById('sw-nextam');
+      var swHide = document.getElementById('sw-hide');
+      var swFree = document.getElementById('sw-free');
+      var addrIn = true; // inside zone by default
+
+      function on(el){ return el.classList.contains('on'); }
+
+      function render() {
+        addrEl.textContent = addrIn ? 'D06 XY21 · Rathmines' : 'K67 F1P0 · Rush, Co. Dublin';
+
+        // Is the customer reachable by Molli? Outside + hide-rule => no Molli rates.
+        var reachable = addrIn || !on(swHide);
+
+        // Same-day free-over-€50 pricing (cart is €68)
+        var samdayVal = on(swFree) && ITEMS > 50 ? 0 : 7.99;
+        optSame.setAttribute('data-price', samdayVal.toFixed(2));
+        if (samdayVal === 0) {
+          samePrice.classList.add('free');
+          samePrice.innerHTML = '<span class="was">€7.99</span>FREE';
+        } else {
+          samePrice.classList.remove('free');
+          samePrice.textContent = '€7.99';
+        }
+
+        var showSame = reachable && on(swSame);
+        var showNext = reachable && on(swNext);
+        optSame.classList.toggle('hidden', !showSame);
+        optNext.classList.toggle('hidden', !showNext);
+
+        // No Molli rate available at all → show fallback note
+        fallback.classList.toggle('show', !showSame && !showNext);
+
+        // Keep a valid selection: if the selected option is now hidden, fall to standard post
+        var sel = document.querySelector('.ship-opt.on');
+        if (!sel || sel.classList.contains('hidden')) {
+          document.querySelectorAll('.ship-opt').forEach(function (x) { x.classList.remove('on'); });
+          var std = document.querySelector('.ship-opt[data-label="Standard post"]');
+          if (std) std.classList.add('on');
+        }
+        setTotal();
+      }
+
+      function setTotal() {
+        var sel = document.querySelector('.ship-opt.on:not(.hidden)');
+        var ship = sel ? parseFloat(sel.getAttribute('data-price')) : 0;
+        totalEl.textContent = '€' + (ITEMS + ship).toFixed(2);
+      }
+
+      // shipping option selection
+      document.querySelectorAll('.ship-opt').forEach(function (o) {
+        o.addEventListener('click', function () {
+          if (o.classList.contains('hidden')) return;
+          document.querySelectorAll('.ship-opt').forEach(function (x) { x.classList.remove('on'); });
+          o.classList.add('on'); setTotal();
+        });
+      });
+
+      // toggles drive the preview
+      document.querySelectorAll('[data-sw]').forEach(function (sw) {
+        sw.addEventListener('click', function () { sw.classList.toggle('on'); render(); });
+      });
+
+      // address switch
+      document.querySelectorAll('.as-btn').forEach(function (b) {
+        b.addEventListener('click', function () {
+          document.querySelectorAll('.as-btn').forEach(function (x) { x.classList.remove('on'); });
+          b.classList.add('on');
+          addrIn = b.getAttribute('data-addr') === 'in';
+          render();
+        });
+      });
+
+      render();
+
+      // checkout countdown to 2pm
+      function pad(n){ return (n<10?'0':'')+n; }
+      function tick() {
+        var el = document.getElementById('co-cd'); if (!el) return;
+        var now = new Date(), t2 = new Date(now); t2.setHours(14,0,0,0);
+        var ms = t2 - now;
+        if (ms <= 0) { el.textContent = 'cut-off passed'; return; }
+        var h = Math.floor(ms/3600000), m = Math.floor((ms%3600000)/60000), s = Math.floor((ms%60000)/1000);
+        el.textContent = pad(h)+':'+pad(m)+':'+pad(s);
+      }
+      tick(); setInterval(tick, 1000);
+    })();
+  </script>
+</body>
+</html>

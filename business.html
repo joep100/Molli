@@ -15,6 +15,35 @@
     .biz-hero h1 { font-size: 88px; line-height: .92; letter-spacing: -0.04em; font-weight: 800; margin: 18px 0 22px; max-width: 900px; }
     .biz-hero .sub { font-size: 19px; color: var(--soft); max-width: 600px; line-height: 1.5; font-weight: 600; margin-bottom: 30px; }
     .biz-hero .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-demo-link { display: inline-block; margin-top: 20px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none; border-bottom: 1px solid var(--line); padding-bottom: 2px; transition: color .15s, border-color .15s; }
+    .hero-demo-link:hover { color: var(--accent); border-color: var(--accent); }
+
+    .seeit { display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
+    .seeit h2 { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; margin: 12px 0 16px; }
+    .seeit p { font-size: 16px; color: var(--soft); line-height: 1.6; margin-bottom: 24px; max-width: 460px; font-weight: 600; }
+    .seeit-steps { display: flex; flex-direction: column; gap: 10px; margin: 0 0 26px; }
+    .seeit-steps li { display: grid; grid-template-columns: 26px 1fr; gap: 12px; align-items: center; font-size: 15px; color: var(--ink); }
+    .seeit-steps .n { width: 26px; height: 26px; border-radius: 50%; background: rgba(156,255,46,.14); border: 1px solid rgba(156,255,46,.4); color: var(--accent); font-family: var(--font-mono); font-size: 12px; font-weight: 700; display: grid; place-items: center; }
+    .seeit-note { font-size: 12px; color: var(--muted); margin-left: 14px; }
+    .seeit-frame { display: block; text-decoration: none; color: inherit; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--panel); box-shadow: 0 24px 60px rgba(0,0,0,.4); transition: transform .18s, box-shadow .18s; }
+    .seeit-frame:hover { transform: translateY(-3px); box-shadow: 0 30px 70px rgba(0,0,0,.5); }
+    .seeit-bar { display: flex; align-items: center; gap: 10px; padding: 11px 14px; background: var(--bg); border-bottom: 1px solid var(--line); }
+    .seeit-lights { display: flex; gap: 5px; }
+    .seeit-lights span { width: 9px; height: 9px; border-radius: 50%; background: #3a3a3a; }
+    .seeit-addr { font-family: var(--font-mono); font-size: 12px; color: var(--soft); }
+    .seeit-addr b { color: var(--ink); }
+    .seeit-body { padding: 22px; }
+    .seeit-counter { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: .1em; margin-bottom: 10px; }
+    .seeit-body h3 { font-size: 20px; font-weight: 500; letter-spacing: -0.02em; margin: 0 0 4px; }
+    .seeit-body .sub { font-size: 13px; color: var(--soft); margin-bottom: 16px; }
+    .seeit-opt { display: flex; align-items: center; gap: 12px; padding: 13px 14px; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 8px; font-size: 14px; }
+    .seeit-opt .dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line); flex-shrink: 0; }
+    .seeit-opt.sel { border-color: var(--accent); background: rgba(156,255,46,.06); }
+    .seeit-opt.sel .dot { border-color: var(--accent); background: var(--accent); }
+    .seeit-opt .lbl { flex: 1; }
+    .seeit-opt .meta { font-family: var(--font-mono); color: var(--soft); }
+    .seeit-go { margin-top: 6px; background: var(--accent); color: #06140d; border-radius: 10px; padding: 12px; text-align: center; font-weight: 700; font-size: 14px; }
+    @media (max-width: 860px) { .seeit { grid-template-columns: 1fr; gap: 32px; } .seeit h2 { font-size: 32px; } }
 
     .why { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
     .why-card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 26px; }
@@ -146,6 +175,7 @@
         <a class="btn btn--ghost btn--md btn--block" href="#contact">Talk to us for volume</a>
       </div>
     </div>
+    <a class="hero-demo-link" href="demo.html">Or watch a booking in 30 seconds &rarr;</a>
   </section>
 
   <!-- STATS -->
@@ -190,6 +220,41 @@
         <h3>One dashboard, every parcel</h3>
         <p>Bulk-book the day's orders, track them all live, and see your spend at a glance. Your whole Dublin dispatch, in one screen.</p>
       </div>
+    </div>
+  </section>
+
+  <!-- SEE IT WORK -->
+  <section class="section divider-top" id="see-it-work">
+    <div class="seeit">
+      <div>
+        <div class="eyebrow">See it work</div>
+        <h2>Watch a booking,<br /><span class="accent">start to finish.</span></h2>
+        <p>No sign-up, nothing charged. Follow the guided flow and see exactly what your counter staff would do &mdash; a real same-day collection booked in under a minute.</p>
+        <ul class="seeit-steps">
+          <li><span class="n">1</span> Enter collection &amp; delivery addresses</li>
+          <li><span class="n">2</span> Check it fits and pick same-day or next-morning</li>
+          <li><span class="n">3</span> Confirm &mdash; we collect on the next run</li>
+        </ul>
+        <div class="cta-row">
+          <a class="btn btn--accent btn--md" href="demo.html">Watch the guided demo &rarr;</a>
+        </div>
+        <div class="seeit-note">Interactive &middot; 30 seconds &middot; nothing charged</div>
+      </div>
+      <a class="seeit-frame" href="demo.html">
+        <div class="seeit-bar">
+          <div class="seeit-lights"><span></span><span></span><span></span></div>
+          <div class="seeit-addr"><b>molli.ie</b>/book</div>
+        </div>
+        <div class="seeit-body">
+          <div class="seeit-counter">STEP 4 OF 7</div>
+          <h3>What are we sending?</h3>
+          <div class="sub">Choose your parcel size</div>
+          <div class="seeit-opt sel"><span class="dot"></span><span class="lbl">Small parcel</span><span class="meta">&euro;7.99</span></div>
+          <div class="seeit-opt"><span class="dot"></span><span class="lbl">Parcel</span><span class="meta">&euro;8.99</span></div>
+          <div class="seeit-opt"><span class="dot"></span><span class="lbl">Box</span><span class="meta">&euro;9.99</span></div>
+          <div class="seeit-go">Next</div>
+        </div>
+      </a>
     </div>
   </section>
 

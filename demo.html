@@ -264,6 +264,19 @@
         var btn = primaryBtn(pg.el);
         if (!btn) { hideGuide(); return; }
         var br = btn.getBoundingClientRect();
+        // If the button sits below (or above) the visible iframe fold, scroll
+        // the iframe content so it's comfortably in view, then re-read its rect.
+        // Instant scroll keeps the coords accurate for this same pass.
+        var stageH0 = guide.getBoundingClientRect().height;
+        if (br.bottom > stageH0 - 24 || br.top < 24) {
+          try {
+            var win = frame.contentWindow;
+            var cur = win.pageYOffset || (doc.scrollingElement || {}).scrollTop || 0;
+            var target = Math.max(0, cur + br.top - stageH0 * 0.38);
+            win.scrollTo(0, target);
+            br = btn.getBoundingClientRect();
+          } catch (e) {}
+        }
         // iframe viewport coords == guide overlay coords (both fill browser-stage)
         var ringPad = 6;
         ring.style.left   = (br.left - ringPad) + 'px';

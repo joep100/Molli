@@ -1,134 +1,837 @@
-/* Molli fit-core — shared sizing + cage logic.
-   One source of truth for the "will it fit?" tool and the booking Step 4.
-   Pure functions + a self-contained SVG cage renderer. No DOM assumptions
-   beyond the <svg> element you pass to drawGauge. */
-(function (root) {
-  var ACCENT = '#7FE001';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Molli — Same-day collection, next-day delivery across Dublin</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Home-specific layout */
+    .hero { padding: 56px 40px 40px; position: relative; overflow: hidden; }
+    .hero-map {
+      position: absolute; top: -10px; bottom: -10px; right: -40px; width: 680px;
+      pointer-events: none; overflow: hidden; opacity: .9;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000);
+      mask-image: linear-gradient(90deg, transparent, #000 14%, #000);
+    }
+    .hero-inner { position: relative; z-index: 1; }
+    .hero-top { display: grid; grid-template-columns: minmax(0, 1fr) 560px; gap: 48px; align-items: center; margin-bottom: 36px; }
+    .hero-board { position: relative; z-index: 1; min-width: 0; }
+    .hero-board .dep-board { max-width: none; }
+    .hero h1 {
+      font-size: 76px; line-height: .95; letter-spacing: -0.03em;
+      font-weight: 800; margin: 18px 0 22px;
+    }
+    .hero .blurb { font-size: 18px; color: var(--soft); max-width: 520px; margin: 0 0 20px; line-height: 1.5; font-weight: 600; }
+    /* Live cutoff countdown */
+    .cutoff {
+      display: inline-flex; align-items: center; gap: 12px;
+      background: rgba(var(--accent-rgb), .08); border: 1px solid rgba(var(--accent-rgb), .35);
+      border-radius: 12px; padding: 12px 16px; margin: 0 0 24px; max-width: 100%;
+    }
+    .cutoff .co-ic { width: 34px; height: 34px; flex: none; border-radius: 9px; background: rgba(var(--accent-rgb), .14);
+      display: flex; align-items: center; justify-content: center; }
+    .cutoff .co-body { min-width: 0; }
+    .cutoff .co-lead { font-size: 13px; color: var(--soft); font-weight: 600; letter-spacing: .01em; }
+    .cutoff .co-main { font-size: 16px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em; margin-top: 1px; }
+    .cutoff .co-clock { font-family: var(--font-mono); color: var(--accent); letter-spacing: -0.02em; }
+    .cutoff.closed { background: rgba(255,255,255,.04); border-color: var(--line); }
+    .cutoff.closed .co-ic { background: rgba(255,255,255,.06); }
+    .cutoff.closed .co-clock { color: var(--ink); }
+    .from-line { display: flex; align-items: baseline; gap: 12px; margin: 0; }
+    .from-line .lbl { font-size: 15px; color: var(--soft); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+    .from-line .price { font-family: var(--font-mono); font-size: 52px; font-weight: 700; color: var(--accent); letter-spacing: -0.05em; line-height: 1; }
+    .from-line .unit { font-size: 15px; color: var(--muted); }
 
-  // Flat base price per tier (Zone 1 / City Centre). Greater Dublin adds €2.
-  var PRICES = { small: 7.99, package: 8.99, box: 9.99 };
+    .booking-widget {
+      background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+      padding: 16px; display: grid; grid-template-columns: 1.2fr 1.2fr 1fr 1fr auto;
+      gap: 8px; align-items: stretch; max-width: 1100px;
+      box-shadow: 0 32px 80px -40px rgba(var(--accent-rgb), .4);
+    }
+    .bw-field { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; }
+    .bw-field .k { font-size: 10px; color: var(--soft); text-transform: uppercase; letter-spacing: .14em; font-weight: 600; }
+    .bw-field .v { font-size: 15px; font-weight: 600; margin-top: 4px; }
+    .bw-est { font-size: 12px; color: var(--soft); margin-top: 12px; font-family: var(--font-mono); }
 
-  var TIER_NAME = { small: 'Small', package: 'Medium', box: 'Large' };
+    .verticals { padding: 44px 40px; border-bottom: 1px solid var(--line); }
+    .vert-lead { font-size: 16px; color: var(--soft); max-width: 620px; margin: 12px 0 22px; line-height: 1.55; }
+    .vert-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .vert { font-size: 14px; font-weight: 500; color: var(--soft); border: 1px solid var(--line); border-radius: 999px; padding: 9px 16px; letter-spacing: -0.01em; }
+    .vert--hero { color: var(--ink); border-color: rgba(var(--accent-rgb), .45); background: rgba(var(--accent-rgb), .07); }
+    .trust { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 36px; flex-wrap: wrap; }
+    .trust .lbl { font-size: 11px; color: var(--muted); letter-spacing: .14em; text-transform: uppercase; font-weight: 600; }
+    .trust .name { font-size: 18px; font-weight: 500; color: var(--muted); letter-spacing: -0.01em; }
 
-  // Carrier envelope depends on the route. Zone 1 (city centre) runs on
-  // cargo bikes with a big box; Zone 2 (greater Dublin) is capped smaller.
-  // The three pricing tiers exist on both routes — Zone 1 just carries a
-  // larger max parcel across the board.
-  var ENVELOPE = {
-    zone1: { maxLong: 80, maxSide: 60, kg: 30, vcap: 288000, label: '80\u00d760\u00d760 cm, 30 kg', route: 'cargo bike' },
-    zone2: { maxLong: 40, maxSide: 30, kg: 8, vcap: 36000,  label: '40\u00d730\u00d730 cm, 8 kg', route: 'bike' }
-  };
-  function normZone(z) { return z === 'zone2' ? 'zone2' : 'zone1'; }
-  function envelope(zone) { return ENVELOPE[normZone(zone)]; }
-  function maxLabel(zone) { return ENVELOPE[normZone(zone)].label; }
+    /* ===== Live departures board ===== */
+    .dep-board { font-family: var(--font-mono); background: #0c0f0c; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; max-width: 1100px; margin: 0 auto; }
+    .dep-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 22px; background: rgba(var(--accent-rgb), .07); border-bottom: 1px solid var(--line); }
+    .dep-head .ttl { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 10px; }
+    .dep-head .ttl .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px rgba(var(--accent-rgb), .7); }
+    .dep-head .clk { font-size: 13px; color: var(--soft); letter-spacing: .12em; }
+    .dep-colhead, .dep-row { display: grid; grid-template-columns: 100px minmax(0,1fr) 158px; gap: 16px; padding: 9px 20px; align-items: center; }
+    .dep-colhead { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); }
+    .dep-row { padding: 13px 20px; border-bottom: 1px solid var(--line); perspective: 500px; }
+    .dep-row:last-child { border-bottom: none; }
+    .dep-row .cell { font-size: 14px; letter-spacing: .04em; }
+    .dep-row .code { color: var(--soft); font-size: 13px; }
+    .dep-row .dest { color: #fff; font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dep-row .eta { color: var(--soft); }
+    .dep-row .status { justify-self: start; padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 500; letter-spacing: .05em; white-space: nowrap; position: relative; transform-origin: center; }
+    .dep-row .status::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(0,0,0,.45); }
+    .s-collected, .s-enroute { background: rgba(var(--accent-rgb), .16); color: var(--accent); }
+    .s-out { background: var(--accent); color: #06140d; }
+    .s-delivered { background: rgba(255,255,255,.07); color: var(--soft); }
+    .dep-row .flip { animation: flap .5s ease; }
+    @keyframes flap { 0% { transform: rotateX(0deg); } 46% { transform: rotateX(-90deg); } 54% { transform: rotateX(90deg); } 100% { transform: rotateX(0deg); } }
 
-  function caps(zone) {
-    var box = envelope(zone);
-    return {
-      small:   { maxLong: 35, maxSide: 25, kg: 1,  vcap: 15000 },
-      package: { maxLong: 45, maxSide: 35, kg: 2,  vcap: 31500 },
-      box:     { maxLong: box.maxLong, maxSide: box.maxSide, kg: box.kg, vcap: box.vcap }
-    };
-  }
+    .stats { grid-template-columns: repeat(3, 1fr); }
 
-  function fitsCap(l, w, h, kg, cap) {
-    var d = [l, w, h].slice().sort(function (a, b) { return b - a; });
-    if (d[0] > cap.maxLong) return false;
-    if (d[1] > cap.maxSide || d[2] > cap.maxSide) return false;
-    if (kg > cap.kg) return false;
-    if (l * w * h > cap.vcap + 1) return false;
-    return true;
-  }
+    .usp h2 { font-size: 56px; font-weight: 800; letter-spacing: -0.03em; margin: 12px 0 0; line-height: .98; max-width: 880px; }
+    .usp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 32px; }
+    .usp-card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 26px; position: relative; }
+    .usp-card .k { font-size: 11px; color: var(--muted); font-weight: 500; letter-spacing: .14em; text-transform: uppercase; }
+    .usp-card h3 { font-size: 22px; font-weight: 500; color: var(--soft); letter-spacing: -0.01em; margin: 10px 0 16px; }
+    .usp-card.neg h3 { text-decoration: line-through; text-decoration-color: var(--muted); }
+    .usp-card ul li { font-size: 13px; color: var(--soft); line-height: 1.7; }
+    .usp-card.us { background: var(--accent); color: var(--bg); }
+    .usp-card.us .k { color: var(--bg); opacity: .8; }
+    .usp-card.us h3 { color: var(--bg); font-weight: 800; letter-spacing: -0.015em; margin: 10px 0 16px; text-decoration: none; line-height: 1.15; }
+    .usp-card.us ul li { font-size: 14px; color: var(--bg); line-height: 1.7; font-weight: 500; }
+    .us-badge { position: absolute; top: 18px; right: 18px; padding: 4px 10px; background: var(--bg); color: var(--accent); font-size: 10px; font-weight: 800; letter-spacing: .14em; border-radius: 4px; }
 
-  // Classify an item. startTier is the tier the customer picked; an item too
-  // big for it but fitting the next one up auto-upgrades (and is charged there).
-  function classify(l, w, h, kg, startTier, zone) {
-    var CAPS = caps(zone);
-    var order = ['small', 'package', 'box'];
-    var startIdx = Math.max(0, order.indexOf(startTier || 'small'));
-    var effective = startTier || 'small', upgraded = false, fits = false;
-    for (var ci = startIdx; ci < order.length; ci++) {
-      if (fitsCap(l, w, h, kg, CAPS[order[ci]])) {
-        fits = true; effective = order[ci]; upgraded = (ci > startIdx); break;
+    .how { display: grid; grid-template-columns: 1fr 380px; gap: 56px; }
+    .how h2 { font-size: 56px; line-height: 1; font-weight: 800; letter-spacing: -0.03em; margin: 14px 0 36px; }
+    .how h2 .sub { color: var(--soft); font-style: italic; font-weight: 500; }
+    .step { display: grid; grid-template-columns: 80px 1fr; gap: 24px; padding: 20px 0; border-top: 1px solid var(--line); align-items: baseline; }
+    .step .n { font-family: var(--font-mono); font-size: 32px; font-weight: 700; color: var(--accent); letter-spacing: -0.02em; }
+    .step .t { font-size: 24px; font-weight: 500; letter-spacing: -0.02em; }
+    .step .b { font-size: 15px; color: var(--soft); margin-top: 6px; line-height: 1.55; }
+    .quote-card { margin-top: 36px; padding: 28px; background: var(--panel); border-radius: 14px; border: 1px solid var(--line); position: relative; }
+    .quote-badge { position: absolute; top: -8px; left: 22px; padding: 4px 10px; background: var(--accent); color: var(--bg); font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; border-radius: 4px; }
+    .quote-text { font-size: 22px; line-height: 1.35; font-weight: 500; letter-spacing: -0.01em; margin-top: 6px; }
+    .quote-who { margin-top: 18px; display: flex; align-items: center; gap: 12px; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: var(--bg); display: flex; align-items: center; justify-content: center; font-weight: 800; }
+
+    /* Phone tracking card */
+    .phone-wrap { position: sticky; top: 90px; }
+    .phone { background: var(--panel); border: 1px solid var(--line); border-radius: 28px; padding: 8px; }
+    .phone-screen { background: var(--bg); border-radius: 22px; overflow: hidden; position: relative; }
+    .phone-map { height: 200px; position: relative; background: radial-gradient(circle at 40% 60%, rgba(var(--accent-rgb), .16), transparent 55%), #1a1a1a;
+      background-image: linear-gradient(rgba(var(--accent-rgb), .08) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--accent-rgb), .08) 1px, transparent 1px);
+      background-size: 24px 24px; }
+    .phone-status { position: absolute; top: 14px; left: 14px; padding: 6px 10px; background: var(--accent); color: var(--bg); border-radius: 6px; font-size: 11px; font-weight: 500; }
+    .phone-pid { position: absolute; top: 14px; right: 14px; font-family: var(--font-mono); font-size: 10px; color: var(--soft); }
+    .phone-body { padding: 18px; }
+    .phone-eta-row { display: flex; justify-content: space-between; align-items: baseline; }
+    .phone-eta-lbl { font-size: 11px; color: var(--soft); letter-spacing: .1em; text-transform: uppercase; }
+    .phone-eta { font-size: 44px; font-weight: 800; letter-spacing: -0.03em; color: var(--accent); line-height: 1; }
+    .phone-driver { font-size: 13px; font-weight: 600; text-align: right; }
+    .phone-vehicle { font-size: 11px; color: var(--soft); text-align: right; }
+    .phone-progress { margin-top: 16px; height: 4px; background: #1a1a1a; border-radius: 2px; overflow: hidden; }
+    .phone-progress > div { width: 72%; height: 100%; background: var(--accent); }
+    .phone-stops { margin-top: 18px; }
+    .phone-stop { display: grid; grid-template-columns: 50px 14px 1fr; gap: 10px; padding: 10px 0; align-items: center; border-bottom: 1px solid var(--line); }
+    .phone-stop:last-child { border-bottom: none; }
+    .phone-stop .time { font-family: var(--font-mono); font-size: 11px; color: var(--soft); }
+    .phone-stop .bullet { width: 10px; height: 10px; border-radius: 50%; }
+    .phone-stop.done .bullet { background: var(--accent); border: 2px solid var(--accent); }
+    .phone-stop.pending .bullet { background: transparent; border: 2px solid var(--soft); }
+    .phone-stop.done .label { font-size: 13px; color: var(--ink); }
+    .phone-stop.pending .label { font-size: 13px; color: var(--soft); }
+
+    .tiers-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; }
+    .tiers-head h2 { font-size: 40px; font-weight: 800; letter-spacing: -0.025em; }
+    .tiers-head .note { font-size: 13px; color: var(--soft); }
+    .tiers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .tier { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px; position: relative; }
+    .tier.featured { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+    .tier-flag { position: absolute; top: -10px; left: 14px; background: var(--accent); color: var(--bg); padding: 4px 10px; font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; border-radius: 4px; }
+    .tier.featured .tier-flag { background: var(--bg); color: var(--accent); }
+    .tier .name { font-size: 22px; font-weight: 500; letter-spacing: -0.02em; margin-top: 6px; }
+    .tier .blurb { font-size: 13px; color: var(--soft); margin-top: 4px; }
+    .tier.featured .blurb { color: var(--bg); opacity: .85; }
+    .tier .price { font-family: var(--font-mono); margin-top: 22px; font-size: 30px; font-weight: 700; letter-spacing: -0.01em; color: var(--accent); }
+    .tier.featured .price { color: var(--bg); }
+
+    .coverage-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 22px; }
+    .coverage-head h2 { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; }
+    .coverage-head .v { font-family: var(--font-mono); font-size: 12px; color: var(--soft); }
+    .coverage { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+    .cov { padding: 12px 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; font-size: 13px; font-family: var(--font-mono); color: var(--ink); }
+    .cov .b { color: var(--accent); margin-right: 6px; }
+
+    .cta-strip { margin: 0 40px 40px; padding: 40px; background: var(--accent); color: var(--bg); border-radius: 18px; display: flex; justify-content: space-between; align-items: center; }
+    .cta-strip .k { font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; opacity: .7; }
+    .cta-strip .h { font-size: 48px; font-weight: 800; letter-spacing: -0.03em; margin-top: 8px; line-height: 1; }
+
+    /* ===== Care / delight section ===== */
+    .care-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 34px; }
+    .care-card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
+    .care-ic { width: 42px; height: 42px; border-radius: 11px; background: var(--accent-tint); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+    .care-card h3 { font-size: 17px; font-weight: 500; letter-spacing: -0.01em; margin-bottom: 8px; }
+    .care-card p { font-size: 13px; color: var(--soft); line-height: 1.55; }
+    @media (max-width: 860px) { .care-grid { grid-template-columns: 1fr 1fr; } }
+
+    /* ===== Light sections — break up the dark for rhythm ===== */
+    .light {
+      --bg: #f4f3ee;
+      --panel: #ffffff;
+      --panel2: #edefe9;
+      --ink: #14181a;
+      --soft: #565d59;
+      --muted: #9aa19c;
+      --line: rgba(18, 28, 22, .10);
+      --line-strong: rgba(18, 28, 22, .16);
+      background: var(--bg);
+      color: var(--ink);
+    }
+    .light .eyebrow { color: #14181a; }
+    .light h2 .accent { color: inherit; }
+    .light .tier .price { color: #14181a; }
+    /* lime-filled cards: force dark ink so text stays legible on light pages */
+    .light .usp-card.us,
+    .light .usp-card.us h3,
+    .light .usp-card.us .k,
+    .light .usp-card.us ul li,
+    .light .tier.featured,
+    .light .tier.featured .name,
+    .light .tier.featured .blurb,
+    .light .tier.featured .price { color: #06140d; }
+    .light .usp-card.us .k { opacity: .7; }
+    /* badges/flags on lime fills: dark chip, lime text */
+    .light .us-badge,
+    .light .tier.featured .tier-flag { background: #06140d; color: var(--accent); }
+    .light .tier-flag { color: #06140d; }
+
+    @media (max-width: 1120px) {
+      .hero-top { grid-template-columns: 1fr; gap: 32px; }
+      .hero-board .dep-board { max-width: 720px; }
+    }
+    @media (max-width: 860px) {
+      .hero { padding: 40px 20px; }
+      .hero h1 { font-size: 48px; }
+      .hero-top { grid-template-columns: 1fr; gap: 28px; }
+      .hero-map { display: none; }
+      .booking-widget { grid-template-columns: 1fr 1fr; }
+      .stats, .usp-grid, .how, .tiers, .coverage { grid-template-columns: 1fr; }
+      .coverage { grid-template-columns: 1fr 1fr; }
+      .usp h2, .how h2 { font-size: 36px; }
+      .cta-strip { margin: 0 20px 40px; flex-direction: column; gap: 20px; align-items: flex-start; }
+      .cta-strip .h { font-size: 32px; }
+      .tiers { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+<!-- TOP BAR -->
+  <header class="topbar">
+    <a class="logo" href="index.html">
+      <span class="logo-mark"><span>&rsaquo;</span></span>
+      <span class="logo-word">m<span class="o-wheel"></span>lli</span>
+    </a>
+    <nav class="topnav">
+      <a href="sell.html">Sell more</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="fit.html">Will it fit?</a>
+      <a href="zones.html">Coverage</a>
+      <a href="pricing.html#faqs">Help</a>
+    </nav>
+    <div class="topbar-cta">
+      <a class="signin" href="account.html">Sign in</a>
+      <a class="btn btn--accent btn--sm" href="business.html">Create business account &rarr;</a>
+    </div>
+  </header>
+
+  
+<!-- HERO -->
+  <section class="hero">
+
+    <div class="hero-top hero-top--solo">
+      <div class="hero-inner">
+        <span class="pill">
+          <span class="dot dot--pulse"></span>
+          Live &middot; <span class="mono-num" id="live-count">247</span> parcels moving in Dublin right now
+        </span>
+
+        <div class="eyebrow eyebrow--soft" style="margin:18px 0 -6px;">Through streets broad &amp; narrow</div>
+
+        <h1>Store to door,<br><span class="accent">Same day</span></h1>
+
+        <p class="blurb">Molli is Dublin's same-day parcel network for shops. Your customer orders by 2pm, it's on their doorstep tonight &mdash; tracked, photographed, handled by a local team. Built for the things people want fast and handled with care: beauty &amp; skincare, health &amp; wellness, jewellery and boutique. One account, one flat price, no fleet to run.</p>
+
+        <div class="cutoff" id="cutoff">
+          <div class="co-ic">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+          </div>
+          <div class="co-body">
+            <div class="co-lead" id="co-lead">Order within</div>
+            <div class="co-main" id="co-main"><span class="co-clock" id="co-clock">--:--:--</span> to get it there today</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:26px;">
+          <a class="btn btn--accent btn--lg" href="business.html">Create a business account &rarr;</a>
+          <a class="btn btn--ghost btn--lg" href="business.html#contact">Talk to us for volume</a>
+        </div>
+        <a href="booking.html" style="display:inline-block;margin-top:16px;font-size:14px;color:var(--soft);font-weight:600;">Just sending one parcel? Book a single delivery &rarr;</a>
+      </div>
+
+    </div>
+
+    <div class="trust">
+      <span class="lbl">Trusted by Dublin shops &rarr;</span>
+      <span class="name">Boojum</span>
+      <span class="name">Avoca</span>
+      <span class="name">Carraig</span>
+      <span class="name">Bewley's</span>
+      <span class="name">Sostrene</span>
+      <span class="name">Storyful</span>
+      <span class="name">Stable</span>
+    </div>
+  </section>
+
+  
+<!-- STATS -->
+  <div class="stats">
+    <div class="stat"><div class="num">98.4%</div><div class="lbl">On-time, last 90 days</div></div>
+    <div class="stat"><div class="num">12,400</div><div class="lbl">Parcels every week</div></div>
+    <div class="stat"><div class="num">4.8 / 5</div><div class="lbl">Retailer rating</div></div>
+  </div>
+
+  
+<!-- HOW + TRACKING -->
+  <section class="section how">
+    <div>
+      <div class="eyebrow">How it works</div>
+      <h2>Three steps.<br /><span class="sub">Live by this afternoon.</span></h2>
+
+      <div class="step">
+        <div class="n">01</div>
+        <div><div class="t">Open a business account</div><div class="b">Sign up in minutes and top up a credit pack. Bulk-book a whole day's orders in one go, or sync them straight from your store.</div></div>
+      </div>
+      <div class="step">
+        <div class="n">02</div>
+        <div><div class="t">We collect from your shop</div><div class="b">Two runs a day. Hand over by 2pm and your customers get it tonight; after 2pm, before 1pm tomorrow. No pickup windows tying up your counter.</div></div>
+      </div>
+      <div class="step">
+        <div class="n">03</div>
+        <div><div class="t">Delivered under your name</div><div class="b">Tracked end to end, a photo on delivery, and your customer gets a text when the rider's five minutes away — so it lands first time.</div></div>
+      </div>
+
+      <div class="quote-card">
+        <div class="quote-badge">4.8 &#9733; rated</div>
+        <div class="quote-text">"We send forty parcels a week from the shop. Molli is the only courier that never makes me chase anything."</div>
+        <div class="quote-who">
+          <div class="avatar">AB</div>
+          <div><div style="font-size:14px;font-weight:600">Aoife Brennan</div><div style="font-size:12px;color:var(--soft)">Owner, Brennan &amp; Co &middot; Rathmines</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-map">
+            <svg width="100%" height="100%" style="position:absolute;inset:0" viewBox="0 0 360 200" preserveAspectRatio="none">
+              <path d="M 30 160 Q 120 80, 200 100 T 330 50" stroke="var(--accent)" stroke-width="3" fill="none" stroke-dasharray="6 4" />
+              <circle cx="30" cy="160" r="6" fill="var(--accent)" />
+              <circle cx="200" cy="100" r="7" fill="var(--ink)" stroke="var(--accent)" stroke-width="3" />
+              <circle cx="330" cy="50" r="6" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="2 2" />
+            </svg>
+            <div class="phone-status">&#9679; OUT FOR DELIVERY</div>
+            <div class="phone-pid">CP-94821-D</div>
+          </div>
+          <div class="phone-body">
+            <div class="phone-eta-row">
+              <div><div class="phone-eta-lbl">Arriving in</div><div class="phone-eta">12 min</div></div>
+              <div><div class="phone-driver">Eamon</div><div class="phone-vehicle">Cargo bike &middot; 142-D-EV</div></div>
+            </div>
+            <div class="phone-progress"><div></div></div>
+            <div class="phone-stops">
+              <div class="phone-stop done"><span class="time">Mon</span><span class="bullet"></span><span class="label">Picked up &middot; Dame St</span></div>
+              <div class="phone-stop done"><span class="time">Mon</span><span class="bullet"></span><span class="label">At Crumlin sorting hub</span></div>
+              <div class="phone-stop done"><span class="time">Tue</span><span class="bullet"></span><span class="label">Out for delivery with Eamon</span></div>
+              <div class="phone-stop pending"><span class="time">Tue</span><span class="bullet"></span><span class="label">Castleknock &middot; drop-off</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+  <!-- SEE HOW EASY (demo teaser) -->
+  <section class="section demo-teaser">
+    <style>
+      .demo-teaser { display: grid; grid-template-columns: 1.05fr .95fr; gap: 56px; align-items: center; }
+      .demo-teaser .eyebrow { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+      .demo-teaser h2 { font-size: 46px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; margin: 12px 0 14px; }
+      .demo-teaser h2 .accent { color: var(--accent); }
+      .demo-teaser p { font-size: 16px; color: var(--soft); line-height: 1.6; max-width: 440px; margin: 0 0 24px; }
+      .demo-teaser .dt-steps { list-style: none; padding: 0; margin: 0 0 28px; display: flex; flex-direction: column; gap: 10px; }
+      .demo-teaser .dt-steps li { display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--soft); }
+      .demo-teaser .dt-steps .n { font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--accent); width: 22px; height: 22px; border-radius: 6px; background: var(--accent-tint); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+      .demo-teaser .dt-cta { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+      .demo-teaser .dt-note { font-size: 13px; color: var(--muted); }
+      /* mock browser preview */
+      .dt-frame { background: #0f0f0f; border: 1px solid var(--line-strong, rgba(255,255,255,.14)); border-radius: 14px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.5); }
+      .dt-bar { display: flex; align-items: center; gap: 12px; padding: 11px 14px; background: #161616; border-bottom: 1px solid var(--line); }
+      .dt-lights { display: flex; gap: 7px; }
+      .dt-lights span { width: 11px; height: 11px; border-radius: 50%; }
+      .dt-lights .r { background: #ff5f57; } .dt-lights .y { background: #febc2e; } .dt-lights .g { background: #28c840; }
+      .dt-addr { flex: 1; display: flex; align-items: center; gap: 8px; background: #0c0c0c; border: 1px solid var(--line); border-radius: 7px; padding: 6px 12px; font-family: var(--font-mono); font-size: 12px; color: var(--soft); }
+      .dt-addr b { color: var(--ink); font-weight: 600; }
+      .dt-body { padding: 26px 24px 28px; position: relative; }
+      .dt-counter { font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); text-align: center; margin-bottom: 14px; }
+      .dt-body h3 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 4px; }
+      .dt-body .sub { font-size: 13px; color: var(--soft); margin: 0 0 18px; }
+      .dt-opt { border: 1px solid var(--line); border-radius: 10px; padding: 13px 15px; margin-bottom: 9px; display: flex; align-items: center; gap: 12px; }
+      .dt-opt.sel { border-color: var(--accent); background: var(--accent-tint); }
+      .dt-opt .dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line-strong, rgba(255,255,255,.2)); flex-shrink: 0; }
+      .dt-opt.sel .dot { border-color: var(--accent); background: var(--accent); box-shadow: inset 0 0 0 3px #0f0f0f; }
+      .dt-opt .lbl { font-size: 14px; font-weight: 600; }
+      .dt-opt .meta { margin-left: auto; font-family: var(--font-mono); font-size: 13px; color: var(--soft); }
+      .dt-cta-btn { margin-top: 8px; background: var(--accent); color: #06140d; border-radius: 10px; padding: 12px; text-align: center; font-weight: 700; font-size: 14px; position: relative; }
+      .dt-cursor { position: absolute; right: 26px; bottom: 20px; width: 22px; height: 22px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.5)); animation: dtTap 2.6s ease-in-out infinite; }
+      @keyframes dtTap { 0%, 60%, 100% { transform: translate(0,0); } 72% { transform: translate(-3px,-3px); } 80% { transform: translate(0,0); } }
+      .dt-ring { position: absolute; left: 24px; right: 24px; bottom: 20px; height: 44px; border: 2px solid var(--accent); border-radius: 10px; pointer-events: none; animation: dtRing 2.6s ease-in-out infinite; }
+      @keyframes dtRing { 0%, 55%, 100% { box-shadow: 0 0 0 3px rgba(var(--accent-rgb), .12); } 78% { box-shadow: 0 0 0 7px rgba(var(--accent-rgb), .05); } }
+      @media (max-width: 860px) { .demo-teaser { grid-template-columns: 1fr; gap: 34px; } .demo-teaser h2 { font-size: 34px; } }
+    </style>
+    <div>
+      <div class="eyebrow">See how easy it is</div>
+      <h2>Booked before the <span class="accent">kettle boils.</span></h2>
+      <p>No app, no account, no delivery window to argue with. Follow the prompts and you'll have a real same-day collection booked in well under a minute &mdash; try it yourself.</p>
+      <ul class="dt-steps">
+        <li><span class="n">1</span> Enter where it's going from and to</li>
+        <li><span class="n">2</span> Check it fits and pick same-day or next-morning</li>
+        <li><span class="n">3</span> Confirm &mdash; we've got it from there</li>
+      </ul>
+      <div class="dt-cta">
+        <a class="btn btn--accent btn--lg" href="demo.html">Try the guided demo &rarr;</a>
+        <span class="dt-note">Interactive &middot; nothing charged</span>
+      </div>
+    </div>
+    <a href="demo.html" class="dt-frame" style="display:block; text-decoration:none; color:inherit;">
+      <div class="dt-bar">
+        <div class="dt-lights"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <div class="dt-addr"><b>molli.ie</b>/book</div>
+      </div>
+      <div class="dt-body">
+        <div class="dt-counter">Step 4 of 7</div>
+        <h3>What are we sending?</h3>
+        <div class="sub">Choose your parcel size</div>
+        <div class="dt-opt sel"><span class="dot"></span><span class="lbl">Small</span><span class="meta">&euro;7.99</span></div>
+        <div class="dt-opt"><span class="dot"></span><span class="lbl">Medium</span><span class="meta">&euro;8.99</span></div>
+        <div class="dt-opt"><span class="dot"></span><span class="lbl">Large</span><span class="meta">&euro;9.99</span></div>
+        <div class="dt-cta-btn">Next</div>
+        <div class="dt-ring"></div>
+        <svg class="dt-cursor" viewBox="0 0 24 24" fill="#fff" stroke="#06140d" stroke-width="1.2"><path d="M4 2 L4 20 L9 15 L12.5 22 L15 21 L11.5 14 L18 14 Z"/></svg>
+      </div>
+    </a>
+  </section>
+
+  
+  <!-- COVERAGE + LIVE DEPARTURES -->
+  <section class="section covcheck covcheck--v2" id="coverage-check">
+<style>
+      .covcheck { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: center; }
+      .covcheck .cc-eyebrow { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+      .covcheck h2 { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; margin: 12px 0 12px; }
+      .covcheck p.sub { font-size: 16px; color: var(--soft); line-height: 1.55; max-width: 460px; margin: 0; }
+      .cc-form { display: flex; gap: 10px; margin-top: 26px; max-width: 440px; }
+      .cc-form input { flex: 1; background: var(--panel); border: 1px solid var(--line); color: var(--ink); font-family: var(--font-mono); font-size: 16px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; padding: 15px 16px; border-radius: 11px; outline: none; }
+      .cc-form input::placeholder { color: var(--muted); letter-spacing: .02em; }
+      .cc-form input:focus { border-color: var(--accent); }
+      .cc-form button { background: var(--accent); color: #06140d; border: none; border-radius: 11px; padding: 0 22px; font-family: var(--font-sans); font-weight: 600; font-size: 15px; cursor: pointer; white-space: nowrap; }
+      .cc-hint { font-size: 12.5px; color: var(--muted); margin-top: 10px; }
+      .cc-hint b { color: var(--soft); font-weight: 600; cursor: pointer; border-bottom: 1px dashed var(--line); }
+      /* result panel */
+      .cc-result { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 30px; min-height: 260px; display: flex; flex-direction: column; justify-content: center; }
+      .cc-result .cc-idle { color: var(--muted); font-size: 14px; line-height: 1.6; }
+      .cc-tag { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; padding: 7px 13px; border-radius: 999px; }
+      .cc-tag.ok { background: var(--accent-tint); color: var(--accent); border: 1px solid rgba(156,255,46,.3); }
+      .cc-tag.no { background: rgba(255,120,90,.12); color: #ff8a6a; border: 1px solid rgba(255,120,90,.3); }
+      .cc-zone { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin: 16px 0 4px; }
+      .cc-desc { font-size: 14.5px; color: var(--soft); line-height: 1.55; }
+      .cc-meta { display: flex; gap: 12px; margin: 22px 0 4px; }
+      .cc-chip { flex: 1; background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; padding: 13px 15px; }
+      .cc-chip .l { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+      .cc-chip .v { font-family: var(--font-mono); font-size: 18px; font-weight: 700; margin-top: 3px; }
+      .cc-chip .v.accent { color: var(--accent); }
+      .cc-cta { margin-top: 22px; }
+      @media (max-width: 880px) { .covcheck { grid-template-columns: 1fr; gap: 28px; } .covcheck h2 { font-size: 32px; } }
+    </style>
+    <style>
+      .covcheck--v2 { grid-template-columns: 0.85fr 1.15fr; align-items: start; gap: 36px; }
+      .covcheck--v2 .cc-result { margin-top: 22px; min-height: 0; }
+      .cc-right { min-width: 0; }
+      .cc-board-cap { font-size: 12.5px; color: var(--muted); margin: 0 0 12px; letter-spacing: .01em; }
+      .covcheck--v2 .dep-board { max-width: none; }
+      .covcheck--v2 .dep-colhead, .covcheck--v2 .dep-row { grid-template-columns: 72px minmax(0,1fr) 148px; gap: 12px; padding-left: 16px; padding-right: 16px; }
+      .covcheck--v2 .dep-row .status { font-size: 10.5px; padding: 6px 10px; }
+      @media (max-width: 880px){ .covcheck--v2 { grid-template-columns: 1fr; } }
+    </style>
+    <div class="cc-left">
+      <div class="cc-eyebrow">Coverage check</div>
+      <h2>Do we reach your customer?</h2>
+      <p class="sub">Drop in a Dublin Eircode or district and we'll tell you the zone, the price it starts at, and whether the cargo bikes can take the big stuff.</p>
+      <form class="cc-form" id="cc-form" autocomplete="off">
+        <input type="text" id="cc-input" placeholder="e.g. D02 X285 or D6" maxlength="8" aria-label="Eircode" />
+        <button type="submit">Check</button>
+      </form>
+      <div class="cc-hint">Try <b data-fill="D02 X285">D02 X285</b>, <b data-fill="D6">D6</b>, <b data-fill="D24">D24</b> or <b data-fill="K67">K67</b> (outside).</div>
+    
+      <div class="cc-result" id="cc-result">
+      <div class="cc-idle">Enter an Eircode to see coverage &amp; pricing for that address.</div>
+    </div>
+    </div>
+    <div class="cc-right">
+      <p class="cc-board-cap">Parcels moving right now &mdash; a live sample of the areas we run.</p>
+      <div class="dep-board">
+          <div class="dep-head">
+            <span class="ttl"><span class="dot"></span>Molli &middot; Live departures</span>
+            <span class="clk" id="dep-clock">--:--</span>
+          </div>
+          <div class="dep-colhead"><span>Tracking</span><span>Destination</span><span>Status</span></div>
+          <div class="dep-grid" id="dep-grid"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+<!-- USP -->
+  <section class="section usp light">
+    <div class="eyebrow">Why shops choose Molli</div>
+    <h2>The same-day layer for <span class="accent">Dublin retail.</span></h2>
+    <div class="usp-grid">
+      <div class="usp-card neg">
+        <div class="k">Standard post</div>
+        <h3>Two to three days.</h3>
+        <ul>
+          <li>&#10007; Your customer waits, then chases you</li>
+          <li>&#10007; No same-day option at all</li>
+          <li>&#10007; Little to no live tracking</li>
+        </ul>
+      </div>
+      <div class="usp-card neg">
+        <div class="k">Overnight carriers</div>
+        <h3>Tomorrow at the earliest.</h3>
+        <ul>
+          <li>&#10007; Next-day collection, next-day delivery</li>
+          <li>&#10007; 4-hour pickup windows tie up your day</li>
+          <li>&#10007; Nothing goes today</li>
+        </ul>
+      </div>
+      <div class="usp-card us">
+        <div class="us-badge">MOLLI</div>
+        <div class="k">With Molli</div>
+        <h3>Order by 2pm? Your customer has it tonight.</h3>
+        <ul>
+          <li>&#10003; Compete with Amazon on speed, locally</li>
+          <li>&#10003; Fewer abandoned carts, more repeat buyers</li>
+          <li>&#10003; Tracked, photographed, delivered under your name</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  
+<!-- VERTICALS -->
+  <section class="verticals">
+    <div class="eyebrow">Built for</div>
+    <p class="vert-lead">The high-value, handle-with-care categories we're built around &mdash; where <span class="accent">same-day and a careful doorstep</span> win the repeat customer.</p>
+    <div class="vert-row">
+      <span class="vert vert--hero">Beauty &amp; skincare</span>
+      <span class="vert vert--hero">Health &amp; wellness</span>
+      <span class="vert vert--hero">Pharmacy</span>
+      <span class="vert">Jewellery</span>
+      <span class="vert">Boutique fashion</span>
+      <span class="vert">Gifting &amp; florists</span>
+    </div>
+  </section>
+
+  
+<!-- CARE / DELIGHT -->
+  <section class="section divider-top">
+    <div class="eyebrow">What your customer gets</div>
+    <h2 style="font-size:48px;font-weight:800;letter-spacing:-0.03em;margin:12px 0 0;max-width:820px;line-height:1;">Their experience is <span class="accent">your brand.</span></h2>
+    <p style="font-size:16px;color:var(--soft);max-width:560px;margin:16px 0 0;line-height:1.55;">The doorstep is the last thing your customer remembers about the sale. We treat every handover like it's yours — because to them, it is.</p>
+    <div class="care-grid">
+      <div class="care-card">
+        <div class="care-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+        <h3>A text before we knock</h3>
+        <p>The recipient gets a heads-up when we're five minutes out — no missed deliveries, no “we called while you were out” cards.</p>
+      </div>
+      <div class="care-card">
+        <div class="care-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+        <h3>A photo at the door</h3>
+        <p>You get a picture the moment it's handed over — proof it arrived safely, and exactly where it was left.</p>
+      </div>
+      <div class="care-card">
+        <div class="care-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3>Left safe, only if you say so</h3>
+        <p>Nothing gets dumped on a doorstep. If no one's home, we hold it or leave it where you've told us — your call, not ours.</p>
+      </div>
+      <div class="care-card">
+        <div class="care-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div>
+        <h3>Handled by people, not machines</h3>
+        <p>Carried and sorted by a local Dublin team on bikes — never slung down an automated mega-hub. Small enough that every parcel still matters.</p>
+      </div>
+    </div>
+  </section>
+
+  
+<!-- BUILT FOR SHOPS -->
+  <section class="section divider-top">
+    <div class="eyebrow">Built for busy shops</div>
+    <h2 style="font-size:48px;font-weight:800;letter-spacing:-0.03em;margin:12px 0 0;max-width:820px;line-height:1;">One account. <span class="accent">Your whole day's orders.</span></h2>
+    <p style="font-size:16px;color:var(--soft);max-width:560px;margin:16px 0 0;line-height:1.55;">No paperwork, no per-parcel card taps, no chasing invoices. Set it up once and Molli runs quietly behind your counter.</p>
+    <div class="care-grid" style="grid-template-columns:repeat(3,1fr);">
+      <div class="care-card">
+        <div class="care-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v16"/></svg></div>
+        <h3>Bulk booking</h3>
+        <p>Paste or upload a day's worth of orders and book them all in one pass &mdash; addresses validated, labels ready, one collection.</p>
+      </div>
+      <div class="care-card">
+        <div class="care-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div>
+        <h3>Credit packs, auto top-up</h3>
+        <p>Pre-load credit and every booking draws down from it. Switch on auto top-up and you'll never hit a stop &mdash; no monthly invoice, no credit terms.</p>
+      </div>
+      <div class="care-card">
+        <div class="care-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M16 3l5 3-5 3"/></svg></div>
+        <h3>Sync your store</h3>
+        <p>Connect Shopify (WooCommerce and more coming) so paid orders flow straight into Molli &mdash; ready to dispatch on the next run.</p>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:28px;">
+      <a class="btn btn--accent btn--md" href="business.html">Create a business account &rarr;</a>
+      <a class="btn btn--ghost btn--md" href="bulk.html">See bulk booking</a>
+    </div>
+  </section>
+
+  
+<!-- THE NAME -->
+  <section class="section divider-top" style="text-align:center;">
+    <div class="mega-word mega-word--inline">m<span class="o-wheel"></span>lli</div>
+    <div class="eyebrow" style="letter-spacing:.18em; margin-top:8px;">The name</div>
+    <p style="font-size:26px; max-width:720px; margin:14px auto 0; line-height:1.4; font-weight:500; letter-spacing:-0.015em;">Named for Molly Malone &mdash; Dublin's original one-woman logistics network, hauling stock <span class="accent">through streets broad and narrow</span> while the rest of the city was still in bed. No app, no ETA, no proof of delivery &mdash; just a wheelbarrow and a fierce set of lungs. We kept the hustle and the barrow (grand, it's a cargo bike now), added live tracking, and left the cockles and mussels to her. Alive, alive-o.</p>
+  </section>
+
+  
+<!-- CTA -->
+  <section class="cta-strip">
+    <div>
+      <div class="k">Same-day delivery, built into your shop</div>
+      <div class="h">Set it up today. Live this afternoon.</div>
+    </div>
+    <a class="btn btn--invert btn--lg" href="business.html">Create a business account &rarr;</a>
+  </section>
+
+  
+<!-- FOOTER -->
+  <footer class="footer">
+    <div>
+      <a class="logo" href="index.html"><span class="logo-mark"><span>&rsaquo;</span></span><span class="logo-word">m<span class="o-wheel"></span>lli</span></a>
+      <div class="tag">molli.ie · Dublin's same-day parcel network<br /><span style="color:var(--muted)">Through streets broad &amp; narrow.</span></div>
+    </div>
+    <div class="col"><div class="col-title">Send</div><a href="booking.html">Parcels</a><a href="booking.html">Documents</a><a href="booking.html">Same-day</a><a href="pricing.html">Bulk &amp; API</a></div>
+    <div class="col"><div class="col-title">Business</div><a href="pricing.html">Account pricing</a><a href="integrations.html">Store integration</a><a href="badge.html">Cut-off badge</a><a href="bulk.html">Bulk booking</a></div>
+    <div class="col"><div class="col-title">Company</div><a href="#">About</a><a href="#">Jobs</a><a href="#">Sustainability</a><a href="#">Press</a></div>
+    <div class="col"><div class="col-title">Help</div><a href="track.html">Track a delivery</a><a href="returns.html">Returns</a><a href="pricing.html">Pricing</a><a href="pricing.html">FAQ</a></div>
+  </footer>
+  <div class="legal">&copy; 2026 Molli Logistics Ltd. &middot; 23 Sir John Rogerson's Quay, Dublin 2 &middot; CRO 612 884</div>
+
+  
+<script>
+    // Live job counter — drifts around a baseline so it feels real-time.
+    (function () {
+      var el = document.getElementById('live-count');
+      if (!el) return;
+      var base = 247;
+      setInterval(function () {
+        base += Math.round((Math.random() - 0.45) * 4);
+        if (base < 180) base = 180;
+        if (base > 320) base = 320;
+        el.textContent = base;
+      }, 3200);
+    })();
+  </script>
+
+  <script>
+    // Coverage check — Eircode / district → zone + price (mirrors booking engine)
+    (function () {
+      var form = document.getElementById('cc-form');
+      if (!form) return;
+      var input = document.getElementById('cc-input');
+      var result = document.getElementById('cc-result');
+
+      function zoneFor(raw) {
+        var code = (raw || '').toUpperCase().replace(/\s+/g, '');
+        if (!code) return { status: 'empty' };
+        // Dublin district shorthand (D1–D24, D6W) OR full Eircode routing key
+        var m = code.match(/^D(\d{1,2})W?/);
+        if (!m) {
+          // Valid non-Dublin Eircode routing key = out of area
+          if (/^[AC-FHKNPRTV-Y][0-9][0-9W]/.test(code)) return { status: 'out' };
+          return { status: 'bad' };
+        }
+        var d = parseInt(m[1], 10);
+        if (d < 1 || d > 24) return { status: 'out' };
+        if (d <= 8) return { status: 'ok', zone: 1 };
+        return { status: 'ok', zone: 2 };
       }
-    }
-    var vol = l * w * h;
-    var chargeableKg = Math.max(kg, vol / 5000); // volumetric convention ÷5000
-    var reasons = [];
-    if (!fits) {
-      var cap = CAPS.box, d = [l, w, h].slice().sort(function (a, b) { return b - a; });
-      if (d[0] > cap.maxLong) reasons.push('longest side over ' + cap.maxLong + ' cm');
-      if (d[1] > cap.maxSide || d[2] > cap.maxSide) reasons.push('over ' + cap.maxSide + ' cm on a side');
-      if (kg > cap.kg) reasons.push('over ' + cap.kg + ' kg');
-      if (vol > cap.vcap + 1) reasons.push('too bulky');
-    }
-    return {
-      fits: fits, effective: effective, upgraded: upgraded,
-      chargeableKg: chargeableKg, reasons: reasons,
-      caps: CAPS[effective]
-    };
-  }
 
-  // Render the 3D cage into an <svg>. lim = tier caps drawn as the frame
-  // {l,w,h}; parcel = the item {l,w,h}; fitsOverride false => red box.
-  function drawGauge(svg, lim, parcel, fitsOverride) {
-    if (!svg) return;
-    var vb = (svg.getAttribute('viewBox') || '0 0 360 276').split(/\s+/).map(Number);
-    var W = vb[2] || 360, H = vb[3] || 276, padX = 58, padTop = 36, padBot = 40, dco = 0.5;
-    var mL = Math.max(lim.l, parcel ? parcel.l : 0);
-    var mW = Math.max(lim.w, parcel ? parcel.w : 0);
-    var mH = Math.max(lim.h, parcel ? parcel.h : 0);
-    var scale = Math.min((W - 2 * padX) / (mW + mL * dco), (H - padTop - padBot) / (mH + mL * dco));
-    function faces(fx, fy, wv, hv, lv, stroke, fillOn, dash, sw) {
-      var bw = wv * scale, bh = hv * scale, ox = lv * scale * dco, oy = lv * scale * dco;
-      var bx = fx + ox, by = fy - oy, d = dash ? ' stroke-dasharray="4 4"' : '';
-      var g = '';
-      g += '<polygon points="' + fx + ',' + fy + ' ' + (fx + bw) + ',' + fy + ' ' + (bx + bw) + ',' + by + ' ' + bx + ',' + by + '" fill="' + stroke + '" fill-opacity="' + (fillOn ? 0.12 : 0) + '" stroke="' + stroke + '" stroke-width="' + sw + '"' + d + '/>';
-      g += '<polygon points="' + (fx + bw) + ',' + fy + ' ' + (fx + bw) + ',' + (fy + bh) + ' ' + (bx + bw) + ',' + (by + bh) + ' ' + (bx + bw) + ',' + by + '" fill="' + stroke + '" fill-opacity="' + (fillOn ? 0.2 : 0) + '" stroke="' + stroke + '" stroke-width="' + sw + '"' + d + '/>';
-      g += '<rect x="' + fx + '" y="' + fy + '" width="' + bw + '" height="' + bh + '" fill="' + stroke + '" fill-opacity="' + (fillOn ? 0.26 : 0) + '" stroke="' + stroke + '" stroke-width="' + (sw + 0.5) + '"' + d + '/>';
-      return g;
-    }
-    var maxOx = mL * scale * dco;
-    var envWpx = mW * scale + maxOx, envHpx = mH * scale + maxOx;
-    var fx = padX + ((W - 2 * padX) - envWpx) / 2;
-    var top = padTop + ((H - padTop - padBot) - envHpx) / 2;
-    var cw = lim.w * scale, ch = lim.h * scale, cox = lim.l * scale * dco;
-    var ground = top + maxOx + mH * scale;
-    var fy = ground - ch;
-    var s = '';
-    s += '<ellipse cx="' + (fx + cw / 2 + cox / 2) + '" cy="' + (ground + 11) + '" rx="' + (cw * 0.72) + '" ry="7" fill="#000" opacity="0.35"/>';
-    s += '<polygon points="' + fx + ',' + ground + ' ' + (fx + cw) + ',' + ground + ' ' + (fx + cw + cox) + ',' + (ground - cox) + ' ' + (fx + cox) + ',' + (ground - cox) + '" fill="' + ACCENT + '" fill-opacity="0.08" stroke="' + ACCENT + '" stroke-opacity="0.45" stroke-width="1"/>';
-    s += faces(fx, fy, lim.w, lim.h, lim.l, ACCENT, false, true, 1);
-    var ox = cox, oy = cox, bw = cw, bh = ch;
-    var verts = [[fx, fy], [fx + bw, fy], [fx, fy + bh], [fx + bw, fy + bh], [fx + ox, fy - oy], [fx + bw + ox, fy - oy], [fx + ox, fy + bh - oy], [fx + bw + ox, fy + bh - oy]];
-    verts.forEach(function (p) { s += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="2.4" fill="' + ACCENT + '"/>'; });
-    s += '<text x="' + (fx + bw / 2) + '" y="' + (fy + bh + 16) + '" fill="' + ACCENT + '" font-size="9" font-family="monospace" text-anchor="middle">' + lim.w + ' cm</text>';
-    var hx = fx - 10, hy = fy + bh / 2;
-    s += '<text x="' + hx + '" y="' + hy + '" fill="' + ACCENT + '" font-size="9" font-family="monospace" text-anchor="middle" transform="rotate(-90 ' + hx + ' ' + hy + ')">' + lim.h + ' cm</text>';
-    s += '<text x="' + (fx + bw + ox / 2 + 11) + '" y="' + (fy - oy / 2 - 3) + '" fill="' + ACCENT + '" font-size="9" font-family="monospace" text-anchor="middle">' + lim.l + ' cm</text>';
-    if (parcel) {
-      var col = (fitsOverride === false) ? '#ff5a5a' : ACCENT;
-      s += faces(fx, ground - parcel.h * scale, parcel.w, parcel.h, parcel.l, col, true, false, 1.75);
-    }
-    svg.innerHTML = s;
-  }
+      function render(raw) {
+        var r = zoneFor(raw);
+        if (r.status === 'empty') return;
+        if (r.status === 'bad') {
+          result.innerHTML = '<span class="cc-tag no">Check the code</span>'
+            + '<div class="cc-zone">That doesn\u2019t look right</div>'
+            + '<div class="cc-desc">Enter a Dublin Eircode (e.g. <b>D02 X285</b>) or a district like <b>D6</b>.</div>';
+          return;
+        }
+        if (r.status === 'out') {
+          result.innerHTML = '<span class="cc-tag no">Outside our area</span>'
+            + '<div class="cc-zone">Not yet &mdash; we\u2019re Dublin-only</div>'
+            + '<div class="cc-desc">Molli runs inside the M50 today. Sending within Dublin? Pop in a D-code above. Growing fast &mdash; tell us where you need us and we\u2019ll be in touch.</div>'
+            + '<div class="cc-cta"><a class="btn btn--ghost btn--md" href="business.html#contact">Request your area &rarr;</a></div>';
+          return;
+        }
+        var isZ1 = r.zone === 1;
+        result.innerHTML = '<span class="cc-tag ok">\u2713 We deliver here</span>'
+          + '<div class="cc-zone">' + (isZ1 ? 'City Centre' : 'Greater Dublin') + '</div>'
+          + '<div class="cc-desc">' + (isZ1
+              ? 'Inside the cargo-bike core &mdash; the fastest, cheapest runs and room for the bigger boxes.'
+              : 'Covered by our motorbike runs across the wider Dublin area, up to the M50.') + '</div>'
+          + '<div class="cc-meta">'
+            + '<div class="cc-chip"><div class="l">Zone</div><div class="v accent">' + (isZ1 ? 'City Centre' : 'Greater Dublin') + '</div></div>'
+            + '<div class="cc-chip"><div class="l">From</div><div class="v">\u20ac' + (isZ1 ? '7.99' : '9.99') + '</div></div>'
+            + '<div class="cc-chip"><div class="l">Delivery</div><div class="v">Same day</div></div>'
+          + '</div>'
+          + '<div class="cc-cta"><a class="btn btn--accent btn--md" href="booking.html">Book to this address &rarr;</a></div>';
+      }
 
-  // Everyday-object presets — high-value / small first, then the bigger tiers.
-  var PRESETS = [
-    { id: 'perfume',   label: 'Perfume box',   l: 12, w: 8,  h: 15, kg: 0.4 },
-    { id: 'jewellery', label: 'Jewellery box', l: 10, w: 8,  h: 5,  kg: 0.2 },
-    { id: 'phone',     label: 'Phone / buds',  l: 17, w: 9,  h: 4,  kg: 0.3 },
-    { id: 'meds',      label: 'Prescription',  l: 15, w: 10, h: 6,  kg: 0.3 },
-    { id: 'book',      label: 'Hardback book', l: 24, w: 16, h: 4,  kg: 0.6 },
-    { id: 'trainers',  label: 'Trainers',      l: 34, w: 22, h: 13, kg: 1.2 },
-    { id: 'wine',      label: 'Bottle of wine',l: 35, w: 10, h: 10, kg: 1.5 },
-    { id: 'winecase',  label: 'Wine case (6)', l: 35, w: 25, h: 30, kg: 8 },
-    { id: 'hamper',    label: 'Gift hamper',   l: 40, w: 32, h: 26, kg: 6 }
-  ];
+      form.addEventListener('submit', function (e) { e.preventDefault(); render(input.value); });
+      document.querySelectorAll('.cc-hint b[data-fill]').forEach(function (b) {
+        b.addEventListener('click', function () { input.value = b.getAttribute('data-fill'); render(input.value); });
+      });
+    })();
+  </script>
 
-  root.MolliFit = {
-    ACCENT: ACCENT, PRICES: PRICES, TIER_NAME: TIER_NAME,
-    caps: caps, classify: classify, drawGauge: drawGauge, PRESETS: PRESETS,
-    ENVELOPE: ENVELOPE, envelope: envelope, maxLabel: maxLabel, normZone: normZone
-  };
-})(window);
+  <script>
+    // Live cutoff countdown — ticks toward the 2pm same-day cut-off.
+    (function () {
+      var wrap = document.getElementById('cutoff');
+      var lead = document.getElementById('co-lead');
+      var main = document.getElementById('co-main');
+      var clock = document.getElementById('co-clock');
+      if (!wrap) return;
+      var CUTOFF_TODAY = 14;   // 2pm — same-day delivery
+      var CUTOFF_NEXTDAY = 17; // 5pm — next working day before 1pm
+      var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      function pad(n){ return (n < 10 ? '0' : '') + n; }
+      function clockStr(ms){
+        var h = Math.floor(ms / 3600000);
+        var m = Math.floor((ms % 3600000) / 60000);
+        var s = Math.floor((ms % 60000) / 1000);
+        return pad(h) + ':' + pad(m) + ':' + pad(s);
+      }
+      function nextWorkingDay(d){
+        var n = new Date(d); n.setDate(n.getDate() + 1);
+        while (n.getDay() === 0 || n.getDay() === 6) { n.setDate(n.getDate() + 1); }
+        return n;
+      }
+      function nwdLabel(now){
+        var nwd = nextWorkingDay(now);
+        var isTomorrow = (nwd.getDate() === now.getDate() + 1);
+        return isTomorrow ? 'tomorrow' : DAYS[nwd.getDay()];
+      }
+      function render() {
+        var now = new Date();
+        var day = now.getDay();
+        var weekend = (day === 0 || day === 6);
+        var today2 = new Date(now); today2.setHours(CUTOFF_TODAY, 0, 0, 0);
+        var today5 = new Date(now); today5.setHours(CUTOFF_NEXTDAY, 0, 0, 0);
+        if (!weekend && now < today2) {
+          // Stage 1 — same-day window, counting to 2pm.
+          wrap.classList.remove('closed');
+          lead.textContent = 'Order within';
+          clock.textContent = clockStr(today2 - now);
+          main.innerHTML = '';
+          main.appendChild(clock);
+          main.insertAdjacentText('beforeend', ' for delivery by 6pm today');
+        } else if (!weekend && now < today5) {
+          // Stage 2 — next-day window, counting to 5pm.
+          wrap.classList.remove('closed');
+          lead.textContent = 'Same-day\u2019s closed \u2014 order within';
+          clock.textContent = clockStr(today5 - now);
+          main.innerHTML = '';
+          main.appendChild(clock);
+          main.insertAdjacentText('beforeend', ' for delivery by 1pm tomorrow');
+        } else {
+          // After 5pm (or weekend): next run lands before 1pm on the next working day.
+          wrap.classList.add('closed');
+          lead.textContent = weekend ? 'Cut-off passed for today' : 'Today\u2019s runs have left';
+          main.innerHTML = 'Order now for delivery by <span class="co-clock">1pm ' + nwdLabel(now) + '</span>';
+        }
+      }
+      render();
+      setInterval(render, 1000);
+    })();
+  </script>
+
+  <script>
+      // Live departures board — split-flap status updates
+    (function () {
+      var grid = document.getElementById('dep-grid');
+      var clock = document.getElementById('dep-clock');
+      if (!grid) return;
+      var places = [['Rathmines','D6'],['Ballsbridge','D4'],['Dame St','D2'],['Phibsboro','D7'],['Drumcondra','D9'],['Clontarf','D3'],['Ranelagh','D6'],['Stoneybatter','D7'],['Portobello','D8'],['Blackrock','A94'],['Rathgar','D6'],['Crumlin','D12'],['Glasnevin','D9'],['Terenure','D6W']];
+      var stages = [['COLLECTED','s-collected'],['EN ROUTE','s-enroute'],['OUT FOR DELIVERY','s-out'],['DELIVERED','s-delivered']];
+      function pad(n){ return n < 10 ? '0' + n : '' + n; }
+      function rnd(a){ return a[Math.floor(Math.random() * a.length)]; }
+      function tnow(){ var d = new Date(); return pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+      function code(){ return 'CP-' + (90000 + Math.floor(Math.random() * 9999)); }
+      var rows = [];
+      for (var i = 0; i < 6; i++) {
+        var p = places[i % places.length];
+        var si = Math.floor(Math.random() * stages.length);
+        var row = document.createElement('div'); row.className = 'dep-row';
+        row.innerHTML = '<span class="cell code" data-k="code">' + code() + '</span>'
+          + '<span class="cell dest" data-k="dest">' + p[0] + ' &middot; ' + p[1] + '</span>'
+          + '<span class="cell status ' + stages[si][1] + '" data-k="status">' + stages[si][0] + '</span>';
+        grid.appendChild(row);
+        rows.push({ el: row, si: si, place: p });
+      }
+      function flip(cell, html, cls) {
+        cell.classList.add('flip');
+        setTimeout(function () {
+          cell.innerHTML = html;
+          if (cls !== undefined) { cell.className = 'cell status ' + cls; cell.classList.add('flip'); }
+        }, 230);
+        setTimeout(function () { cell.classList.remove('flip'); }, 520);
+      }
+      function tick() {
+        var r = rnd(rows);
+        r.si++;
+        if (r.si >= stages.length) {
+          r.si = 0; r.place = rnd(places);
+          flip(r.el.querySelector('[data-k="dest"]'), r.place[0] + ' &middot; ' + r.place[1]);
+          flip(r.el.querySelector('[data-k="code"]'), code());
+        }
+        flip(r.el.querySelector('[data-k="status"]'), stages[r.si][0], stages[r.si][1]);
+      }
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(tick, 1300);
+      if (clock) { function ck(){ clock.textContent = tnow(); } ck(); setInterval(ck, 10000); }
+    })();
+  </script>
+</body>
+</html>

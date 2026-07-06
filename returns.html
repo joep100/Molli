@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Return a parcel — Molli</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .ret-wrap { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
+    .ret-head { text-align: center; margin-bottom: 34px; }
+    .ret-head .pill { margin: 0 auto 16px; }
+    .ret-head h1 { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.04; }
+    .ret-head p { font-size: 16px; color: var(--soft); margin-top: 12px; line-height: 1.55; }
+
+    /* stepper */
+    .steps { display: flex; align-items: center; gap: 8px; justify-content: center; margin-bottom: 30px; }
+    .steps .s { display: flex; align-items: center; gap: 8px; }
+    .steps .dot { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--muted); }
+    .steps .s.on .dot { background: var(--accent); color: #06140d; border-color: var(--accent); }
+    .steps .s.done .dot { background: var(--accent-tint); color: var(--accent); border-color: rgba(156,255,46,.4); }
+    .steps .lbl { font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: .02em; }
+    .steps .s.on .lbl { color: var(--ink); }
+    .steps .bar { width: 26px; height: 1px; background: var(--line); }
+
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 30px; }
+    .card h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 6px; }
+    .card .lede { font-size: 14px; color: var(--soft); margin-bottom: 22px; line-height: 1.5; }
+
+    .fg { margin-bottom: 16px; }
+    .fg label { display: block; font-size: 13px; font-weight: 600; color: var(--soft); margin-bottom: 7px; }
+    .fg input { width: 100%; background: var(--panel2); border: 1px solid var(--line); color: var(--ink); font-family: var(--font-mono); font-size: 15px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; padding: 13px 14px; border-radius: 11px; outline: none; }
+    .fg input::placeholder { color: var(--muted); letter-spacing: .02em; }
+    .fg input:focus { border-color: var(--accent); }
+    .fg .err { color: #ff8a6a; font-size: 12px; margin-top: 6px; display: none; }
+    .fg.bad input { border-color: #ff8a6a; }
+    .fg.bad .err { display: block; }
+    .fg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .btn-row { display: flex; gap: 12px; margin-top: 26px; }
+    .btn-row .btn { font-weight: 500; }
+    .btn-row .grow { flex: 1; }
+
+    /* found-order summary */
+    .order-strip { display: flex; align-items: center; gap: 14px; background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 22px; }
+    .order-strip .shop-ic { width: 42px; height: 42px; border-radius: 10px; background: linear-gradient(135deg,#1a1d16,#232a1a); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; color: var(--accent); font-family: var(--font-mono); font-weight: 700; }
+    .order-strip .oi-name { font-size: 15px; font-weight: 600; }
+    .order-strip .oi-sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+    .order-strip .oi-code { margin-left: auto; font-family: var(--font-mono); font-size: 12px; color: var(--soft); background: var(--panel); border: 1px solid var(--line); padding: 5px 9px; border-radius: 7px; }
+
+    /* item list */
+    .item { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+    .item:last-child { border-bottom: none; }
+    .item .thumb { width: 48px; height: 48px; border-radius: 9px; background: linear-gradient(135deg,#eef1e8,#dbe4cd); flex: none; }
+    .item .nm { font-size: 15px; font-weight: 600; }
+    .item .mt { font-size: 12.5px; color: var(--muted); margin-top: 2px; font-family: var(--font-mono); }
+    .item .chk { margin-left: auto; }
+    /* checkbox */
+    .chk input { position: absolute; opacity: 0; }
+    .chk label { display: inline-flex; width: 26px; height: 26px; border-radius: 8px; border: 1.5px solid var(--line); cursor: pointer; align-items: center; justify-content: center; transition: .12s; }
+    .chk input:checked + label { background: var(--accent); border-color: var(--accent); }
+    .chk label svg { opacity: 0; }
+    .chk input:checked + label svg { opacity: 1; }
+
+    /* reason chips */
+    .reasons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .reasons .r { font-size: 13px; font-weight: 500; color: var(--soft); background: var(--panel2); border: 1px solid var(--line); border-radius: 999px; padding: 9px 15px; cursor: pointer; }
+    .reasons .r.on { background: var(--accent-tint); border-color: var(--accent); color: var(--accent); }
+
+    /* slots */
+    .slot-lbl { font-size: 13px; font-weight: 600; color: var(--soft); margin: 4px 0 10px; }
+    .slots { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .slot { background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; cursor: pointer; }
+    .slot.on { border-color: var(--accent); background: var(--accent-tint); }
+    .slot .d { font-size: 14px; font-weight: 600; }
+    .slot .w { font-size: 12.5px; color: var(--muted); margin-top: 3px; font-family: var(--font-mono); }
+    .slot.on .w { color: var(--accent); }
+
+    .free-note { display: flex; gap: 10px; align-items: flex-start; background: var(--accent-tint); border: 1px solid rgba(156,255,46,.25); border-radius: 12px; padding: 14px 16px; margin-top: 20px; }
+    .free-note svg { flex: none; color: var(--accent); margin-top: 1px; }
+    .free-note .t { font-size: 13.5px; color: var(--ink); line-height: 1.5; }
+    .free-note b { color: var(--accent); }
+
+    /* confirmation */
+    .confirm { text-align: center; }
+    .confirm .tick { width: 72px; height: 72px; border-radius: 50%; background: var(--accent-tint); border: 1px solid rgba(156,255,46,.4); display: flex; align-items: center; justify-content: center; margin: 0 auto 22px; }
+    .confirm h2 { font-size: 26px; }
+    .confirm .code-box { display: inline-flex; flex-direction: column; align-items: center; gap: 4px; background: var(--panel2); border: 1px solid var(--line); border-radius: 14px; padding: 18px 30px; margin: 22px 0; }
+    .confirm .code-box .l { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+    .confirm .code-box .c { font-family: var(--font-mono); font-size: 26px; font-weight: 700; letter-spacing: .04em; color: var(--accent); }
+    .qr { width: 128px; height: 128px; margin: 4px auto 0; border-radius: 12px; background: #fff; padding: 10px; }
+    .confirm .steps-list { text-align: left; max-width: 420px; margin: 26px auto 0; }
+    .confirm .sl { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .confirm .sl:last-child { border: none; }
+    .confirm .sl .n { font-family: var(--font-mono); color: var(--accent); font-weight: 700; font-size: 13px; }
+    .confirm .sl .t { font-size: 14px; color: var(--soft); line-height: 1.5; }
+
+    .hide { display: none; }
+    @media (max-width: 620px) { .ret-head h1 { font-size: 30px; } .slots { grid-template-columns: 1fr; } .steps .lbl { display: none; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="logo" href="index.html">
+      <span class="logo-mark"><span>&rsaquo;</span></span>
+      <span class="logo-word">m<span class="o-wheel"></span>lli</span>
+    </a>
+    <nav class="topnav">
+      <a href="sell.html">Sell more</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="fit.html">Will it fit?</a>
+      <a href="zones.html">Coverage</a>
+      <a href="pricing.html#faqs">Help</a>
+    </nav>
+    <div class="topbar-cta">
+      <a class="signin" href="account.html">Sign in</a>
+      <a class="btn btn--accent btn--sm" href="booking.html">Book a delivery &rarr;</a>
+    </div>
+  </header>
+
+  <div class="ret-wrap">
+    <div class="ret-head">
+      <span class="pill"><span class="dot"></span> Returns</span>
+      <h1>Send it back the easy way.</h1>
+      <p>Changed your mind? We'll collect the return from your door and bring it back to the shop &mdash; no post office, no printer, no queue.</p>
+    </div>
+
+    <div class="steps" id="stepper">
+      <div class="s on" data-s="1"><span class="dot">1</span><span class="lbl">Find order</span></div>
+      <div class="bar"></div>
+      <div class="s" data-s="2"><span class="dot">2</span><span class="lbl">Items</span></div>
+      <div class="bar"></div>
+      <div class="s" data-s="3"><span class="dot">3</span><span class="lbl">Collection</span></div>
+      <div class="bar"></div>
+      <div class="s" data-s="4"><span class="dot">&#10003;</span><span class="lbl">Done</span></div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="card" id="step-1">
+      <h2>Find your order</h2>
+      <p class="lede">Pop in the order number from your confirmation email and the Eircode it was delivered to.</p>
+      <div class="fg" id="fg-order">
+        <label>Order number</label>
+        <input type="text" id="in-order" placeholder="e.g. GRA-4821" maxlength="14" />
+        <div class="err">Enter the order number from your email (try <b>GRA-4821</b>).</div>
+      </div>
+      <div class="fg" id="fg-eir">
+        <label>Delivery Eircode</label>
+        <input type="text" id="in-eir" placeholder="e.g. D06 XY21" maxlength="8" />
+        <div class="err">Enter a valid Eircode &mdash; e.g. D06 XY21.</div>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn--ghost btn--md" href="account.html">Cancel</a>
+        <button class="btn btn--accent btn--md grow" id="find-btn">Find my order &rarr;</button>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="card hide" id="step-2">
+      <h2>What are you sending back?</h2>
+      <p class="lede">Pick the items you'd like to return.</p>
+      <div class="order-strip">
+        <div class="shop-ic">GRÁ</div>
+        <div>
+          <div class="oi-name">GRÁ · Dublin</div>
+          <div class="oi-sub">Delivered 2 Jul · 14 Ranelagh Road, D06 XY21</div>
+        </div>
+        <div class="oi-code">GRA-4821</div>
+      </div>
+
+      <div id="item-list">
+        <div class="item">
+          <div class="thumb"></div>
+          <div><div class="nm">Eau de Parfum · 50ml</div><div class="mt">SKU 88213 · €68.00</div></div>
+          <div class="chk"><input type="checkbox" id="it1" checked /><label for="it1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#06140d" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></label></div>
+        </div>
+        <div class="item">
+          <div class="thumb"></div>
+          <div><div class="nm">Refill Set · 2×15ml</div><div class="mt">SKU 88240 · €34.00</div></div>
+          <div class="chk"><input type="checkbox" id="it2" /><label for="it2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#06140d" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></label></div>
+        </div>
+      </div>
+
+      <div class="slot-lbl" style="margin-top:22px;">Reason for return</div>
+      <div class="reasons" id="reasons">
+        <span class="r on">Changed my mind</span>
+        <span class="r">Wrong item</span>
+        <span class="r">Damaged</span>
+        <span class="r">Didn't fit</span>
+        <span class="r">Other</span>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn--ghost btn--md" data-back="1">Back</button>
+        <button class="btn btn--accent btn--md grow" data-next="3">Choose collection &rarr;</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="card hide" id="step-3">
+      <h2>When should we collect?</h2>
+      <p class="lede">Leave it sealed in the original box or any bag &mdash; the rider brings the label.</p>
+      <div class="slot-lbl">Pick a collection window</div>
+      <div class="slots" id="slots">
+        <div class="slot on"><div class="d">Today</div><div class="w">PM · 13:00–17:00</div></div>
+        <div class="slot"><div class="d">Tomorrow</div><div class="w">AM · 08:00–12:00</div></div>
+        <div class="slot"><div class="d">Tomorrow</div><div class="w">PM · 13:00–17:00</div></div>
+        <div class="slot"><div class="d">Thu 4 Jul</div><div class="w">AM · 08:00–12:00</div></div>
+      </div>
+
+      <div class="free-note">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+        <div class="t"><b>This return is free.</b> GRÁ covers Molli collection on all returns within 14 days. No label or printer needed &mdash; we scan at your door.</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn--ghost btn--md" data-back="2">Back</button>
+        <button class="btn btn--accent btn--md grow" id="book-return">Book free collection &rarr;</button>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="card hide confirm" id="step-4">
+      <div class="tick">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h2>Return booked.</h2>
+      <p class="lede" style="margin:10px auto 0;max-width:420px;">A rider will collect from <b>14 Ranelagh Road</b> today between <b>13:00 and 17:00</b>. You'll get a text when they're five minutes away.</p>
+
+      <div class="code-box">
+        <span class="l">Show this at the door</span>
+        <span class="c" id="ret-code">RTN-7K42</span>
+        <img class="qr" id="ret-qr" alt="Return QR code" />
+      </div>
+
+      <div class="steps-list">
+        <div class="sl"><span class="n">01</span><span class="t">Seal the item in its box or any bag. No need to print anything.</span></div>
+        <div class="sl"><span class="n">02</span><span class="t">The rider scans this code and applies the label at your door.</span></div>
+        <div class="sl"><span class="n">03</span><span class="t">We deliver it back to GRÁ and they process your refund. You'll be notified at each step.</span></div>
+      </div>
+
+      <div class="btn-row" style="justify-content:center;">
+        <a class="btn btn--ghost btn--md" href="track.html">Track this return</a>
+        <a class="btn btn--accent btn--md" href="account.html">Back to my account</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="legal" style="margin-top:20px;">© 2026 Molli · molli.ie · Dublin, Ireland</div>
+
+  <script>
+    (function () {
+      var state = { step: 1 };
+      function show(n) {
+        state.step = n;
+        [1,2,3,4].forEach(function (i) {
+          document.getElementById('step-' + i).classList.toggle('hide', i !== n);
+        });
+        document.querySelectorAll('#stepper .s').forEach(function (s) {
+          var si = parseInt(s.getAttribute('data-s'), 10);
+          s.classList.toggle('on', si === n);
+          s.classList.toggle('done', si < n);
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Step 1 validation
+      function validEir(raw) {
+        var c = (raw || '').toUpperCase().replace(/\s+/g, '');
+        return /^D(?:[1-9]|1[0-9]|2[0-4]|6W)$/.test(c) || /^[AC-FHKNPRTV-Y][0-9][0-9W][0-9AC-FHKNPRTV-Y]{4}$/.test(c);
+      }
+      document.getElementById('find-btn').addEventListener('click', function () {
+        var ok = true;
+        var order = document.getElementById('in-order').value.trim();
+        var eir = document.getElementById('in-eir').value.trim();
+        var fgO = document.getElementById('fg-order'), fgE = document.getElementById('fg-eir');
+        if (order.length < 3) { fgO.classList.add('bad'); ok = false; } else { fgO.classList.remove('bad'); }
+        if (!validEir(eir)) { fgE.classList.add('bad'); ok = false; } else { fgE.classList.remove('bad'); }
+        if (ok) show(2);
+      });
+
+      // reasons
+      document.getElementById('reasons').addEventListener('click', function (e) {
+        var r = e.target.closest('.r'); if (!r) return;
+        this.querySelectorAll('.r').forEach(function (x) { x.classList.remove('on'); });
+        r.classList.add('on');
+      });
+      // slots
+      document.getElementById('slots').addEventListener('click', function (e) {
+        var s = e.target.closest('.slot'); if (!s) return;
+        this.querySelectorAll('.slot').forEach(function (x) { x.classList.remove('on'); });
+        s.classList.add('on');
+      });
+
+      // nav buttons
+      document.querySelectorAll('[data-next]').forEach(function (b) {
+        b.addEventListener('click', function () { show(parseInt(b.getAttribute('data-next'), 10)); });
+      });
+      document.querySelectorAll('[data-back]').forEach(function (b) {
+        b.addEventListener('click', function () { show(parseInt(b.getAttribute('data-back'), 10)); });
+      });
+
+      document.getElementById('book-return').addEventListener('click', function () {
+        var code = 'RTN-' + Math.random().toString(36).slice(2, 6).toUpperCase();
+        document.getElementById('ret-code').textContent = code;
+        drawQR(code);
+        show(4);
+      });
+
+      // tiny faux-QR (deterministic blocks from the code — decorative)
+      function drawQR(seed) {
+        var img = document.getElementById('ret-qr');
+        var N = 21, cell = 5, pad = 0, S = N * cell;
+        var c = document.createElement('canvas'); c.width = S; c.height = S;
+        var ctx = c.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0,0,S,S);
+        ctx.fillStyle = '#0a0a0a';
+        var h = 0; for (var i=0;i<seed.length;i++){ h = (h*31 + seed.charCodeAt(i)) >>> 0; }
+        function rnd(){ h = (h*1103515245 + 12345) & 0x7fffffff; return h / 0x7fffffff; }
+        for (var y=0;y<N;y++) for (var x=0;x<N;x++){ if (rnd() > 0.5) ctx.fillRect(x*cell, y*cell, cell, cell); }
+        // finder squares
+        function finder(fx, fy){ ctx.fillStyle='#fff'; ctx.fillRect(fx*cell-1,fy*cell-1,cell*7+2,cell*7+2); ctx.fillStyle='#0a0a0a'; ctx.fillRect(fx*cell,fy*cell,cell*7,cell*7); ctx.fillStyle='#fff'; ctx.fillRect((fx+1)*cell,(fy+1)*cell,cell*5,cell*5); ctx.fillStyle='#0a0a0a'; ctx.fillRect((fx+2)*cell,(fy+2)*cell,cell*3,cell*3); }
+        finder(0,0); finder(N-7,0); finder(0,N-7);
+        img.src = c.toDataURL();
+      }
+    })();
+  </script>
+</body>
+</html>

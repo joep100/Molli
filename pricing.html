@@ -13,7 +13,7 @@
   <style>
     .price-hero { padding: 72px 40px 32px; text-align: center; }
     .price-hero .from { font-size: 15px; color: var(--soft); font-weight: 600; margin-top: 18px; letter-spacing: .04em; }
-    .price-hero h1 { font-family: var(--font-mono); font-size: 156px; line-height: .85; letter-spacing: -0.07em; font-weight: 700; margin: 4px auto 18px; max-width: 1100px; color: var(--accent); }
+    .price-hero h1 { font-size: 76px; line-height: .96; letter-spacing: -0.04em; font-weight: 800; margin: 8px auto 20px; max-width: 900px; color: var(--ink); }
     .price-hero p { font-size: 18px; color: var(--soft); max-width: 580px; margin: 0 auto; line-height: 1.55; font-weight: 600; }
 
     .calc {
@@ -86,6 +86,35 @@
     .invoice .total { display: flex; justify-content: space-between; padding: 14px 0 0; font-size: 16px; font-weight: 500; }
     .invoice .total .amt { color: var(--accent); font-family: var(--font-mono); font-size: 22px; }
 
+    /* Volume pricing */
+    .vol { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .vol-c { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px; text-align: center; position: relative; }
+    .vol-c.best { border-color: rgba(156,255,46,.5); background: linear-gradient(135deg, rgba(156,255,46,.1), var(--panel)); }
+    .vol-c .pk { font-size: 12px; color: var(--soft); font-weight: 500; letter-spacing: .08em; text-transform: uppercase; }
+    .vol-c .pp { font-family: var(--font-mono); font-size: 34px; font-weight: 700; color: var(--accent); letter-spacing: -0.03em; margin: 12px 0 2px; }
+    .vol-c .pu { font-size: 12px; color: var(--soft); }
+    .vol-c .bonus { display: inline-block; margin-top: 14px; font-family: var(--font-mono); font-size: 11px; color: var(--accent); border: 1px solid rgba(156,255,46,.35); border-radius: 999px; padding: 4px 10px; }
+    .vol-flag { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--accent); color: var(--bg); padding: 4px 10px; font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; border-radius: 999px; }
+
+    /* Credit */
+    .credit { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+    .credit h2 { font-size: 46px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; margin: 12px 0 18px; }
+    .credit p { font-size: 16px; color: var(--soft); line-height: 1.6; margin-bottom: 18px; max-width: 480px; font-weight: 600; }
+    .credit ul { display: flex; flex-direction: column; gap: 10px; margin-bottom: 8px; }
+    .credit li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; font-size: 15px; color: var(--ink); align-items: baseline; }
+    .credit li .tick { color: var(--accent); font-weight: 800; }
+    .credit li span.soft { color: var(--soft); }
+    .credit-panel { background: linear-gradient(135deg, rgba(156,255,46,.14), var(--panel)); border: 1px solid rgba(156,255,46,.35); border-radius: 18px; padding: 28px; }
+    .credit-panel .lbl { font-size: 11px; color: var(--soft); font-weight: 500; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 8px; }
+    .credit-panel .bal { font-family: var(--font-mono); font-size: 46px; font-weight: 700; letter-spacing: -0.03em; color: var(--accent); line-height: 1; }
+    .credit-panel .reload { display: flex; align-items: center; gap: 10px; margin-top: 18px; font-size: 13px; color: var(--soft); }
+    .credit-panel .dot { width: 40px; height: 24px; border-radius: 999px; background: var(--accent); position: relative; flex-shrink: 0; }
+    .credit-panel .dot::after { content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #0a0a0a; top: 3px; right: 3px; }
+    .pack-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 20px; }
+    .pack-c { text-align: center; padding: 14px 6px; border-radius: 10px; background: var(--bg); border: 1px solid var(--line); }
+    .pack-c .amt { font-family: var(--font-mono); font-size: 20px; font-weight: 700; }
+    .pack-c .s { font-size: 10px; color: var(--soft); margin-top: 2px; text-transform: uppercase; letter-spacing: .1em; }
+
     /* FAQ */
     .faq-head { font-size: 36px; font-weight: 800; letter-spacing: -0.025em; margin: 0 0 28px; }
     .faqs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
@@ -101,8 +130,8 @@
 
     @media (max-width: 860px) {
       .price-hero { padding: 48px 20px 24px; }
-      .price-hero h1 { font-size: 96px; }
-      .calc, .biz, .faqs { grid-template-columns: 1fr; }
+      .price-hero h1 { font-size: 52px; }
+      .calc, .biz, .faqs, .credit, .vol { grid-template-columns: 1fr; }
       .calc-left { border-right: none; border-bottom: 1px solid var(--line); }
       .biz { gap: 28px; }
       .biz h2 { font-size: 32px; }
@@ -119,9 +148,9 @@
       <span class="logo-word">m<span class="o-wheel"></span>lli</span>
     </a>
     <nav class="topnav">
+      <a href="sell.html">Sell more</a>
       <a href="pricing.html" class="active">Pricing</a>
       <a href="fit.html">Will it fit?</a>
-      <a href="business.html">Business</a>
       <a href="zones.html">Coverage</a>
       <a href="pricing.html#faqs">Help</a>
     </nav>
@@ -134,9 +163,9 @@
   <!-- HERO -->
   <section class="price-hero">
     <div class="eyebrow">Pricing</div>
-    <div class="from">Parcels across Dublin from</div>
-    <h1>&euro;7.99</h1>
-    <p>That's a small parcel, collected on the next run and delivered <b>the same day</b> when you order by 2pm. Bigger parcel or extra services? Build your price below.</p>
+    <div class="from">Same day across Dublin</div>
+    <h1>One price.<br>No surprises.</h1>
+    <p>Parcels across Dublin <b>from &euro;7.99</b> &mdash; a small parcel collected on the next run and delivered <b>the same day</b> when you order by 2pm. Bigger parcel or extra services? Build your exact price below.</p>
   </section>
 
   <!-- CALCULATOR -->
@@ -191,6 +220,68 @@
 
         <a class="btn btn--accent btn--block" id="book-btn" href="booking.html" style="margin-top:24px;padding:16px;font-size:16px">Book for &euro;7.99 &rarr;</a>
         <div class="book-line">Collected today &middot; no card charged until pickup</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VOLUME PRICING -->
+  <section class="section divider-top" id="volume">
+    <div class="eyebrow">Pricing that rewards volume</div>
+    <h2 style="font-size: 40px; font-weight: 800; letter-spacing: -0.03em; margin: 12px 0 8px;">The more you load, the less each parcel costs.</h2>
+    <p style="font-size:15px; color:var(--soft); max-width:560px; margin:0 0 32px; line-height:1.55;">Top up a credit pack and we add bonus credit on top &mdash; so your effective per-parcel price drops the more you send. No tiers to negotiate, no minimums.</p>
+    <div class="vol">
+      <div class="vol-c">
+        <div class="pk">Pay as you go</div>
+        <div class="pp">&euro;7.99</div>
+        <div class="pu">per parcel, from</div>
+        <div class="bonus">no pack</div>
+      </div>
+      <div class="vol-c">
+        <div class="pk">&euro;250 pack</div>
+        <div class="pp">&euro;7.60</div>
+        <div class="pu">effective, from</div>
+        <div class="bonus">+&euro;13 credit</div>
+      </div>
+      <div class="vol-c best">
+        <div class="vol-flag">Most popular</div>
+        <div class="pk">&euro;500 pack</div>
+        <div class="pp">&euro;7.27</div>
+        <div class="pu">effective, from</div>
+        <div class="bonus">+&euro;50 credit</div>
+      </div>
+      <div class="vol-c">
+        <div class="pk">&euro;1,000 pack</div>
+        <div class="pp">&euro;6.99</div>
+        <div class="pu">effective, from</div>
+        <div class="bonus">+&euro;145 credit</div>
+      </div>
+    </div>
+    <p style="font-size:12px; color:var(--muted); margin-top:14px;">Effective price shown for the Small rate. Bonus credit applies to every size. Credit never expires.</p>
+  </section>
+
+  <!-- CREDIT -->
+  <section class="section divider-top" id="credit">
+    <div class="credit">
+      <div>
+        <div class="eyebrow">Billing built for business</div>
+        <h2>Buy credit. Book freely.<br /><span class="accent">No invoices, no terms.</span></h2>
+        <p>Top up a Molli Credit balance from your card, then book as much as you like — every parcel just draws down. No paying per transaction, no waiting on 30-day invoices, no credit applications.</p>
+        <ul>
+          <li><span class="tick">&#10003;</span><span><b>One charge, not fifty.</b> <span class="soft">Top up once; book all week without touching your card again.</span></span></li>
+          <li><span class="tick">&#10003;</span><span><b>Auto top-up, on your terms.</b> <span class="soft">Balance runs low? It reloads automatically — or switch it off and top up yourself.</span></span></li>
+          <li><span class="tick">&#10003;</span><span><b>Full spend visibility.</b> <span class="soft">Every draw-down logged in your dashboard, so finance always knows where it stands.</span></span></li>
+          <li><span class="tick">&#10003;</span><span><b>No subscription.</b> <span class="soft">Credit never expires and you only ever pay for parcels you send.</span></span></li>
+        </ul>
+      </div>
+      <div class="credit-panel">
+        <div class="lbl">Molli Credit balance</div>
+        <div class="bal">€612.00</div>
+        <div class="reload"><span class="dot"></span> Auto top-up <b style="color:var(--accent); margin:0 4px;">on</b> — reloads €500 below €50</div>
+        <div class="pack-row">
+          <div class="pack-c"><div class="amt">€250</div><div class="s">pack</div></div>
+          <div class="pack-c"><div class="amt">€500</div><div class="s">pack</div></div>
+          <div class="pack-c"><div class="amt">€1,000</div><div class="s">pack</div></div>
+        </div>
       </div>
     </div>
   </section>
@@ -254,9 +345,9 @@
 
   <script>
     var SIZES = [
-      { id: 'small',   label: 'Small parcel', blurb: 'Perfume box, phone · Max 1kg', price: 7.99 },
-      { id: 'package', label: 'Parcel',  blurb: 'Shoebox, a book · Max 2kg',   price: 8.99 },
-      { id: 'box',     label: 'Box',     blurb: 'Wine case, hamper · up to 30kg', price: 9.99 }
+      { id: 'small',   label: 'Small', blurb: 'Perfume box, phone · Max 1kg', price: 7.99 },
+      { id: 'package', label: 'Medium',  blurb: 'Shoebox, a book · Max 2kg',   price: 8.99 },
+      { id: 'box',     label: 'Large',     blurb: 'Wine case, hamper · up to 30kg', price: 9.99 }
     ];
     var ZONE2_FEE = 2.00;
     // Box: stepped by chargeable weight — €9.99 base, +€1 per 2 kg, up to €24.99 at 30 kg.
@@ -342,7 +433,7 @@
       strike.textContent = money(base);
       strike.classList.toggle('show', extras > 0);
 
-      var baseLabel = state.size === 'box' ? 'Base · Box (' + state.boxKg + ' kg)' : 'Base · ' + sizeObj.label;
+      var baseLabel = state.size === 'box' ? 'Base · Large (' + state.boxKg + ' kg)' : 'Base · ' + sizeObj.label;
       var ledger = '<div class="row"><span>' + baseLabel + '</span><span class="amt">' + money(base) + '</span></div>';
       if (state.zone2) ledger += '<div class="row"><span>+ Greater Dublin (D9–D24)</span><span class="amt accent">' + money(ZONE2_FEE) + '</span></div>';
       extrasArr.forEach(function (a) {

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Molli — Stakeholder Walkthrough</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  doc-page:not(:defined) { visibility: hidden; }
+  * { box-sizing: border-box; }
+  doc-page {
+    --ink: #14140f;
+    --soft: #6b6b63;
+    --line: #e3e3db;
+    --accent: #7bb500;
+    font-family: 'Inter Tight', -apple-system, sans-serif;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  .head {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 4px;
+  }
+  .brand { display: flex; align-items: baseline; gap: 10px; }
+  .logo { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; }
+  .logo .o-wheel {
+    display: inline-block; width: 0.62em; height: 0.62em; vertical-align: -0.01em;
+    margin: 0 0.01em; position: relative;
+  }
+  .tagline { font-size: 12px; color: var(--soft); font-weight: 500; }
+  .doctype {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent);
+    text-align: right;
+  }
+  .doctype span { display: block; color: var(--soft); font-weight: 500; margin-top: 3px; }
+
+  .intro { font-size: 13px; color: var(--soft); margin: 16px 0 22px; max-width: 62ch; }
+  .intro b { color: var(--ink); font-weight: 600; }
+
+  .arc {
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500;
+    color: var(--soft); background: #f6f6f1; border: 1px solid var(--line);
+    border-radius: 8px; padding: 11px 14px; margin-bottom: 24px; line-height: 1.7;
+  }
+  .arc b { color: var(--ink); font-weight: 700; }
+  .arc .sep { color: var(--accent); font-weight: 700; margin: 0 6px; }
+
+  .step { display: flex; gap: 16px; padding: 15px 0; border-top: 1px solid var(--line); break-inside: avoid; }
+  .step:last-of-type { border-bottom: 1px solid var(--line); }
+  .num {
+    flex: none; width: 34px; height: 34px; border-radius: 50%;
+    background: var(--accent); color: #14140f;
+    font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .body { flex: 1; }
+  .step h3 { font-size: 15px; font-weight: 600; margin: 5px 0 2px; }
+  .step h3 .file {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500;
+    color: var(--soft); margin-left: 8px;
+  }
+  .step .role { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; }
+  .step ul { margin: 7px 0 0; padding-left: 0; list-style: none; }
+  .step li { font-size: 12.5px; color: #3a3a33; padding-left: 16px; position: relative; margin-bottom: 4px; }
+  .step li::before { content: '→'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+  .step li b { font-weight: 600; color: var(--ink); }
+
+  .foot {
+    margin-top: 22px; padding-top: 12px; border-top: 2px solid var(--ink);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; color: var(--soft);
+  }
+  .foot .time { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--ink); }
+</style>
+</head>
+<body>
+<doc-page size="letter" margin="0.6in">
+
+  <div class="head">
+    <div class="brand">
+      <div class="logo">m<span class="o-wheel"><svg viewBox="0 0 100 100" width="100%" height="100%"><circle cx="50" cy="50" r="44" fill="none" stroke="#14140f" stroke-width="11"/><circle cx="50" cy="50" r="7" fill="#14140f"/><g stroke="#14140f" stroke-width="9"><line x1="50" y1="10" x2="50" y2="90"/><line x1="10" y1="50" x2="90" y2="50"/><line x1="22" y1="22" x2="78" y2="78"/><line x1="78" y1="22" x2="22" y2="78"/></g></svg></span>lli</div>
+      <div class="tagline">Dublin's same-day delivery network</div>
+    </div>
+    <div class="doctype">Stakeholder Walkthrough<span>Demo click-path · ~8–10 min</span></div>
+  </div>
+
+  <p class="intro">A page-by-page script for the live demo. Run it on the deployed site, not the preview. The arc below is the story the click-path tells — keep the room's attention moving from <b>the promise</b> to <b>how retailers buy</b>.</p>
+
+  <div class="arc">
+    <b>The promise</b><span class="sep">→</span><b>Why we can keep it</b><span class="sep">→</span><b>The clever bit</b><span class="sep">→</span><b>It working</b><span class="sep">→</span><b>How retailers buy</b><span class="sep">→</span><b>Their home base</b>
+  </div>
+
+  <div class="step">
+    <div class="num">1</div>
+    <div class="body">
+      <div class="role">The hook</div>
+      <h3>Home <span class="file">index.html</span></h3>
+      <ul>
+        <li>Open on the hero — <b>"Collect today, deliver tomorrow. Guaranteed."</b> Let the ticker rotate through Dublin areas.</li>
+        <li>Call out <b>pricing from €7.99</b> and the <b>"Built for" strip</b> — name beauty, health &amp; wellness as target verticals.</li>
+        <li>Scroll to the stats and the one-line USP: <b>the only parcel network that collects same-day and delivers next-day.</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">2</div>
+    <div class="body">
+      <div class="role">Why it works</div>
+      <h3>Zones <span class="file">zones.html</span></h3>
+      <ul>
+        <li>Show the O'Connell Bridge radius map. The story: a <b>tight radius is what makes same-day at this price possible.</b></li>
+        <li>City centre = cargo bike (bigger loads); greater Dublin = smaller cap. This sets up the fit tool.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">3</div>
+    <div class="body">
+      <div class="role">The differentiator</div>
+      <h3>Will-it-fit <span class="file">fit.html</span></h3>
+      <ul>
+        <li>Drag the sliders; flip the <b>City centre / Greater Dublin toggle</b> to show the envelope change live.</li>
+        <li>This is the memorable, unique moment — <b>linger here.</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">4</div>
+    <div class="body">
+      <div class="role">The real engine</div>
+      <h3>Booking <span class="file">booking.html</span></h3>
+      <ul>
+        <li>Enter a <b>D2 address</b> (city centre), pick a size, run the sizer at max, add an add-on, walk to the <b>confirmation screen.</b></li>
+        <li>Emphasise it's a <b>working calculator</b>, not a mockup.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">5</div>
+    <div class="body">
+      <div class="role">The money slide</div>
+      <h3>Business <span class="file">bulk.html / business.html</span></h3>
+      <ul>
+        <li>Land on the retailer pitch: <b>credit packs with auto top-up</b>, self-serve, same-day.</li>
+        <li>This is where the room's attention should end up.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">6</div>
+    <div class="body">
+      <div class="role">Close</div>
+      <h3>Account <span class="file">account.html</span></h3>
+      <ul>
+        <li>Quick flash of the post-login dashboard: saved addresses, cards, bookings.</li>
+        <li><b>"This is what a retailer lives in day-to-day."</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div>Molli · Dublin's same-day delivery network</div>
+    <div class="time">Total runtime ≈ 8–10 min</div>
+  </div>
+
+</doc-page>
+<script src="doc-page.js"></script>
+</body>
+</html>

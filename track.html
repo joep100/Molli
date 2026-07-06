@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Track your delivery — Molli</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .track-wrap { max-width: 1080px; margin: 0 auto; padding: 40px; }
+    .track-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; margin-bottom: 28px; }
+    .track-head .code { font-family: var(--font-mono); font-size: 13px; color: var(--soft); letter-spacing: .06em; }
+    .track-head h1 { font-size: 34px; font-weight: 700; letter-spacing: -0.02em; margin-top: 6px; }
+    .track-head .to { font-size: 15px; color: var(--soft); margin-top: 6px; }
+
+    .track-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 20px; align-items: start; }
+
+    /* ETA hero card */
+    .eta-card { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 28px; position: relative; overflow: hidden; }
+    .eta-card .status-pill { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; background: var(--accent); color: #06140d; border-radius: 999px; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+    .eta-card .status-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: #06140d; animation: cp-pulse-dark 1.6s ease-out infinite; }
+    @keyframes cp-pulse-dark { 0% { box-shadow: 0 0 0 0 rgba(6,20,13,.5);} 70%{ box-shadow:0 0 0 7px rgba(6,20,13,0);} 100%{ box-shadow:0 0 0 0 rgba(6,20,13,0);} }
+    .eta-big { font-family: var(--font-mono); font-size: 60px; font-weight: 700; letter-spacing: -0.04em; line-height: 1; margin: 22px 0 6px; }
+    .eta-sub { font-size: 15px; color: var(--soft); }
+    .eta-sub b { color: var(--ink); font-weight: 600; }
+    .eta-window { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; font-size: 13px; color: var(--soft); }
+    .eta-window .mono-num { font-size: 15px; }
+
+    /* Mini live map */
+    .mini-map { margin-top: 22px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #0c0f0c; position: relative; height: 170px; }
+    .mini-map svg { width: 100%; height: 100%; display: block; }
+    .map-dot { fill: var(--accent); }
+    .rider-dot { transition: all .9s linear; }
+
+    /* Rider card */
+    .rider-card { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 22px; }
+    .rider-row { display: flex; align-items: center; gap: 14px; }
+    .rider-av { width: 52px; height: 52px; border-radius: 50%; background: var(--panel2); border: 1px solid var(--line-strong); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: var(--accent); flex: none; }
+    .rider-name { font-size: 17px; font-weight: 600; }
+    .rider-meta { font-size: 13px; color: var(--soft); margin-top: 2px; display: flex; align-items: center; gap: 8px; }
+    .veh-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--accent); background: var(--accent-tint); border: 1px solid rgba(var(--accent-rgb),.3); border-radius: 999px; padding: 3px 9px; }
+    .rider-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
+    .rider-actions .btn { font-size: 13px; padding: 11px 12px; }
+
+    /* Timeline */
+    .timeline { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 26px 28px; margin-top: 20px; }
+    .timeline h3 { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--soft); font-weight: 600; margin-bottom: 20px; }
+    .tl-step { display: grid; grid-template-columns: 26px 1fr auto; gap: 16px; align-items: start; position: relative; padding-bottom: 22px; }
+    .tl-step:last-child { padding-bottom: 0; }
+    .tl-step::before { content: ''; position: absolute; left: 12px; top: 22px; bottom: -4px; width: 2px; background: var(--line); }
+    .tl-step:last-child::before { display: none; }
+    .tl-node { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--line-strong); background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 1; }
+    .tl-step.done .tl-node { background: var(--accent); border-color: var(--accent); }
+    .tl-step.done::before { background: var(--accent); }
+    .tl-step.active .tl-node { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(var(--accent-rgb),.16); }
+    .tl-node svg { width: 13px; height: 13px; }
+    .tl-title { font-size: 15px; font-weight: 600; }
+    .tl-step:not(.done):not(.active) .tl-title { color: var(--muted); }
+    .tl-desc { font-size: 13px; color: var(--soft); margin-top: 2px; }
+    .tl-time { font-family: var(--font-mono); font-size: 13px; color: var(--soft); white-space: nowrap; }
+    .tl-step.active .tl-time { color: var(--accent); }
+
+    /* Proof of delivery */
+    .pod { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 26px 28px; margin-top: 20px; opacity: .55; }
+    .pod.ready { opacity: 1; }
+    .pod h3 { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--soft); font-weight: 600; margin-bottom: 18px; }
+    .pod-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; }
+    .pod-photo { aspect-ratio: 4/3; border-radius: 12px; border: 1px solid var(--line); background: #0c0f0c center/cover; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 13px; overflow: hidden; position: relative; }
+    .pod-photo .ph-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(var(--accent-rgb),.06) 1px,transparent 1px),linear-gradient(90deg,rgba(var(--accent-rgb),.06) 1px,transparent 1px); background-size: 22px 22px; }
+    .pod-sig { display: flex; flex-direction: column; gap: 12px; }
+    .pod-field .k { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    .pod-field .v { font-size: 15px; font-weight: 600; margin-top: 3px; }
+    .pod-field .v.sig { font-family: 'Segoe Script','Bradley Hand',cursive; font-size: 26px; font-weight: 400; color: var(--ink); }
+    .pod-pending { font-size: 14px; color: var(--soft); }
+
+    @media (max-width: 880px) {
+      .track-wrap { padding: 28px 20px; }
+      .track-grid { grid-template-columns: 1fr; }
+      .pod-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <a class="logo" href="index.html">
+      <span class="logo-mark"><span>&rsaquo;</span></span>
+      <span class="logo-word">m<span class="o-wheel"></span>lli</span>
+    </a>
+    <nav class="topnav">
+      <a href="sell.html">Sell more</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="fit.html">Will it fit?</a>
+      <a href="zones.html">Coverage</a>
+      <a href="pricing.html#faqs">Help</a>
+    </nav>
+    <div class="topbar-cta">
+      <a class="signin" href="account.html">Sign in</a>
+      <a class="btn btn--accent btn--sm" href="booking.html">Book a delivery &rarr;</a>
+    </div>
+  </header>
+
+  <main class="track-wrap">
+    <div class="track-head">
+      <div>
+        <div class="code">MOL-94821-D · Molli city centre run</div>
+        <h1>Your delivery is on the way</h1>
+        <div class="to">To <b style="color:var(--ink);font-weight:600;">Aoife N.</b> · 14 Ranelagh Road, Dublin 6 · D06 XY21</div>
+      </div>
+      <a class="btn btn--ghost btn--sm" href="#" id="refresh-btn">↻ Refresh</a>
+    </div>
+
+    <div class="track-grid">
+      <!-- LEFT: ETA + map -->
+      <section class="eta-card">
+        <span class="status-pill"><span class="dot"></span> Out for delivery</span>
+        <div class="eta-big"><span id="eta-mins">18</span> min</div>
+        <div class="eta-sub">Arriving to you in about <b><span id="eta-mins2">18</span> minutes</b> · <span id="stops">3</span> stops away</div>
+        <div class="eta-window">
+          <span>Delivery window</span>
+          <span><span class="mono-num">09:00</span> – <span class="mono-num">13:00</span></span>
+        </div>
+
+        <div class="mini-map">
+          <svg viewBox="0 0 480 170" preserveAspectRatio="xMidYMid slice">
+            <!-- faint street grid -->
+            <g stroke="rgba(156,255,46,.09)" stroke-width="1">
+              <path d="M0 40 H480 M0 90 H480 M0 130 H480" />
+              <path d="M90 0 V170 M200 0 V170 M310 0 V170 M400 0 V170" />
+            </g>
+            <!-- route -->
+            <path id="route" d="M60 135 C 140 120, 150 60, 240 60 S 360 55, 415 45" fill="none" stroke="rgba(156,255,46,.35)" stroke-width="2.5" stroke-dasharray="5 5" />
+            <!-- collected / destination markers -->
+            <circle cx="60" cy="135" r="5" fill="rgba(255,255,255,.5)" />
+            <text x="60" y="156" fill="rgba(255,255,255,.4)" font-size="9" font-family="monospace" text-anchor="middle">DEPOT</text>
+            <circle cx="415" cy="45" r="6" class="map-dot" />
+            <text x="415" y="30" fill="var(--accent)" font-size="9" font-family="monospace" text-anchor="middle">YOU</text>
+            <!-- rider -->
+            <circle id="rider" class="rider-dot map-dot" cx="60" cy="135" r="7" />
+            <circle id="rider-halo" class="rider-dot" cx="60" cy="135" r="7" fill="none" stroke="var(--accent)" stroke-width="1.5" opacity=".5" />
+          </svg>
+        </div>
+      </section>
+
+      <!-- RIGHT: rider + actions -->
+      <aside>
+        <div class="rider-card">
+          <div class="rider-row">
+            <div class="rider-av">DK</div>
+            <div>
+              <div class="rider-name">Darragh K.</div>
+              <div class="rider-meta">
+                <span class="veh-tag">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6h2l2 5.5M5.5 17.5l4-9h5l3 8.5"/></svg>
+                  Cargo bike
+                </span>
+                <span>·  Molli rider since 2024</span>
+              </div>
+            </div>
+          </div>
+          <div class="rider-actions">
+            <a class="btn btn--ghost btn--sm" href="#" data-msg="We'll ask Darragh to leave your parcel with a neighbour.">Leave with neighbour</a>
+            <a class="btn btn--ghost btn--sm" href="#" data-msg="Tell us where — Darragh will follow your safe-place note.">Leave in safe place</a>
+            <a class="btn btn--ghost btn--sm" href="#" data-msg="No problem — we'll bring it on the next working-day run.">Reschedule</a>
+            <a class="btn btn--ghost btn--sm" href="#" data-msg="Darragh has been messaged. He'll call on arrival.">Message rider</a>
+          </div>
+        </div>
+
+        <!-- TIMELINE -->
+        <div class="timeline">
+          <h3>Delivery timeline</h3>
+          <div class="tl-step done">
+            <div class="tl-node"><svg viewBox="0 0 24 24" fill="none" stroke="#06140d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div>
+            <div><div class="tl-title">Order placed</div><div class="tl-desc">Booked from Grafton St boutique</div></div>
+            <div class="tl-time">08:42</div>
+          </div>
+          <div class="tl-step done">
+            <div class="tl-node"><svg viewBox="0 0 24 24" fill="none" stroke="#06140d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div>
+            <div><div class="tl-title">Collected</div><div class="tl-desc">Picked up by Darragh · city centre depot</div></div>
+            <div class="tl-time">09:15</div>
+          </div>
+          <div class="tl-step active">
+            <div class="tl-node"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4" fill="var(--accent)" stroke="none"/></svg></div>
+            <div><div class="tl-title">Out for delivery</div><div class="tl-desc">On the Ranelagh / D6 route now</div></div>
+            <div class="tl-time" id="tl-eta">~ 11:58</div>
+          </div>
+          <div class="tl-step">
+            <div class="tl-node"></div>
+            <div><div class="tl-title">Delivered</div><div class="tl-desc">Photo + signature captured on drop</div></div>
+            <div class="tl-time">—</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- PROOF OF DELIVERY -->
+    <section class="pod" id="pod">
+      <h3>Proof of delivery</h3>
+      <div class="pod-pending" id="pod-pending">Captured automatically the moment your parcel is handed over — a photo of the drop and the recipient's signature will appear here.</div>
+      <div class="pod-grid" id="pod-content" style="display:none;">
+        <div class="pod-photo"><div class="ph-grid"></div><span>Doorstep photo · 14 Ranelagh Rd</span></div>
+        <div class="pod-sig">
+          <div class="pod-field"><div class="k">Signed by</div><div class="v sig">A. Ní Bhraonáin</div></div>
+          <div class="pod-field"><div class="k">Delivered</div><div class="v mono-num" style="font-family:var(--font-mono);">11:58 · today</div></div>
+          <div class="pod-field"><div class="k">Handled by</div><div class="v">Darragh K. · Cargo bike</div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div>
+      <a class="logo" href="index.html"><span class="logo-mark"><span>&rsaquo;</span></span><span class="logo-word">m<span class="o-wheel"></span>lli</span></a>
+      <div class="tag">molli.ie · Dublin's same-day parcel network<br /><span style="color:var(--muted)">Through streets broad &amp; narrow.</span></div>
+    </div>
+    <div class="col"><div class="col-title">Service</div><a href="pricing.html">Pricing</a><a href="zones.html">Coverage</a><a href="fit.html">Fit finder</a><a href="booking.html">Book</a></div>
+    <div class="col"><div class="col-title">Retailers</div><a href="business.html">For retailers</a><a href="bulk.html">Bulk booking</a><a href="badge.html">Cut-off badge</a></div>
+    <div class="col"><div class="col-title">Account</div><a href="account.html">Sign in</a><a href="track.html">Track a delivery</a></div>
+    <div class="col"><div class="col-title">Company</div><a href="index.html#name">The name</a><a href="pricing.html#faqs">Help</a></div>
+  </footer>
+  <div class="legal">© 2026 Molli · molli.ie · Dublin, Ireland</div>
+
+  <script>
+    // Simulated live delivery — ticks the ETA down, walks the rider along the route,
+    // then flips to a delivered state with proof of delivery.
+    (function () {
+      var mins = 18, stops = 3;
+      var etaMins = document.getElementById('eta-mins');
+      var etaMins2 = document.getElementById('eta-mins2');
+      var stopsEl = document.getElementById('stops');
+      var rider = document.getElementById('rider');
+      var halo = document.getElementById('rider-halo');
+      var route = document.getElementById('route');
+      var len = route.getTotalLength();
+      var pod = document.getElementById('pod');
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function place(p) { // p 0..1 along route
+        var pt = route.getPointAtLength(len * p);
+        rider.setAttribute('cx', pt.x); rider.setAttribute('cy', pt.y);
+        halo.setAttribute('cx', pt.x); halo.setAttribute('cy', pt.y);
+      }
+      var progress = 0.06;
+      place(progress);
+
+      function deliver() {
+        document.querySelector('.status-pill').innerHTML = '<span class="dot"></span> Delivered';
+        etaMins.textContent = '✓'; etaMins2.textContent = '0'; stopsEl.textContent = '0';
+        document.querySelector('.eta-big').innerHTML = 'Delivered';
+        document.querySelector('.eta-sub').innerHTML = 'Handed over at <b>11:58</b> · signed for';
+        // timeline: mark delivered
+        var steps = document.querySelectorAll('.tl-step');
+        steps[2].classList.remove('active'); steps[2].classList.add('done');
+        steps[2].querySelector('.tl-node').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#06140d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>';
+        steps[3].classList.add('done');
+        steps[3].querySelector('.tl-node').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#06140d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>';
+        steps[3].querySelector('.tl-time').textContent = '11:58';
+        // proof of delivery
+        pod.classList.add('ready');
+        document.getElementById('pod-pending').style.display = 'none';
+        document.getElementById('pod-content').style.display = 'grid';
+      }
+
+      if (!reduce) {
+        var iv = setInterval(function () {
+          progress += 0.11; if (progress > 1) progress = 1;
+          place(progress);
+          if (mins > 1) { mins -= 2; if (mins < 1) mins = 1; etaMins.textContent = mins; etaMins2.textContent = mins; }
+          if (stops > 0 && Math.random() > 0.4) { stops--; stopsEl.textContent = stops; }
+          if (progress >= 1) { clearInterval(iv); setTimeout(deliver, 900); }
+        }, 2200);
+      }
+
+      // recipient actions → toast
+      document.querySelectorAll('[data-msg]').forEach(function (b) {
+        b.addEventListener('click', function (e) {
+          e.preventDefault();
+          var t = document.createElement('div');
+          t.textContent = b.getAttribute('data-msg');
+          t.style.cssText = 'position:fixed;left:50%;bottom:32px;transform:translateX(-50%);background:var(--accent);color:#06140d;font-weight:600;font-size:14px;padding:13px 20px;border-radius:10px;z-index:999;box-shadow:0 8px 30px rgba(0,0,0,.4);max-width:90%;';
+          document.body.appendChild(t);
+          setTimeout(function () { t.style.transition = 'opacity .4s'; t.style.opacity = '0'; }, 2600);
+          setTimeout(function () { t.remove(); }, 3100);
+        });
+      });
+      document.getElementById('refresh-btn').addEventListener('click', function (e) { e.preventDefault(); location.reload(); });
+    })();
+  </script>
+</body>
+</html>

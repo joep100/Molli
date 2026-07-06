@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Molli cut-off badge — turn same-day into a checkout upsell</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .b-hero { max-width: 1080px; margin: 0 auto; padding: 56px 40px 20px; }
+    .b-hero h1 { font-size: 52px; line-height: 1.02; letter-spacing: -0.03em; font-weight: 800; margin: 16px 0 16px; max-width: 780px; }
+    .b-hero .lead { font-size: 18px; color: var(--soft); max-width: 620px; line-height: 1.55; font-weight: 600; }
+
+    .b-grid { max-width: 1080px; margin: 0 auto; padding: 32px 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }
+
+    /* Widget preview surfaces */
+    .demo-card { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 26px; }
+    .demo-card h3 { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--soft); font-weight: 600; margin-bottom: 8px; }
+    .demo-card p.note { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+    /* the actual embeddable badge (dark surface) */
+    .molli-badge { display: flex; align-items: center; gap: 13px; border-radius: 12px; padding: 14px 16px; font-family: var(--font-sans); }
+    .molli-badge .mb-ic { width: 38px; height: 38px; border-radius: 9px; flex: none; display: flex; align-items: center; justify-content: center; }
+    .molli-badge .mb-lead { font-size: 12px; font-weight: 600; letter-spacing: .02em; }
+    .molli-badge .mb-main { font-size: 15px; font-weight: 500; letter-spacing: -0.01em; margin-top: 2px; }
+    .molli-badge .mb-clock { font-family: var(--font-mono); font-weight: 700; letter-spacing: -0.02em; }
+
+    /* dark variant */
+    .mb-dark { background: #101210; border: 1px solid rgba(156,255,46,.35); }
+    .mb-dark .mb-ic { background: rgba(156,255,46,.14); }
+    .mb-dark .mb-lead { color: #8b8b8b; }
+    .mb-dark .mb-main { color: #fff; }
+    .mb-dark .mb-clock { color: #9CFF2E; }
+    /* light variant (for retailer sites) */
+    .mb-light { background: #f5f7f2; border: 1px solid #d8e3c8; }
+    .mb-light .mb-ic { background: rgba(60,120,20,.12); }
+    .mb-light .mb-lead { color: #5f7050; }
+    .mb-light .mb-main { color: #14210a; }
+    .mb-light .mb-clock { color: #3f7a12; }
+    /* inline / minimal */
+    .mb-inline { background: transparent; padding: 4px 0; }
+    .mb-inline .mb-ic { display: none; }
+    .mb-inline .mb-main { font-size: 14px; color: var(--ink); }
+    .mb-inline .mb-lead { display: none; }
+    .mb-inline .mb-dotwrap { display:flex; align-items:center; gap:8px; }
+    .mb-inline .mb-live { width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px rgba(156,255,46,.7); }
+
+    .swatch-row { display: flex; gap: 10px; margin-top: 20px; }
+    .swatch-row button { flex: 1; background: var(--panel2); border: 1px solid var(--line); color: var(--soft); font-family: var(--font-sans); font-weight: 500; font-size: 12px; padding: 9px; border-radius: 8px; cursor: pointer; letter-spacing: .04em; text-transform: uppercase; }
+    .swatch-row button.on { border-color: var(--accent); color: var(--accent); background: var(--accent-tint); }
+
+    /* mock product page */
+    .shop { background: #fff; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); }
+    .shop-bar { background: #14210a; color: #fff; padding: 12px 18px; font-size: 13px; font-weight: 600; letter-spacing: .04em; display: flex; justify-content: space-between; align-items: center; }
+    .shop-bar .cart { font-size: 12px; opacity: .7; }
+    .shop-body { padding: 22px; color: #14210a; display: grid; grid-template-columns: 88px 1fr; gap: 18px; }
+    .shop-thumb { width: 88px; height: 110px; border-radius: 10px; background: linear-gradient(135deg,#eef1e8,#dbe4cd); border: 1px solid #d8e3c8; }
+    .shop-title { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; color: #14210a; }
+    .shop-price { font-family: var(--font-mono); font-size: 20px; font-weight: 700; margin: 4px 0 14px; color: #14210a; }
+    .shop-buy { background: #14210a; color: #fff; border: none; border-radius: 10px; padding: 13px 22px; font-family: var(--font-sans); font-weight: 600; font-size: 14px; cursor: pointer; margin-top: 16px; width: 100%; }
+
+    /* snippet */
+    .snippet-sec { max-width: 1080px; margin: 0 auto; padding: 20px 40px 56px; }
+    .snippet { background: #0c0f0c; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+    .snip-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-bottom: 1px solid var(--line); }
+    .snip-head .lbl { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+    .snip-head button { background: var(--accent); color: #06140d; border: none; border-radius: 7px; padding: 7px 14px; font-family: var(--font-sans); font-weight: 600; font-size: 12px; cursor: pointer; }
+    .snippet pre { margin: 0; padding: 18px; overflow-x: auto; font-family: var(--font-mono); font-size: 12.5px; line-height: 1.7; color: #c7d3bd; }
+    .snippet .tok-tag { color: #9CFF2E; }
+    .snippet .tok-attr { color: #7fb0e8; }
+    .snippet .tok-str { color: #d9b48a; }
+    .snippet .tok-com { color: #5a6b4a; }
+
+    .how { max-width: 1080px; margin: 0 auto; padding: 8px 40px 40px; display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+    .how .step { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px; }
+    .how .step .n { font-family: var(--font-mono); font-size: 13px; color: var(--accent); font-weight: 700; }
+    .how .step h4 { font-size: 16px; font-weight: 600; margin: 8px 0 6px; letter-spacing: -0.01em; }
+    .how .step p { font-size: 13.5px; color: var(--soft); line-height: 1.5; }
+
+    @media (max-width: 880px) {
+      .b-hero { padding: 40px 20px 12px; } .b-hero h1 { font-size: 38px; }
+      .b-grid, .snippet-sec, .how { padding-left: 20px; padding-right: 20px; }
+      .b-grid, .how { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <a class="logo" href="index.html">
+      <span class="logo-mark"><span>&rsaquo;</span></span>
+      <span class="logo-word">m<span class="o-wheel"></span>lli</span>
+    </a>
+    <nav class="topnav">
+      <a href="sell.html">Sell more</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="fit.html">Will it fit?</a>
+      <a href="zones.html">Coverage</a>
+      <a href="pricing.html#faqs">Help</a>
+    </nav>
+    <div class="topbar-cta">
+      <a class="signin" href="account.html">Sign in</a>
+      <a class="btn btn--accent btn--sm" href="business.html">Create business account &rarr;</a>
+    </div>
+  </header>
+
+  <section class="b-hero">
+    <span class="pill"><span class="dot"></span> For retailers · free</span>
+    <h1>Put a live countdown on every product page.</h1>
+    <p class="lead">Drop one line of code on your store. Shoppers see exactly how long they've got to order for same-day or next-morning Molli delivery — the urgency that turns a browse into a checkout. It counts down live and respects your cut-offs, weekends and bank holidays automatically.</p>
+  </section>
+
+  <div class="b-grid">
+    <!-- LIVE WIDGET PREVIEW -->
+    <div class="demo-card">
+      <h3>The badge · live preview</h3>
+      <p class="note">This is the real widget, ticking against Molli's 2pm same-day / 5pm next-morning cut-offs.</p>
+
+      <div class="molli-badge mb-dark" id="badge">
+        <div class="mb-ic">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:inherit"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        </div>
+        <div>
+          <div class="mb-lead" id="b-lead">Order within</div>
+          <div class="mb-main" id="b-main"><span class="mb-clock" id="b-clock">02:14:08</span> for delivery by 6pm today</div>
+        </div>
+      </div>
+
+      <div class="swatch-row">
+        <button class="on" data-variant="mb-dark">Dark</button>
+        <button data-variant="mb-light">Light</button>
+        <button data-variant="mb-inline">Inline</button>
+      </div>
+    </div>
+
+    <!-- IN CONTEXT: mock retailer product page -->
+    <div class="demo-card">
+      <h3>In context · a retailer's product page</h3>
+      <p class="note">How it looks sitting under the buy button on your store.</p>
+      <div class="shop">
+        <div class="shop-bar"><span>GRÁ · Dublin</span><span class="cart">Bag (1)</span></div>
+        <div class="shop-body">
+          <div class="shop-thumb"></div>
+          <div>
+            <div class="shop-title">Eau de Parfum · 50ml</div>
+            <div class="shop-price">€68.00</div>
+            <div class="molli-badge mb-light" id="badge-shop">
+              <div class="mb-ic">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:inherit"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              </div>
+              <div>
+                <div class="mb-lead" id="bs-lead">Order within</div>
+                <div class="mb-main" id="bs-main"><span class="mb-clock" id="bs-clock">02:14:08</span> for delivery by 6pm today</div>
+              </div>
+            </div>
+            <button class="shop-buy">Add to bag</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SNIPPET -->
+  <div class="snippet-sec">
+    <div class="snippet">
+      <div class="snip-head">
+        <span class="lbl">Paste before &lt;/body&gt;</span>
+        <button id="copy-btn">Copy code</button>
+      </div>
+      <pre id="code"><span class="tok-com">&lt;!-- Molli same-day cut-off badge --&gt;</span>
+<span class="tok-tag">&lt;div</span> <span class="tok-attr">data-molli-badge</span>
+     <span class="tok-attr">data-theme</span>=<span class="tok-str">"dark"</span>
+     <span class="tok-attr">data-account</span>=<span class="tok-str">"gra-dublin"</span><span class="tok-tag">&gt;&lt;/div&gt;</span>
+<span class="tok-tag">&lt;script</span> <span class="tok-attr">async</span> <span class="tok-attr">src</span>=<span class="tok-str">"https://molli.ie/embed/badge.js"</span><span class="tok-tag">&gt;&lt;/script&gt;</span></pre>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="how">
+    <div class="step"><div class="n">01</div><h4>Paste one line</h4><p>Copy the snippet into your theme — Shopify, WooCommerce, or plain HTML. No build step, no dependencies.</p></div>
+    <div class="step"><div class="n">02</div><h4>It counts down live</h4><p>The badge reads Molli's cut-offs and the shopper's clock, then updates every second — same-day before 2pm, next-morning before 5pm, closed on weekends.</p></div>
+    <div class="step"><div class="n">03</div><h4>They order sooner</h4><p>A visible deadline is the oldest trick in retail. Stores running the badge see more baskets cleared before the van leaves.</p></div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div>
+      <a class="logo" href="index.html"><span class="logo-mark"><span>&rsaquo;</span></span><span class="logo-word">m<span class="o-wheel"></span>lli</span></a>
+      <div class="tag">molli.ie · Dublin's same-day parcel network<br /><span style="color:var(--muted)">Through streets broad &amp; narrow.</span></div>
+    </div>
+    <div class="col"><div class="col-title">Service</div><a href="pricing.html">Pricing</a><a href="zones.html">Coverage</a><a href="fit.html">Fit finder</a><a href="booking.html">Book</a></div>
+    <div class="col"><div class="col-title">Retailers</div><a href="business.html">For retailers</a><a href="bulk.html">Bulk booking</a><a href="badge.html">Cut-off badge</a></div>
+    <div class="col"><div class="col-title">Account</div><a href="account.html">Sign in</a><a href="track.html">Track a delivery</a></div>
+    <div class="col"><div class="col-title">Company</div><a href="index.html#name">The name</a><a href="pricing.html#faqs">Help</a></div>
+  </footer>
+  <div class="legal">© 2026 Molli · molli.ie · Dublin, Ireland</div>
+
+  <script>
+    // Shared cut-off logic (mirrors the home hero countdown).
+    (function () {
+      var CUTOFF_TODAY = 14, CUTOFF_NEXTDAY = 17;
+      var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      function pad(n){ return (n<10?'0':'')+n; }
+      function clockStr(ms){ var h=Math.floor(ms/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000); return pad(h)+':'+pad(m)+':'+pad(s); }
+      function nextWorkingDay(d){ var n=new Date(d); n.setDate(n.getDate()+1); while(n.getDay()===0||n.getDay()===6){n.setDate(n.getDate()+1);} return n; }
+      function nwdLabel(now){ var nwd=nextWorkingDay(now); var isTom=(nwd.getDate()===now.getDate()+1); return isTom?'tomorrow':DAYS[nwd.getDay()]; }
+
+      // targets: [leadEl, mainEl, clockId]
+      var targets = [
+        { lead:'b-lead', main:'b-main', clock:'b-clock' },
+        { lead:'bs-lead', main:'bs-main', clock:'bs-clock' }
+      ];
+
+      function render() {
+        var now = new Date();
+        var day = now.getDay(), weekend = (day===0||day===6);
+        var t2 = new Date(now); t2.setHours(CUTOFF_TODAY,0,0,0);
+        var t5 = new Date(now); t5.setHours(CUTOFF_NEXTDAY,0,0,0);
+        targets.forEach(function(t){
+          var lead=document.getElementById(t.lead), main=document.getElementById(t.main);
+          if(!lead||!main) return;
+          if(!weekend && now<t2){
+            lead.textContent='Order within';
+            main.innerHTML='<span class="mb-clock">'+clockStr(t2-now)+'</span> for delivery by 6pm today';
+          } else if(!weekend && now<t5){
+            lead.textContent='Same-day\u2019s closed — order within';
+            main.innerHTML='<span class="mb-clock">'+clockStr(t5-now)+'</span> for delivery by 1pm tomorrow';
+          } else {
+            lead.textContent = weekend ? 'Cut-off passed' : 'Today\u2019s runs have left';
+            main.innerHTML='Order now for delivery by <span class="mb-clock">1pm '+nwdLabel(now)+'</span>';
+          }
+        });
+      }
+      render(); setInterval(render, 1000);
+
+      // theme switcher
+      document.querySelectorAll('.swatch-row button').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          document.querySelectorAll('.swatch-row button').forEach(function(b){ b.classList.remove('on'); });
+          btn.classList.add('on');
+          var b = document.getElementById('badge');
+          b.className = 'molli-badge ' + btn.getAttribute('data-variant');
+          // reflect in snippet
+          var theme = btn.getAttribute('data-variant').replace('mb-','');
+          var str = document.querySelector('#code .tok-str');
+        });
+      });
+
+      // copy
+      document.getElementById('copy-btn').addEventListener('click', function(){
+        var txt = document.getElementById('code').innerText;
+        navigator.clipboard && navigator.clipboard.writeText(txt);
+        var b=this, o=b.textContent; b.textContent='Copied ✓';
+        setTimeout(function(){ b.textContent=o; }, 1600);
+      });
+    })();
+  </script>
+</body>
+</html>

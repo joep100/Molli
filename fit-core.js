@@ -1,371 +1,134 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Molli — Will it fit?</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <meta name="theme-color" content="#0a0c0a" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-  <style>
-    /* ---- Fit finder page ---- */
-    .fit-hero { padding: 48px 40px 8px; max-width: 1180px; margin: 0 auto; }
-    .fit-hero .eyebrow { color: var(--accent); }
-    .fit-hero h1 { font-size: 60px; line-height: .98; letter-spacing: -0.03em; font-weight: 800; margin: 12px 0 16px; }
-    .fit-hero .lede { font-size: 18px; color: var(--soft); font-weight: 600; max-width: 640px; line-height: 1.5; }
+/* Molli fit-core — shared sizing + cage logic.
+   One source of truth for the "will it fit?" tool and the booking Step 4.
+   Pure functions + a self-contained SVG cage renderer. No DOM assumptions
+   beyond the <svg> element you pass to drawGauge. */
+(function (root) {
+  var ACCENT = '#7FE001';
 
-    .fit-wrap { max-width: 1180px; margin: 0 auto; padding: 28px 40px 72px; }
-    .fit-grid { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 40px; align-items: start; }
+  // Flat base price per tier (Zone 1 / City Centre). Greater Dublin adds €2.
+  var PRICES = { small: 7.99, package: 8.99, box: 9.99 };
 
-    /* Left — pick + result */
-    .fit-panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 22px; }
-    .fit-panel + .fit-panel { margin-top: 18px; }
-    .fit-label { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--soft); font-weight: 500; margin-bottom: 14px; }
-    .preset-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .preset {
-      display: flex; flex-direction: column; gap: 4px; text-align: left;
-      background: var(--bg); border: 1px solid var(--line); border-radius: 11px;
-      padding: 12px 12px; cursor: pointer; transition: border-color .15s, background .15s, transform .05s;
-    }
-    .preset:hover { border-color: rgba(var(--accent-rgb), .5); }
-    .preset:active { transform: translateY(1px); }
-    .preset.on { border-color: var(--accent); background: rgba(var(--accent-rgb), .1); }
-    .preset .pl { font-size: 13.5px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em; }
-    .preset .pd { font-family: var(--font-mono); font-size: 11px; color: var(--soft); letter-spacing: -0.02em; }
+  var TIER_NAME = { small: 'Small', package: 'Medium', box: 'Large' };
 
-    /* Result card */
-    .verdict { display: flex; align-items: center; gap: 16px; }
-    .verdict .vmark {
-      width: 52px; height: 52px; flex: none; border-radius: 13px; display: flex; align-items: center; justify-content: center;
-      background: rgba(var(--accent-rgb), .14); color: var(--accent); font-size: 26px; font-weight: 800;
-    }
-    .verdict.bad .vmark { background: rgba(255, 90, 90, .14); color: #ff5a5a; }
-    .verdict .vbody { min-width: 0; }
-    .verdict .vt { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
-    .verdict .vs { font-size: 13.5px; color: var(--soft); font-weight: 600; margin-top: 2px; line-height: 1.45; }
-    .price-row { display: flex; align-items: baseline; gap: 10px; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
-    .price-row .pk { font-size: 13px; color: var(--soft); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
-    .price-row .pp { font-family: var(--font-mono); font-size: 40px; font-weight: 700; color: var(--accent); letter-spacing: -0.05em; line-height: 1; }
-    .price-row .pu { font-size: 13px; color: var(--muted); }
-    .price-row.hide { display: none; }
+  // Carrier envelope depends on the route. Zone 1 (city centre) runs on
+  // cargo bikes with a big box; Zone 2 (greater Dublin) is capped smaller.
+  // The three pricing tiers exist on both routes — Zone 1 just carries a
+  // larger max parcel across the board.
+  var ENVELOPE = {
+    zone1: { maxLong: 80, maxSide: 60, kg: 30, vcap: 288000, label: '80\u00d760\u00d760 cm, 30 kg', route: 'cargo bike' },
+    zone2: { maxLong: 40, maxSide: 30, kg: 8, vcap: 36000,  label: '40\u00d730\u00d730 cm, 8 kg', route: 'bike' }
+  };
+  function normZone(z) { return z === 'zone2' ? 'zone2' : 'zone1'; }
+  function envelope(zone) { return ENVELOPE[normZone(zone)]; }
+  function maxLabel(zone) { return ENVELOPE[normZone(zone)].label; }
 
-    .cover-line {
-      display: flex; gap: 11px; align-items: flex-start; margin-top: 16px;
-      background: rgba(var(--accent-rgb), .06); border: 1px solid rgba(var(--accent-rgb), .28);
-      border-radius: 11px; padding: 12px 14px;
-    }
-    .cover-line svg { flex: none; margin-top: 1px; }
-    .cover-line .ct { font-size: 13px; color: var(--soft); font-weight: 600; line-height: 1.5; }
-    .cover-line .ct b { color: var(--ink); }
+  function caps(zone) {
+    var box = envelope(zone);
+    return {
+      small:   { maxLong: 35, maxSide: 25, kg: 1,  vcap: 15000 },
+      package: { maxLong: 45, maxSide: 35, kg: 2,  vcap: 31500 },
+      box:     { maxLong: box.maxLong, maxSide: box.maxSide, kg: box.kg, vcap: box.vcap }
+    };
+  }
 
-    .fit-cta { display: flex; gap: 12px; align-items: center; margin-top: 18px; }
-    .fit-cta .btn { flex: 1; justify-content: center; }
-    .fit-cta.bad .book { opacity: .45; pointer-events: none; }
+  function fitsCap(l, w, h, kg, cap) {
+    var d = [l, w, h].slice().sort(function (a, b) { return b - a; });
+    if (d[0] > cap.maxLong) return false;
+    if (d[1] > cap.maxSide || d[2] > cap.maxSide) return false;
+    if (kg > cap.kg) return false;
+    if (l * w * h > cap.vcap + 1) return false;
+    return true;
+  }
 
-    /* Right — cage + sliders */
-    .cage-card { background: #0c0f0c; border: 1px solid var(--line); border-radius: 16px; padding: 18px 18px 20px; position: sticky; top: 20px; }
-    .cage-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-    .cage-head .ttl { font-family: var(--font-mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
-    .route-toggle { display: inline-flex; background: var(--bg); border: 1px solid var(--line); border-radius: 9px; padding: 3px; gap: 3px; }
-    .route-toggle button { font-size: 11px; font-weight: 500; color: var(--soft); background: none; border: none; border-radius: 6px; padding: 5px 9px; cursor: pointer; letter-spacing: -0.01em; }
-    .route-toggle button.on { background: rgba(var(--accent-rgb), .16); color: var(--accent); }
-    .cage-svg { display: block; margin: 2px auto 4px; width: 100%; max-width: 360px; height: auto; }
-    .carrier-note { text-align: center; font-family: var(--font-mono); font-size: 11.5px; color: var(--accent); font-weight: 700; margin: 2px 0 14px; letter-spacing: -0.01em; }
-
-    .slider-rows { display: grid; gap: 13px; }
-    .slider-row .slider-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
-    .slider-row label { font-size: 12.5px; font-weight: 500; color: rgba(255,255,255,.8); }
-    .slider-row .sval { font-family: var(--font-mono); font-size: 12.5px; color: var(--accent); font-weight: 700; letter-spacing: -0.02em; }
-    .slider-row .sval.over { color: #ff5a5a; }
-    .slider-row input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 5px; border-radius: 5px; background: rgba(255,255,255,.12); outline: none; }
-    .slider-row input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); cursor: pointer; border: 3px solid #0c0f0c; box-shadow: 0 0 0 1px var(--accent); }
-    .slider-row input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--accent); cursor: pointer; border: 3px solid #0c0f0c; }
-    .slider-row input.over::-webkit-slider-thumb { background: #ff5a5a; box-shadow: 0 0 0 1px #ff5a5a; }
-    .slider-row input.over::-moz-range-thumb { background: #ff5a5a; }
-
-    /* Explainer strip */
-    .fit-how { max-width: 1180px; margin: 0 auto; padding: 8px 40px 80px; }
-    .fit-how h2 { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; }
-    .fit-how .sub { color: var(--soft); font-weight: 600; margin-bottom: 26px; }
-    .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .how-card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
-    .how-card .hic { width: 40px; height: 40px; border-radius: 10px; background: rgba(var(--accent-rgb), .12); display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
-    .how-card h3 { font-size: 16px; font-weight: 500; letter-spacing: -0.01em; margin-bottom: 6px; }
-    .how-card p { font-size: 13.5px; color: var(--soft); font-weight: 500; line-height: 1.55; }
-    .how-card .mono { font-family: var(--font-mono); color: var(--ink); font-weight: 700; }
-
-    .restricted {
-      display: flex; gap: 12px; align-items: flex-start; margin-top: 20px;
-      background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px;
-    }
-    .restricted svg { flex: none; margin-top: 1px; }
-    .restricted .rt { font-size: 13px; color: var(--soft); font-weight: 500; line-height: 1.55; }
-    .restricted .rt b { color: var(--ink); }
-
-    @media (max-width: 900px) {
-      .fit-hero { padding: 36px 20px 4px; }
-      .fit-hero h1 { font-size: 40px; }
-      .fit-wrap { padding: 22px 20px 56px; }
-      .fit-grid { grid-template-columns: 1fr; gap: 22px; }
-      .cage-card { position: static; }
-      .fit-how { padding: 8px 20px 60px; }
-      .how-grid { grid-template-columns: 1fr; }
-      .preset-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-  </style>
-</head>
-<body>
-  <!-- TOP BAR -->
-  <header class="topbar">
-    <a class="logo" href="index.html">
-      <span class="logo-mark"><span>&rsaquo;</span></span>
-      <span class="logo-word">m<span class="o-wheel"></span>lli</span>
-    </a>
-    <nav class="topnav">
-      <a href="sell.html">Sell more</a>
-      <a href="pricing.html">Pricing</a>
-      <a href="fit.html" class="active">Will it fit?</a>
-      <a href="zones.html">Coverage</a>
-      <a href="pricing.html#faqs">Help</a>
-    </nav>
-    <div class="topbar-cta">
-      <a class="signin" href="account.html">Sign in</a>
-      <a class="btn btn--accent btn--sm" href="booking.html">Send a parcel &rarr;</a>
-    </div>
-  </header>
-
-  <!-- HERO -->
-  <section class="fit-hero">
-    <div class="eyebrow">Fit finder</div>
-    <h1>Will it fit?<br />Find out in 10 seconds.</h1>
-    <p class="lede">Most of what our customers send — a bottle of perfume, a jewellery box, a phone, a prescription — is small and valuable. Pick what you're sending and watch it drop into the carrier. No measuring tape needed.</p>
-  </section>
-
-  <!-- TOOL -->
-  <section class="fit-wrap">
-    <div class="fit-grid">
-
-      <!-- LEFT: pick + result -->
-      <div>
-        <div class="fit-panel">
-          <div class="fit-label">Start with what you're sending</div>
-          <div class="preset-grid" id="preset-grid"></div>
-        </div>
-
-        <div class="fit-panel">
-          <div class="verdict" id="verdict">
-            <div class="vmark" id="vmark">&#10003;</div>
-            <div class="vbody">
-              <div class="vt" id="vt">Fits &mdash; Small</div>
-              <div class="vs" id="vs">A perfume box slots straight into the carrier.</div>
-            </div>
-          </div>
-
-          <div class="price-row" id="price-row">
-            <span class="pk">From</span>
-            <span class="pp" id="pp">&euro;7.99</span>
-            <span class="pu">per parcel, same-day</span>
-          </div>
-
-          <div class="cover-line">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.2 7.6 8 9 4.8-1.4 8-4.5 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>
-            <div class="ct"><b>Sending something valuable?</b> Add insurance cover up to &euro;500 as an option at checkout &mdash; +&euro;4.99.</div>
-          </div>
-
-          <div class="fit-cta" id="fit-cta">
-            <a class="btn btn--accent btn--lg book" href="booking.html">Book it &rarr;</a>
-            <a class="btn btn--ghost btn--lg" href="pricing.html">See pricing</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- RIGHT: cage + sliders -->
-      <div class="cage-card">
-        <div class="cage-head">
-          <span class="ttl">Carrier gauge</span>
-          <div class="route-toggle" id="route-toggle">
-            <button type="button" data-zone="zone1" class="on">City centre</button>
-            <button type="button" data-zone="zone2">Greater Dublin</button>
-          </div>
-        </div>
-        <svg class="cage-svg" id="gauge-svg" viewBox="0 0 360 276"></svg>
-        <div class="carrier-note" id="carrier-note">Cargo-bike route &middot; up to 80&times;60&times;60 cm, 30 kg</div>
-
-        <div class="slider-rows">
-          <div class="slider-row">
-            <div class="slider-top"><label>Length</label><span class="sval" id="sv-l">12 cm</span></div>
-            <input type="range" id="s-l" min="1" max="100" value="12" step="1" />
-          </div>
-          <div class="slider-row">
-            <div class="slider-top"><label>Width</label><span class="sval" id="sv-w">8 cm</span></div>
-            <input type="range" id="s-w" min="1" max="60" value="8" step="1" />
-          </div>
-          <div class="slider-row">
-            <div class="slider-top"><label>Height</label><span class="sval" id="sv-h">15 cm</span></div>
-            <input type="range" id="s-h" min="1" max="60" value="15" step="1" />
-          </div>
-          <div class="slider-row">
-            <div class="slider-top"><label>Weight</label><span class="sval" id="sv-kg">0.4 kg</span></div>
-            <input type="range" id="s-kg" min="0.1" max="30" value="0.4" step="0.1" />
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- HOW IT WORKS -->
-  <section class="fit-how">
-    <h2>How the gauge works</h2>
-    <p class="sub">Everything travels by bike — so the only question is how big the bike's box is on your route.</p>
-    <div class="how-grid">
-      <div class="how-card">
-        <div class="hic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M6 17h6l4-7-3-2"/><path d="M13 8h3"/></svg></div>
-        <h3>Bigger box in the city centre</h3>
-        <p>City-centre runs (Dublin 1&ndash;8) go by <b>cargo bike</b> &mdash; up to <span class="mono">80&times;60&times;60&nbsp;cm, 30&nbsp;kg</span>. Greater Dublin (D9&ndash;24) is up to <span class="mono">40&times;30&times;30&nbsp;cm, 8&nbsp;kg</span>. Flip the toggle on the gauge to check your route.</p>
-      </div>
-      <div class="how-card">
-        <div class="hic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="7" height="7" rx="1"/><rect x="14" y="5" width="7" height="13" rx="1"/></svg></div>
-        <h3>Three sizes, priced by fit</h3>
-        <p>Small, Medium or Large &mdash; from <span class="mono">&euro;7.99</span>. Pick the smallest and if it's a touch over, we simply bump it to the next tier and charge that rate. No surprises.</p>
-      </div>
-      <div class="how-card">
-        <div class="hic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg></div>
-        <h3>Too big? We split it.</h3>
-        <p>If it won't fit either box, send it as two parcels &mdash; still same-day. Or if a Small is a touch over, we simply move it up to the next tier and charge that rate.</p>
-      </div>
-    </div>
-
-    <div class="restricted">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.2 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.2a2 2 0 0 0-3.4 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      <span class="rt"><b>The gauge covers size &amp; weight only.</b> We can't carry hazardous goods (batteries, aerosols, flammables) or restricted items (cash, alcohol, anything illegal). If in doubt, ask us first.</span>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div>
-      <a class="logo" href="index.html"><span class="logo-mark"><span>&rsaquo;</span></span><span class="logo-word">m<span class="o-wheel"></span>lli</span></a>
-      <div class="tag">molli.ie &middot; Dublin's same-day parcel network<br /><span style="color:var(--muted)">Through streets broad &amp; narrow.</span></div>
-    </div>
-    <div class="col"><div class="col-title">Send</div><a href="booking.html">Parcels</a><a href="fit.html">Will it fit?</a><a href="booking.html">Same-day</a><a href="pricing.html">Bulk &amp; API</a></div>
-    <div class="col"><div class="col-title">Business</div><a href="business.html">Account pricing</a><a href="pricing.html">API &amp; integrations</a><a href="pricing.html">Case studies</a><a href="business.html">Contact sales</a></div>
-    <div class="col"><div class="col-title">Company</div><a href="#">About</a><a href="#">Jobs</a><a href="#">Sustainability</a><a href="#">Press</a></div>
-    <div class="col"><div class="col-title">Help</div><a href="account.html">Track a parcel</a><a href="pricing.html">Pricing</a><a href="#">Contact</a><a href="pricing.html#faqs">FAQ</a></div>
-  </footer>
-  <div class="legal">&copy; 2026 Molli Logistics Ltd. &middot; 23 Sir John Rogerson's Quay, Dublin 2 &middot; CRO 612 884</div>
-
-  <script src="fit-core.js"></script>
-  <script>
-    (function () {
-      var F = window.MolliFit;
-      var els = {
-        pg: document.getElementById('preset-grid'),
-        svg: document.getElementById('gauge-svg'),
-        l: document.getElementById('s-l'), w: document.getElementById('s-w'),
-        h: document.getElementById('s-h'), kg: document.getElementById('s-kg'),
-        svl: document.getElementById('sv-l'), svw: document.getElementById('sv-w'),
-        svh: document.getElementById('sv-h'), svkg: document.getElementById('sv-kg'),
-        vmark: document.getElementById('vmark'), vt: document.getElementById('vt'),
-        vs: document.getElementById('vs'), verdict: document.getElementById('verdict'),
-        pp: document.getElementById('pp'), priceRow: document.getElementById('price-row'),
-        cta: document.getElementById('fit-cta'), carrier: document.getElementById('carrier-note'),
-        note: null
-      };
-      var activePreset = 'perfume';
-      var zone = 'zone1'; // city centre / cargo bike by default (the bigger box)
-
-      // Route toggle — city centre (cargo bike) vs greater Dublin (standard bike)
-      var routeToggle = document.getElementById('route-toggle');
-      if (routeToggle) {
-        routeToggle.querySelectorAll('button').forEach(function (btn) {
-          btn.addEventListener('click', function () {
-            zone = btn.getAttribute('data-zone');
-            routeToggle.querySelectorAll('button').forEach(function (b) { b.classList.remove('on'); });
-            btn.classList.add('on');
-            update();
-          });
-        });
+  // Classify an item. startTier is the tier the customer picked; an item too
+  // big for it but fitting the next one up auto-upgrades (and is charged there).
+  function classify(l, w, h, kg, startTier, zone) {
+    var CAPS = caps(zone);
+    var order = ['small', 'package', 'box'];
+    var startIdx = Math.max(0, order.indexOf(startTier || 'small'));
+    var effective = startTier || 'small', upgraded = false, fits = false;
+    for (var ci = startIdx; ci < order.length; ci++) {
+      if (fitsCap(l, w, h, kg, CAPS[order[ci]])) {
+        fits = true; effective = order[ci]; upgraded = (ci > startIdx); break;
       }
+    }
+    var vol = l * w * h;
+    var chargeableKg = Math.max(kg, vol / 5000); // volumetric convention ÷5000
+    var reasons = [];
+    if (!fits) {
+      var cap = CAPS.box, d = [l, w, h].slice().sort(function (a, b) { return b - a; });
+      if (d[0] > cap.maxLong) reasons.push('longest side over ' + cap.maxLong + ' cm');
+      if (d[1] > cap.maxSide || d[2] > cap.maxSide) reasons.push('over ' + cap.maxSide + ' cm on a side');
+      if (kg > cap.kg) reasons.push('over ' + cap.kg + ' kg');
+      if (vol > cap.vcap + 1) reasons.push('too bulky');
+    }
+    return {
+      fits: fits, effective: effective, upgraded: upgraded,
+      chargeableKg: chargeableKg, reasons: reasons,
+      caps: CAPS[effective]
+    };
+  }
 
-      // Build preset buttons
-      F.PRESETS.forEach(function (p) {
-        var b = document.createElement('button');
-        b.className = 'preset' + (p.id === activePreset ? ' on' : '');
-        b.setAttribute('data-id', p.id);
-        b.innerHTML = '<span class="pl">' + p.label + '</span>'
-          + '<span class="pd">' + p.l + '\u00d7' + p.w + '\u00d7' + p.h + ' cm \u00b7 ' + p.kg + ' kg</span>';
-        b.addEventListener('click', function () {
-          activePreset = p.id;
-          els.l.value = p.l; els.w.value = p.w; els.h.value = p.h; els.kg.value = p.kg;
-          document.querySelectorAll('.preset').forEach(function (x) { x.classList.remove('on'); });
-          b.classList.add('on');
-          update();
-        });
-        els.pg.appendChild(b);
-      });
+  // Render the 3D cage into an <svg>. lim = tier caps drawn as the frame
+  // {l,w,h}; parcel = the item {l,w,h}; fitsOverride false => red box.
+  function drawGauge(svg, lim, parcel, fitsOverride) {
+    if (!svg) return;
+    var vb = (svg.getAttribute('viewBox') || '0 0 360 276').split(/\s+/).map(Number);
+    var W = vb[2] || 360, H = vb[3] || 276, padX = 58, padTop = 36, padBot = 40, dco = 0.5;
+    var mL = Math.max(lim.l, parcel ? parcel.l : 0);
+    var mW = Math.max(lim.w, parcel ? parcel.w : 0);
+    var mH = Math.max(lim.h, parcel ? parcel.h : 0);
+    var scale = Math.min((W - 2 * padX) / (mW + mL * dco), (H - padTop - padBot) / (mH + mL * dco));
+    function faces(fx, fy, wv, hv, lv, stroke, fillOn, dash, sw) {
+      var bw = wv * scale, bh = hv * scale, ox = lv * scale * dco, oy = lv * scale * dco;
+      var bx = fx + ox, by = fy - oy, d = dash ? ' stroke-dasharray="4 4"' : '';
+      var g = '';
+      g += '<polygon points="' + fx + ',' + fy + ' ' + (fx + bw) + ',' + fy + ' ' + (bx + bw) + ',' + by + ' ' + bx + ',' + by + '" fill="' + stroke + '" fill-opacity="' + (fillOn ? 0.12 : 0) + '" stroke="' + stroke + '" stroke-width="' + sw + '"' + d + '/>';
+      g += '<polygon points="' + (fx + bw) + ',' + fy + ' ' + (fx + bw) + ',' + (fy + bh) + ' ' + (bx + bw) + ',' + (by + bh) + ' ' + (bx + bw) + ',' + by + '" fill="' + stroke + '" fill-opacity="' + (fillOn ? 0.2 : 0) + '" stroke="' + stroke + '" stroke-width="' + sw + '"' + d + '/>';
+      g += '<rect x="' + fx + '" y="' + fy + '" width="' + bw + '" height="' + bh + '" fill="' + stroke + '" fill-opacity="' + (fillOn ? 0.26 : 0) + '" stroke="' + stroke + '" stroke-width="' + (sw + 0.5) + '"' + d + '/>';
+      return g;
+    }
+    var maxOx = mL * scale * dco;
+    var envWpx = mW * scale + maxOx, envHpx = mH * scale + maxOx;
+    var fx = padX + ((W - 2 * padX) - envWpx) / 2;
+    var top = padTop + ((H - padTop - padBot) - envHpx) / 2;
+    var cw = lim.w * scale, ch = lim.h * scale, cox = lim.l * scale * dco;
+    var ground = top + maxOx + mH * scale;
+    var fy = ground - ch;
+    var s = '';
+    s += '<ellipse cx="' + (fx + cw / 2 + cox / 2) + '" cy="' + (ground + 11) + '" rx="' + (cw * 0.72) + '" ry="7" fill="#000" opacity="0.35"/>';
+    s += '<polygon points="' + fx + ',' + ground + ' ' + (fx + cw) + ',' + ground + ' ' + (fx + cw + cox) + ',' + (ground - cox) + ' ' + (fx + cox) + ',' + (ground - cox) + '" fill="' + ACCENT + '" fill-opacity="0.08" stroke="' + ACCENT + '" stroke-opacity="0.45" stroke-width="1"/>';
+    s += faces(fx, fy, lim.w, lim.h, lim.l, ACCENT, false, true, 1);
+    var ox = cox, oy = cox, bw = cw, bh = ch;
+    var verts = [[fx, fy], [fx + bw, fy], [fx, fy + bh], [fx + bw, fy + bh], [fx + ox, fy - oy], [fx + bw + ox, fy - oy], [fx + ox, fy + bh - oy], [fx + bw + ox, fy + bh - oy]];
+    verts.forEach(function (p) { s += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="2.4" fill="' + ACCENT + '"/>'; });
+    s += '<text x="' + (fx + bw / 2) + '" y="' + (fy + bh + 16) + '" fill="' + ACCENT + '" font-size="9" font-family="monospace" text-anchor="middle">' + lim.w + ' cm</text>';
+    var hx = fx - 10, hy = fy + bh / 2;
+    s += '<text x="' + hx + '" y="' + hy + '" fill="' + ACCENT + '" font-size="9" font-family="monospace" text-anchor="middle" transform="rotate(-90 ' + hx + ' ' + hy + ')">' + lim.h + ' cm</text>';
+    s += '<text x="' + (fx + bw + ox / 2 + 11) + '" y="' + (fy - oy / 2 - 3) + '" fill="' + ACCENT + '" font-size="9" font-family="monospace" text-anchor="middle">' + lim.l + ' cm</text>';
+    if (parcel) {
+      var col = (fitsOverride === false) ? '#ff5a5a' : ACCENT;
+      s += faces(fx, ground - parcel.h * scale, parcel.w, parcel.h, parcel.l, col, true, false, 1.75);
+    }
+    svg.innerHTML = s;
+  }
 
-      // Sliders — moving one clears the active preset highlight
-      [els.l, els.w, els.h, els.kg].forEach(function (inp) {
-        inp.addEventListener('input', function () {
-          activePreset = null;
-          document.querySelectorAll('.preset').forEach(function (x) { x.classList.remove('on'); });
-          update();
-        });
-      });
+  // Everyday-object presets — high-value / small first, then the bigger tiers.
+  var PRESETS = [
+    { id: 'perfume',   label: 'Perfume box',   l: 12, w: 8,  h: 15, kg: 0.4 },
+    { id: 'jewellery', label: 'Jewellery box', l: 10, w: 8,  h: 5,  kg: 0.2 },
+    { id: 'phone',     label: 'Phone / buds',  l: 17, w: 9,  h: 4,  kg: 0.3 },
+    { id: 'meds',      label: 'Prescription',  l: 15, w: 10, h: 6,  kg: 0.3 },
+    { id: 'book',      label: 'Hardback book', l: 24, w: 16, h: 4,  kg: 0.6 },
+    { id: 'trainers',  label: 'Trainers',      l: 34, w: 22, h: 13, kg: 1.2 },
+    { id: 'wine',      label: 'Bottle of wine',l: 35, w: 10, h: 10, kg: 1.5 },
+    { id: 'winecase',  label: 'Wine case (6)', l: 35, w: 25, h: 30, kg: 8 },
+    { id: 'hamper',    label: 'Gift hamper',   l: 40, w: 32, h: 26, kg: 6 }
+  ];
 
-      function update() {
-        var l = parseFloat(els.l.value), w = parseFloat(els.w.value),
-            h = parseFloat(els.h.value), kg = parseFloat(els.kg.value);
-        els.svl.textContent = l + ' cm';
-        els.svw.textContent = w + ' cm';
-        els.svh.textContent = h + ' cm';
-        els.svkg.textContent = kg.toFixed(1) + ' kg';
-
-        var r = F.classify(l, w, h, kg, 'small', zone);
-        var cap = r.caps;
-        var lim = { l: cap.maxLong, w: cap.maxSide, h: cap.maxSide };
-        F.drawGauge(els.svg, lim, { l: l, w: w, h: h }, r.fits);
-
-        // Over-limit styling
-        [els.l, els.w, els.h, els.kg].forEach(function (x) { x.classList.toggle('over', !r.fits); });
-        [els.svl, els.svw, els.svh, els.svkg].forEach(function (x) { x.classList.toggle('over', !r.fits); });
-
-        var env = F.envelope(zone);
-        els.carrier.textContent = (zone === 'zone1' ? 'Cargo-bike route' : 'Greater Dublin route')
-          + ' \u00b7 up to ' + F.maxLabel(zone);
-
-        var name = F.TIER_NAME[r.effective];
-        if (r.fits) {
-          els.verdict.classList.remove('bad');
-          els.vmark.innerHTML = '&#10003;';
-          els.cta.classList.remove('bad');
-          els.priceRow.classList.remove('hide');
-          els.pp.innerHTML = '&euro;' + F.PRICES[r.effective].toFixed(2);
-          if (r.upgraded) {
-            els.vt.textContent = 'Fits \u2014 as a ' + name;
-            els.vs.textContent = 'A touch big for a smaller tier, so it travels as a ' + name + ', charged at that rate.';
-          } else {
-            els.vt.textContent = 'Fits \u2014 ' + name;
-            els.vs.textContent = 'Slots straight into the carrier.';
-          }
-        } else {
-          els.verdict.classList.add('bad');
-          els.vmark.innerHTML = '&#10007;';
-          els.cta.classList.add('bad');
-          els.priceRow.classList.add('hide');
-          els.vt.textContent = 'Too big for this route';
-          els.vs.textContent = (r.reasons.join('; ') || 'over the limit')
-            + (zone === 'zone2'
-                ? '. It may fit a city-centre cargo-bike run \u2014 or send it as two parcels.'
-                : '. Send it as two parcels \u2014 still same-day.');
-        }
-      }
-
-      update();
-    })();
-  </script>
-</body>
-</html>
+  root.MolliFit = {
+    ACCENT: ACCENT, PRICES: PRICES, TIER_NAME: TIER_NAME,
+    caps: caps, classify: classify, drawGauge: drawGauge, PRESETS: PRESETS,
+    ENVELOPE: ENVELOPE, envelope: envelope, maxLabel: maxLabel, normZone: normZone
+  };
+})(window);

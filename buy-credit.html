@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Molli for Business — Same-day collection for Dublin retailers</title>
+  <title>Molli — Buy credit</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <meta name="theme-color" content="#ffffff" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -12,128 +12,98 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="theme-light.css" />
   <style>
-    .biz-hero { padding: 64px 40px 40px; position: relative; }
-    .biz-hero h1 { font-size: 88px; line-height: .92; letter-spacing: -0.04em; font-weight: 800; margin: 18px 0 22px; max-width: 900px; }
-    .biz-hero .sub { font-size: 19px; color: var(--soft); max-width: 600px; line-height: 1.5; font-weight: 600; margin-bottom: 30px; }
-    .biz-hero .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
-    .hero-demo-link { display: inline-block; margin-top: 20px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none; border-bottom: 1px solid var(--line); padding-bottom: 2px; transition: color .15s, border-color .15s; }
-    .hero-demo-link:hover { color: var(--accent); border-color: var(--accent); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--ink); }
 
-    .seeit { display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
-    .seeit h2 { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; margin: 12px 0 16px; }
-    .seeit p { font-size: 16px; color: var(--soft); line-height: 1.6; margin-bottom: 24px; max-width: 460px; font-weight: 600; }
-    .seeit-steps { display: flex; flex-direction: column; gap: 10px; margin: 0 0 26px; }
-    .seeit-steps li { display: grid; grid-template-columns: 26px 1fr; gap: 12px; align-items: center; font-size: 15px; color: var(--ink); }
-    .seeit-steps .n { width: 26px; height: 26px; border-radius: 50%; background: rgba(61,139,255,.14); border: 1px solid rgba(61,139,255,.4); color: var(--accent); font-family: var(--font-mono); font-size: 12px; font-weight: 700; display: grid; place-items: center; }
-    .seeit-note { font-size: 12px; color: var(--muted); margin-left: 14px; }
-    .seeit-frame { display: block; text-decoration: none; color: inherit; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--panel); box-shadow: 0 24px 60px rgba(0,0,0,.4); transition: transform .18s, box-shadow .18s; }
-    .seeit-frame:hover { transform: translateY(-3px); box-shadow: 0 30px 70px rgba(0,0,0,.5); }
-    .seeit-bar { display: flex; align-items: center; gap: 10px; padding: 11px 14px; background: var(--bg); border-bottom: 1px solid var(--line); }
-    .seeit-lights { display: flex; gap: 5px; }
-    .seeit-lights span { width: 9px; height: 9px; border-radius: 50%; background: #3a3a3a; }
-    .seeit-addr { font-family: var(--font-mono); font-size: 12px; color: var(--soft); }
-    .seeit-addr b { color: var(--ink); }
-    .seeit-body { padding: 22px; }
-    .seeit-counter { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: .1em; margin-bottom: 10px; }
-    .seeit-body h3 { font-size: 20px; font-weight: 500; letter-spacing: -0.02em; margin: 0 0 4px; }
-    .seeit-body .sub { font-size: 13px; color: var(--soft); margin-bottom: 16px; }
-    .seeit-opt { display: flex; align-items: center; gap: 12px; padding: 13px 14px; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 8px; font-size: 14px; }
-    .seeit-opt .dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line); flex-shrink: 0; }
-    .seeit-opt.sel { border-color: var(--accent); background: rgba(61,139,255,.06); }
-    .seeit-opt.sel .dot { border-color: var(--accent); background: var(--accent); }
-    .seeit-opt .lbl { flex: 1; }
-    .seeit-opt .meta { font-family: var(--font-mono); color: var(--soft); }
-    .seeit-go { margin-top: 6px; background: var(--accent); color: #06140d; border-radius: 10px; padding: 12px; text-align: center; font-weight: 700; font-size: 14px; }
-    @media (max-width: 860px) { .seeit { grid-template-columns: 1fr; gap: 32px; } .seeit h2 { font-size: 32px; } }
+    .bc-hero { padding: 72px 40px 8px; text-align: center; }
+    .bc-hero .from { font-size: 15px; color: var(--soft); font-weight: 600; letter-spacing: .04em; }
+    .bc-hero h1 { font-size: 76px; line-height: .96; letter-spacing: -0.04em; font-weight: 800; margin: 10px auto 20px; max-width: 900px; }
+    .bc-hero p { font-size: 18px; color: var(--soft); max-width: 600px; margin: 0 auto; line-height: 1.55; font-weight: 600; }
+    .bc-hero p b { color: var(--accent); }
+    .hub-note { font-size: 14px; color: var(--soft); max-width: 620px; margin: 18px auto 0; line-height: 1.5; font-weight: 600; }
+    .hub-note a { color: var(--accent); white-space: nowrap; }
+    .hub-note a:hover { color: var(--ink); }
+    .hub-flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 16px; align-items: stretch; }
+    .hub-node { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; }
+    .hub-node.core { border-color: rgba(var(--accent-rgb), .5); background: linear-gradient(160deg, rgba(var(--accent-rgb), .1), var(--panel) 60%); }
+    .hn-step { font-family: var(--font-mono); font-size: 12px; color: var(--soft); letter-spacing: .1em; text-transform: uppercase; }
+    .hn-badge { display: inline-flex; align-self: flex-start; font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--bg); background: var(--accent); border-radius: 999px; padding: 4px 11px; }
+    .hn-h { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; margin: 12px 0 8px; }
+    .hn-p { font-size: 13.5px; color: var(--soft); line-height: 1.5; }
+    .hub-arrow { display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--muted); }
 
-    .why { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-    .why-card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 26px; }
-    .why-card .n { font-family: var(--font-mono); font-size: 12px; color: var(--accent); font-weight: 700; letter-spacing: .1em; }
-    .why-card h3 { font-size: 21px; font-weight: 500; letter-spacing: -0.02em; margin: 14px 0 10px; }
-    .why-card p { font-size: 14px; color: var(--soft); line-height: 1.6; }
+    /* Pack grid */
+    .packs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 8px; }
+    .pack {
+      position: relative; background: var(--panel); border: 1px solid var(--line);
+      border-radius: 20px; padding: 30px 26px; display: flex; flex-direction: column;
+      transition: border-color .2s, transform .2s;
+    }
+    .pack:hover { border-color: var(--line-strong); transform: translateY(-3px); }
+    .pack.best { border-color: rgba(var(--accent-rgb), .5); background: linear-gradient(160deg, rgba(var(--accent-rgb), .1), var(--panel) 55%); }
+    .pack .flag { position: absolute; top: -11px; left: 50%; transform: translateX(-50%); background: var(--accent); color: var(--bg); padding: 4px 12px; font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; border-radius: 999px; }
+    .pack .pk-name { font-size: 12px; color: var(--soft); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+    .pack .pk-price { font-family: var(--font-mono); font-size: 56px; font-weight: 700; letter-spacing: -0.05em; line-height: 1; margin: 14px 0 4px; }
+    .pack.best .pk-price { color: var(--accent); }
+    .pack .pk-bonus { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--accent); background: var(--accent-tint); border: 1px solid rgba(var(--accent-rgb), .3); border-radius: 999px; padding: 5px 11px; align-self: flex-start; margin-bottom: 4px; }
+    .pack .pk-bonus.empty { visibility: hidden; }
+    .pack .pk-total { font-size: 13px; color: var(--soft); margin: 10px 0 18px; }
+    .pack .pk-total b { color: var(--ink); font-family: var(--font-mono); }
+    .pack ul { list-style: none; display: flex; flex-direction: column; gap: 9px; margin: 0 0 24px; flex: 1; }
+    .pack li { display: grid; grid-template-columns: 18px 1fr; gap: 9px; font-size: 13.5px; color: var(--soft); align-items: baseline; line-height: 1.4; }
+    .pack li .tick { color: var(--accent); font-weight: 700; }
+    .pack .buy { width: 100%; }
 
-    .integrations { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-    .intg { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 24px; transition: border-color .15s ease, transform .15s ease; }
-    .intg:hover { border-color: rgba(61,139,255,.4); transform: translateY(-2px); }
-    .intg .name { font-size: 17px; font-weight: 500; letter-spacing: -0.01em; }
-    .intg .desc { font-size: 13px; color: var(--soft); margin-top: 6px; line-height: 1.5; }
-    /* Countdown badge feature */
-    .badgefeat { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: center; }
-    .bf-copy p { font-size: 16px; color: var(--soft); line-height: 1.6; margin-bottom: 18px; max-width: 460px; font-weight: 600; }
-    .bf-copy ul { display: flex; flex-direction: column; gap: 10px; margin: 0 0 22px; }
-    .bf-copy li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; font-size: 15px; color: var(--ink); align-items: baseline; }
-    .bf-copy li .tick { color: var(--accent); font-weight: 800; }
-    .molli-badge { display: flex; align-items: center; gap: 13px; border-radius: 12px; padding: 14px 16px; font-family: var(--font-sans); }
-    .molli-badge .mb-ic { width: 38px; height: 38px; border-radius: 9px; flex: none; display: flex; align-items: center; justify-content: center; }
-    .molli-badge .mb-lead { font-size: 12px; font-weight: 600; letter-spacing: .02em; }
-    .molli-badge .mb-main { font-size: 15px; font-weight: 500; letter-spacing: -0.01em; margin-top: 2px; }
-    .molli-badge .mb-clock { font-family: var(--font-mono); font-weight: 700; letter-spacing: -0.02em; }
-    .mb-light { background: #f5f7f2; border: 1px solid #d8e3c8; }
-    .mb-light .mb-ic { background: rgba(60,120,20,.12); }
-    .mb-light .mb-lead { color: #5f7050; }
-    .mb-light .mb-main { color: #14210a; }
-    .mb-light .mb-clock { color: #3f7a12; }
-    .shop { background: #fff; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); }
-    .shop-bar { background: #14210a; color: #fff; padding: 12px 18px; font-size: 13px; font-weight: 600; letter-spacing: .04em; display: flex; justify-content: space-between; align-items: center; }
-    .shop-bar .cart { font-size: 12px; opacity: .7; }
-    .shop-body { padding: 22px; color: #14210a; display: grid; grid-template-columns: 88px 1fr; gap: 18px; }
-    .shop-thumb { width: 88px; height: 110px; border-radius: 10px; background: linear-gradient(135deg,#eef1e8,#dbe4cd); border: 1px solid #d8e3c8; }
-    .shop-title { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; color: #14210a; }
-    .shop-price { font-family: var(--font-mono); font-size: 20px; font-weight: 700; margin: 4px 0 14px; color: #14210a; }
-    .shop-buy { background: #14210a; color: #fff; border: none; border-radius: 10px; padding: 13px 22px; font-family: var(--font-sans); font-weight: 600; font-size: 14px; cursor: pointer; margin-top: 14px; }
+    /* Custom amount */
+    .custom {
+      margin-top: 16px; background: var(--panel); border: 1px solid var(--line);
+      border-radius: 20px; padding: 26px 30px; display: grid; grid-template-columns: 1fr auto;
+      gap: 24px; align-items: center;
+    }
+    .custom .c-l .cap { font-size: 12px; color: var(--soft); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+    .custom .c-l h3 { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin: 6px 0 4px; }
+    .custom .c-l p { font-size: 13.5px; color: var(--soft); line-height: 1.5; max-width: 460px; }
+    .custom .c-r { display: flex; align-items: center; gap: 12px; }
+    .amt-field { display: flex; align-items: center; background: var(--bg); border: 1px solid var(--line-strong); border-radius: 12px; padding: 0 16px; height: 58px; }
+    .amt-field .cur { font-family: var(--font-mono); font-size: 26px; color: var(--soft); }
+    .amt-field input { background: transparent; border: none; outline: none; color: var(--ink); font-family: var(--font-mono); font-size: 26px; font-weight: 700; width: 120px; letter-spacing: -0.02em; }
+    .amt-field input::-webkit-outer-spin-button, .amt-field input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
-    .intg .badge { display: inline-block; margin-top: 12px; font-family: var(--font-mono); font-size: 10px; color: var(--accent); border: 1px solid rgba(61,139,255,.35); border-radius: 999px; padding: 3px 9px; }
+    /* How credit works */
+    .how { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 12px; }
+    .how-c { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
+    .how-c .n { font-family: var(--font-mono); font-size: 13px; color: var(--accent); font-weight: 700; }
+    .how-c h4 { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; margin: 10px 0 8px; }
+    .how-c p { font-size: 13.5px; color: var(--soft); line-height: 1.55; }
+    .how-c p a { font-weight: 700; }
 
-    .dash { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .dash-card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 24px; }
-    .dash-card h3 { font-size: 18px; font-weight: 500; letter-spacing: -0.01em; margin-bottom: 8px; }
-    .dash-card p { font-size: 14px; color: var(--soft); line-height: 1.55; }
-
-    .cta-strip { margin: 0 40px 40px; padding: 44px; background: var(--accent); color: var(--bg); border-radius: 18px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
-    .cta-strip .k { font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; opacity: .7; }
-    .cta-strip .h { font-size: 44px; font-weight: 800; letter-spacing: -0.03em; margin-top: 8px; line-height: 1; }
-
-    /* Hero fork */
-    .fork { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; max-width: 720px; margin-top: 8px; }
-    .fork-c { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; }
-    .fork-c.lead { border-color: rgba(61,139,255,.4); background: linear-gradient(135deg, rgba(61,139,255,.08), var(--panel)); }
-    .fork-c .k { font-size: 11px; color: var(--soft); font-weight: 500; letter-spacing: .12em; text-transform: uppercase; }
-    .fork-c .t { font-size: 18px; font-weight: 500; letter-spacing: -0.01em; margin: 8px 0 14px; }
-
-    /* Onboarding */
-    .onb { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-    .onb-c { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 26px; }
-    .onb-c .n { font-family: var(--font-mono); font-size: 12px; color: var(--accent); font-weight: 700; letter-spacing: .1em; }
-    .onb-c h3 { font-size: 19px; font-weight: 500; letter-spacing: -0.01em; margin: 12px 0 8px; }
-    .onb-c p { font-size: 14px; color: var(--soft); line-height: 1.55; }
-
-    /* Contact */
-    .contact { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
-    .contact-lead h2 { font-size: 46px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; margin: 12px 0 18px; }
-    .contact-lead p { font-size: 16px; color: var(--soft); line-height: 1.6; margin-bottom: 18px; max-width: 460px; font-weight: 600; }
-    .contact-lead ul { display: flex; flex-direction: column; gap: 10px; }
-    .contact-lead li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; font-size: 15px; color: var(--ink); align-items: baseline; }
-    .contact-lead li .tick { color: var(--accent); font-weight: 800; }
-    .contact-form { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 28px; }
-    .contact-form .fg { margin-bottom: 14px; }
-    .contact-form .fg2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .contact-form label { display: block; font-size: 14px; color: var(--ink); font-weight: 600; letter-spacing: .01em; margin-bottom: 7px; }
-    .contact-form input, .contact-form select, .contact-form textarea { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 15px; color: var(--ink); font-family: inherit; }
-    .contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus { outline: none; border-color: var(--accent); }
-    .contact-form input::placeholder, .contact-form textarea::placeholder { color: var(--soft); opacity: 1; }
-    .contact-done { display: none; text-align: center; padding: 20px 0; }
-    .contact-done.show { display: block; }
-    .contact-done .big { font-size: 40px; }
-    .contact-done h3 { font-size: 22px; font-weight: 500; margin: 10px 0 6px; }
-    .contact-done p { font-size: 14px; color: var(--soft); line-height: 1.55; }
+    /* Modal */
+    .modal-scrim { position: fixed; inset: 0; background: rgba(0,0,0,.72); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 200; padding: 20px; }
+    .modal-scrim.open { display: flex; }
+    .modal { background: var(--panel); border: 1px solid var(--line-strong); border-radius: 20px; width: 100%; max-width: 440px; padding: 32px; box-shadow: 0 40px 120px -30px rgba(0,0,0,.8); }
+    .modal .m-cap { font-size: 12px; color: var(--soft); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+    .modal h3 { font-size: 26px; font-weight: 800; letter-spacing: -0.03em; margin: 8px 0 20px; }
+    .modal .m-line { display: flex; justify-content: space-between; align-items: baseline; padding: 12px 0; border-top: 1px solid var(--line); font-size: 14px; color: var(--soft); }
+    .modal .m-line b { color: var(--ink); font-family: var(--font-mono); font-size: 15px; }
+    .modal .m-line.tot { border-top: 1px solid var(--line-strong); margin-top: 4px; }
+    .modal .m-line.tot span { color: var(--ink); font-weight: 700; }
+    .modal .m-line.tot b { color: var(--accent); font-size: 22px; }
+    .modal .m-line .bonus { color: var(--accent); }
+    .modal .m-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+    .modal .pay-note { display: flex; align-items: center; gap: 8px; justify-content: center; font-size: 12px; color: var(--muted); margin-top: 14px; }
+    .modal .pay-note svg { width: 13px; height: 13px; }
+    .modal .close { background: none; border: none; color: var(--soft); font-size: 13px; cursor: pointer; padding: 8px; }
+    .modal .close:hover { color: var(--ink); }
 
     @media (max-width: 860px) {
-      .biz-hero { padding: 40px 20px; }
-      .biz-hero h1 { font-size: 48px; }
-      .why, .credit, .integrations, .dash, .fork, .vol, .onb, .contact, .badgefeat { grid-template-columns: 1fr; }
-      .credit h2 { font-size: 32px; }
-      .cta-strip { margin: 0 20px 40px; flex-direction: column; align-items: flex-start; }
-      .cta-strip .h { font-size: 30px; }
+      .bc-hero { padding: 48px 20px 8px; }
+      .bc-hero h1 { font-size: 48px; }
+      .section { padding: 40px 20px; }
+      .packs, .how, .hub-flow { grid-template-columns: 1fr; }
+      .hub-arrow { transform: rotate(90deg); }
+      .custom { grid-template-columns: 1fr; }
+      .custom .c-r { flex-direction: column; align-items: stretch; }
+      .topnav { display: none; }
     }
   </style>
 </head>
@@ -145,292 +115,139 @@
       <span class="logo-word">m<span class="o-wheel"></span>lli</span>
     </a>
     <nav class="topnav">
-      <a href="sell.html" class="active">Sell more</a>
+      <a href="sell.html">Sell more</a>
       <a href="connect.html">Connect</a>
       <a href="pricing.html">Pricing</a>
-      <a href="buy-credit.html">Buy credit</a>
+      <a href="buy-credit.html" class="active">Buy credit</a>
       <a href="fit.html">Will it fit?</a>
       <a href="zones.html">Coverage</a>
       <a href="pricing.html#faqs">Help</a>
     </nav>
     <div class="topbar-cta">
       <a class="signin" href="account.html">Sign in</a>
-      <a class="btn btn--accent btn--sm" href="#signup">Create business account &rarr;</a>
+      <a class="btn btn--accent btn--sm" href="booking.html">Send a parcel &rarr;</a>
     </div>
   </header>
 
   <!-- HERO -->
-  <section class="biz-hero">
-    <span class="pill"><span class="dot"></span> For Dublin retailers</span>
-    <h1>Sell it today.<br /><span class="accent">Deliver it today.</span></h1>
-    <p class="sub">Molli is the same-day dispatch network Dublin retailers run on. Show a live cut-off at checkout, orders flow straight to us, and we collect the day's batch on one scheduled run &mdash; sorted at our hub and delivered across the city by 6pm, under your name. No fleet, no routing, no post-office runs, no pickup windows tying up your counter.</p>
-    <div class="fork">
-      <div class="fork-c lead">
-        <div class="k">Getting started</div>
-        <div class="t">Set up a scheduled account</div>
-        <a class="btn btn--accent btn--md btn--block" href="account.html">Create a business account &rarr;</a>
-      </div>
-      <div class="fork-c">
-        <div class="k">Doing serious volume?</div>
-        <div class="t">Get a rate + hands-on setup</div>
-        <a class="btn btn--ghost btn--md btn--block" href="#contact">Tell us your daily volume</a>
-      </div>
-    </div>
-    <a class="hero-demo-link" href="demo.html">Or watch a booking in 30 seconds &rarr;</a>
+  <section class="bc-hero">
+    <div class="from">Prepaid delivery credit</div>
+    <h1>Top up once.<br>Send all month.</h1>
+    <p>Load a credit pack and every parcel draws down from your balance &mdash; no card at checkout, one clean receipt. Bigger packs come with <b>bonus credit</b>, and your <b>volume discount</b> applies automatically as you send.</p>
+    <p class="hub-note">Molli runs on a city-centre hub, so credit is at its best for businesses based in or supplying the core (D1, D2, D4, D6, D8). <a href="zones.html">Further out? Check your area &rarr;</a></p>
   </section>
 
-  <!-- STATS -->
-  <div class="stats" style="grid-template-columns: repeat(4, 1fr);">
-    <div class="stat"><div class="num">2pm</div><div class="lbl">Book by, collected today</div></div>
-    <div class="stat"><div class="num">98.4%</div><div class="lbl">On-time, last 90 days</div></div>
-    <div class="stat"><div class="num">24</div><div class="lbl">Dublin postal codes</div></div>
-    <div class="stat"><div class="num">€7.99</div><div class="lbl">Per parcel, from</div></div>
-  </div>
-
-  <!-- VERTICALS -->
-  <section class="verticals">
-    <div class="eyebrow">Built for</div>
-    <p class="vert-lead">We're built around the high-value, handle-with-care categories &mdash; where <span class="accent">same-day and a careful doorstep</span> win the repeat customer.</p>
-    <div class="vert-row">
-      <span class="vert vert--hero">Beauty &amp; skincare</span>
-      <span class="vert vert--hero">Health &amp; wellness</span>
-      <span class="vert vert--hero">Pharmacy</span>
-      <span class="vert">Jewellery</span>
-      <span class="vert">Boutique fashion</span>
-      <span class="vert">Gifting &amp; florists</span>
-    </div>
-  </section>
-
-  <!-- WHY -->
-  <section class="section">
-    <div class="eyebrow">Why retailers switch</div>
-    <h2 style="font-size: 40px; font-weight: 800; letter-spacing: -0.03em; margin: 12px 0 32px;">Same-day collection changes the maths.</h2>
-    <div class="why">
-      <div class="why-card">
-        <div class="n">01</div>
-        <h3>Ship the day you sell</h3>
-        <p>An order placed at 11am is collected on the midday run and delivered the same evening — not "picked up tomorrow, there the day after." Faster fulfilment, happier customers, fewer "where is it?" emails.</p>
+  <!-- HUB & SPOKE -->
+  <section class="section divider-top" id="hub">
+    <div class="eyebrow">How Molli moves</div>
+    <h2 style="font-size: 34px; font-weight: 800; letter-spacing: -0.03em; margin: 12px 0 8px;">One central hub. Short loops. Same day.</h2>
+    <p style="font-size:15px; color:var(--soft); max-width:600px; margin:0 0 32px; line-height:1.55;">Every parcel runs through a single depot in the heart of the city. Keeping collection and delivery loops short is what lets us promise <b style="color:var(--accent)">same-day</b> &mdash; and it's why the model works best close to the hub.</p>
+    <div class="hub-flow">
+      <div class="hub-node">
+        <div class="hn-step">01 · Collect</div>
+        <div class="hn-h">We pick up from your door</div>
+        <div class="hn-p">A courier sweeps the core on scheduled runs and brings your parcels in.</div>
       </div>
-      <div class="why-card">
-        <div class="n">02</div>
-        <h3>No post office runs</h3>
-        <p>Your team never leaves the shop floor. We come to you, on a collection window you choose. That's staff hours back in the till, not queuing with a trolley of parcels.</p>
+      <div class="hub-arrow">&rarr;</div>
+      <div class="hub-node core">
+        <div class="hn-badge">The hub</div>
+        <div class="hn-h">One central depot</div>
+        <div class="hn-p">Everything sorts in one place, minutes from every city-centre address.</div>
       </div>
-      <div class="why-card">
-        <div class="n">03</div>
-        <h3>One dashboard, every parcel</h3>
-        <p>Bulk-book the day's orders, track them all live, and see your spend at a glance. Your whole Dublin dispatch, in one screen.</p>
+      <div class="hub-arrow">&rarr;</div>
+      <div class="hub-node">
+        <div class="hn-step">03 · Deliver</div>
+        <div class="hn-h">Back out on the next loop</div>
+        <div class="hn-p">Short spokes mean it's on a doorstep the same day &mdash; not sitting overnight.</div>
       </div>
     </div>
+    <p style="font-size:13px; color:var(--muted); margin-top:18px; line-height:1.5;">Works best if you're city-based &mdash; Dublin 1, 2, 4, 6 and 8 are right in the sweet spot, with a 2pm cut-off for same-day. Sending from further out? Order by <b>1pm</b> to make the midday run in &mdash; <a href="zones.html">talk to us</a> and we'll sort the best route.</p>
   </section>
 
-  <!-- SEE IT WORK -->
-  <section class="section divider-top" id="see-it-work">
-    <div class="seeit">
-      <div>
-        <div class="eyebrow">See it work</div>
-        <h2>Watch a booking,<br /><span class="accent">start to finish.</span></h2>
-        <p>No sign-up, nothing charged. Follow the guided flow and see exactly what your counter staff would do &mdash; a real same-day collection booked in under a minute.</p>
-        <ul class="seeit-steps">
-          <li><span class="n">1</span> Enter collection &amp; delivery addresses</li>
-          <li><span class="n">2</span> Check it fits and pick same-day or next-morning</li>
-          <li><span class="n">3</span> Confirm &mdash; we collect on the next run</li>
-        </ul>
-        <div class="cta-row">
-          <a class="btn btn--accent btn--md" href="demo.html">Watch the guided demo &rarr;</a>
-        </div>
-        <div class="seeit-note">Interactive &middot; 30 seconds &middot; nothing charged</div>
-      </div>
-      <a class="seeit-frame" href="demo.html">
-        <div class="seeit-bar">
-          <div class="seeit-lights"><span></span><span></span><span></span></div>
-          <div class="seeit-addr"><b>molli.ie</b>/book</div>
-        </div>
-        <div class="seeit-body">
-          <div class="seeit-counter">STEP 4 OF 7</div>
-          <h3>What are we sending?</h3>
-          <div class="sub">Choose your parcel size</div>
-          <div class="seeit-opt sel"><span class="dot"></span><span class="lbl">Small</span><span class="meta">&euro;7.99</span></div>
-          <div class="seeit-opt"><span class="dot"></span><span class="lbl">Medium</span><span class="meta">&euro;8.99</span></div>
-          <div class="seeit-opt"><span class="dot"></span><span class="lbl">Large</span><span class="meta">&euro;9.99</span></div>
-          <div class="seeit-go">Next</div>
-        </div>
-      </a>
-    </div>
-  </section>
-
-  <!-- INTEGRATIONS -->
-  <section class="section divider-top">
-    <div class="eyebrow">Plugs into how you already work</div>
-    <h2 style="font-size: 40px; font-weight: 800; letter-spacing: -0.03em; margin: 12px 0 32px;">Connect your store. Orders book themselves.</h2>
-    <div class="integrations">
-      <a class="intg" href="integrations.html" style="text-decoration:none; cursor:pointer; display:block;"><div class="name">Shopify</div><div class="desc">Orders sync automatically. Print a label and book collection without leaving admin.</div><div class="badge">1-click app &rarr;</div></a>
-      <a class="intg" href="integrations.html" style="text-decoration:none; cursor:pointer; display:block;"><div class="name">WooCommerce</div><div class="desc">A plugin drops Molli into your checkout and dispatch flow.</div><div class="badge">Free plugin &rarr;</div></a>
-      <a class="intg" href="bulk.html" style="text-decoration:none; cursor:pointer; display:block;"><div class="name">CSV bulk upload</div><div class="desc">Drop a spreadsheet of the day's orders and book one collection for all of them.</div><div class="badge">Try it &rarr;</div></a>
-      <a class="intg" href="integrations.html#api" style="text-decoration:none; cursor:pointer; display:block;"><div class="name">API</div><div class="desc">Wire Molli straight into your own systems with a REST API and webhooks.</div><div class="badge">Developer docs &rarr;</div></a>
-    </div>
-    <div class="intg-cta" style="display:flex; gap:12px; flex-wrap:wrap; margin-top:26px;">
-      <a class="btn btn--accent btn--sm" href="integrations.html">See same-day at checkout &rarr;</a>
-      <a class="btn btn--ghost btn--sm" href="badge.html">Add the countdown badge &rarr;</a>
-    </div>
-  </section>
-
-  <!-- COUNTDOWN BADGE -->
-  <section class="section divider-top" id="badge-feature">
-    <div class="eyebrow">Turn browsers into same-day buyers</div>
-    <h2 style="font-size: 40px; font-weight: 800; letter-spacing: -0.03em; margin: 12px 0 32px;">A live countdown, right under your buy button.</h2>
-    <div class="badgefeat">
-      <div class="bf-copy">
-        <p>Drop one line of code on your store and shoppers see exactly how long they've got to order for same-day delivery. A visible deadline is the oldest trick in retail &mdash; it turns a browse into a checkout.</p>
+  <!-- PACKS -->
+  <section class="section" id="packs">
+    <div class="packs">
+      <!-- Starter -->
+      <div class="pack">
+        <div class="pk-name">Starter</div>
+        <div class="pk-price">€250</div>
+        <div class="pk-bonus empty">+€0 bonus</div>
+        <div class="pk-total">Balance loaded: <b>€250.00</b></div>
         <ul>
-          <li><span class="tick">&#10003;</span><span>Counts down live against your 2pm same-day and 5pm next-morning cut-offs.</span></li>
-          <li><span class="tick">&#10003;</span><span>Skips weekends and bank holidays automatically &mdash; never shows a promise you can't keep.</span></li>
-          <li><span class="tick">&#10003;</span><span>Works on Shopify, WooCommerce or plain HTML. No build step. Free.</span></li>
+          <li><span class="tick">&#10003;</span><span>≈ 31 small parcels at the €7.99 base</span></li>
+          <li><span class="tick">&#10003;</span><span>Volume discount applied as you send</span></li>
+          <li><span class="tick">&#10003;</span><span>Balance never expires</span></li>
         </ul>
-        <a class="btn btn--accent btn--sm" href="badge.html">Get the badge &mdash; free &rarr;</a>
+        <button class="btn btn--ghost btn--md buy" data-pack="Starter" data-pay="250" data-bonus="0">Buy now &rarr;</button>
       </div>
-      <div class="bf-demo">
-        <div class="shop">
-          <div class="shop-bar"><span>GR&Aacute; &middot; Dublin</span><span class="cart">Bag (1)</span></div>
-          <div class="shop-body">
-            <div class="shop-thumb"></div>
-            <div>
-              <div class="shop-title">Eau de Parfum &middot; 50ml</div>
-              <div class="shop-price">&euro;68.00</div>
-              <div class="molli-badge mb-light" id="bz-badge">
-                <div class="mb-ic">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:inherit"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-                </div>
-                <div>
-                  <div class="mb-lead" id="bz-lead">Order within</div>
-                  <div class="mb-main" id="bz-main"><span class="mb-clock" id="bz-clock">02:14:08</span> for delivery by 6pm today</div>
-                </div>
-              </div>
-              <button class="shop-buy">Add to bag</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- DASHBOARD -->
-  <section class="section divider-top">
-    <div class="eyebrow">Your dispatch, one screen</div>
-    <h2 style="font-size: 40px; font-weight: 800; letter-spacing: -0.03em; margin: 12px 0 32px;">Everything a busy shop needs.</h2>
-    <div class="dash">
-      <a class="dash-card" href="bulk.html" style="text-decoration:none; display:block;"><h3>Bulk booking &rarr;</h3><p>Book the day's orders in one go — a single collection window covers the lot.</p></a>
-      <div class="dash-card"><h3>Live tracking</h3><p>Every parcel, tracked end-to-end, with the recipient notified when the courier's minutes away.</p></div>
-      <div class="dash-card"><h3>Saved addresses &amp; recipients</h3><p>Regular customers and pickup points saved, so repeat sends are two taps.</p></div>
-      <div class="dash-card"><h3>Spend &amp; credit at a glance</h3><p>Balance, draw-downs, and monthly volume — the numbers finance asks for, ready to export.</p></div>
-    </div>
-  </section>
-
-  <!-- INSURANCE CALLOUT -->
-  <section class="section divider-top">
-    <div style="display:flex; gap:28px; align-items:center; background:linear-gradient(120deg, var(--accent-tint), rgba(var(--accent-rgb),.04)); border:1px solid rgba(var(--accent-rgb),.28); border-radius:22px; padding:34px 36px; flex-wrap:wrap;">
-      <div style="width:60px; height:60px; border-radius:16px; background:var(--accent-tint); border:1px solid rgba(var(--accent-rgb),.3); display:flex; align-items:center; justify-content:center; flex:none;">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-      </div>
-      <div style="flex:1; min-width:280px;">
-        <div class="eyebrow" style="color:var(--accent);">Peace of mind, per parcel</div>
-        <h3 style="font-size:26px; font-weight:800; letter-spacing:-0.02em; margin:8px 0 10px;">Insure any order — your call, not all‑or‑nothing.</h3>
-        <p style="font-size:15px; color:var(--soft); line-height:1.6; max-width:640px; margin:0;">Add cover up to €500 to any parcel for €4.99 — opt in per shipment, whether you book on the web, in a bulk manifest, or with one field in the API. Photo proof of delivery and an en‑route text land on every parcel, free.</p>
-        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;">
-          <span class="pill">Cover up to €500 · €4.99</span>
-          <span class="pill">Photo proof · included</span>
-          <span class="pill">En‑route SMS · included</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ONBOARDING -->
-  <section class="section divider-top">
-    <div class="eyebrow">Getting set up</div>
-    <h2 style="font-size: 40px; font-weight: 800; letter-spacing: -0.03em; margin: 12px 0 32px;">From first call to daily collections.</h2>
-    <div class="onb">
-      <div class="onb-c">
-        <div class="n">01</div>
-        <h3>Tell us your volume</h3>
-        <p>A few details about your shop and your typical daily orders. We agree a fixed collection slot that fits your day &mdash; the same time, every day.</p>
-      </div>
-      <div class="onb-c">
-        <div class="n">02</div>
-        <h3>Connect your store &amp; badge</h3>
-        <p>Link Shopify or WooCommerce so orders flow straight in, and drop the countdown badge on your product pages to grow same-day volume. Five minutes, once.</p>
-      </div>
-      <div class="onb-c">
-        <div class="n">03</div>
-        <h3>We collect, every day</h3>
-        <p>Hand over the day's batch on your scheduled run &mdash; sorted at our hub and delivered across Dublin by 6pm. Nothing to route, nothing to chase.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTACT -->
-  <section class="section divider-top" id="contact">
-    <div class="contact" id="signup">
-      <div class="contact-lead">
-        <div class="eyebrow">Talk to us for volume</div>
-        <h2>Sending more than <span class="accent">50 a day?</span></h2>
-        <p>For higher volumes we'll set you up personally &mdash; a rate matched to your numbers, help connecting your store, and a dedicated collection window that fits your day.</p>
+      <!-- Growth (best) -->
+      <div class="pack best">
+        <div class="flag">Most popular</div>
+        <div class="pk-name">Growth</div>
+        <div class="pk-price">€500</div>
+        <div class="pk-bonus">+€25 bonus credit</div>
+        <div class="pk-total">Balance loaded: <b>€525.00</b></div>
         <ul>
-          <li><span class="tick">&#10003;</span><span>A volume rate, quoted to your weekly numbers</span></li>
-          <li><span class="tick">&#10003;</span><span>Hands-on onboarding &amp; store integration</span></li>
-          <li><span class="tick">&#10003;</span><span>A named contact, not a ticket queue</span></li>
+          <li><span class="tick">&#10003;</span><span>≈ 65 small parcels at the €7.99 base</span></li>
+          <li><span class="tick">&#10003;</span><span>Volume discount applied as you send</span></li>
+          <li><span class="tick">&#10003;</span><span>Priority support &amp; monthly statement</span></li>
         </ul>
+        <button class="btn btn--accent btn--md buy" data-pack="Growth" data-pay="500" data-bonus="25">Buy now &rarr;</button>
       </div>
-      <div class="contact-form">
-        <form id="biz-contact" onsubmit="return bizContactSubmit(event)">
-          <div class="fg">
-            <label>Shop / business name</label>
-            <input type="text" required placeholder="Brennan &amp; Co" />
-          </div>
-          <div class="fg2">
-            <div class="fg">
-              <label>Your name</label>
-              <input type="text" required placeholder="Aoife Brennan" />
-            </div>
-            <div class="fg">
-              <label>Parcels / week</label>
-              <select required>
-                <option value="">Select&hellip;</option>
-                <option>Under 50</option>
-                <option>50&ndash;200</option>
-                <option>200&ndash;500</option>
-                <option>500+</option>
-              </select>
-            </div>
-          </div>
-          <div class="fg">
-            <label>Email</label>
-            <input type="email" required placeholder="aoife@brennanco.ie" />
-          </div>
-          <div class="fg">
-            <label>Anything we should know? (optional)</label>
-            <textarea rows="3" placeholder="We ship jewellery across Dublin, mostly D1&ndash;D8&hellip;"></textarea>
-          </div>
-          <button type="submit" class="btn btn--accent btn--md btn--block">Request a call &rarr;</button>
-        </form>
-        <div class="contact-done" id="contact-done">
-          <div class="big">&#9989;</div>
-          <h3>Thanks &mdash; we'll be in touch</h3>
-          <p>A Molli account manager will email you within one working day to set up your rate.</p>
+
+      <!-- Scale -->
+      <div class="pack">
+        <div class="pk-name">Scale</div>
+        <div class="pk-price">€1,000</div>
+        <div class="pk-bonus">+€75 bonus credit</div>
+        <div class="pk-total">Balance loaded: <b>€1,075.00</b></div>
+        <ul>
+          <li><span class="tick">&#10003;</span><span>≈ 134 small parcels at the €7.99 base</span></li>
+          <li><span class="tick">&#10003;</span><span>Best value &mdash; largest bonus credit</span></li>
+          <li><span class="tick">&#10003;</span><span>Dedicated account manager</span></li>
+        </ul>
+        <button class="btn btn--ghost btn--md buy" data-pack="Scale" data-pay="1000" data-bonus="75">Buy now &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Custom -->
+    <div class="custom">
+      <div class="c-l">
+        <div class="cap">Custom top-up</div>
+        <h3>Load any amount you like.</h3>
+        <p>Enter your own figure &mdash; anything from &euro;50. Top-ups of &euro;500 or more earn the same 5% bonus credit as the Growth pack.</p>
+      </div>
+      <div class="c-r">
+        <div class="amt-field">
+          <span class="cur">€</span>
+          <input id="custom-amt" type="number" min="50" step="10" value="300" />
         </div>
+        <button class="btn btn--accent btn--md" id="custom-buy">Buy now &rarr;</button>
       </div>
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="cta-strip">
-    <div>
-      <div class="k">Sell today, ship today</div>
-      <div class="h">Create a business account in minutes.</div>
-    </div>
-    <div style="display:flex; gap:12px; flex-wrap:wrap;">
-      <a class="btn btn--invert btn--lg" href="account.html">Get started &rarr;</a>
-      <a class="btn btn--lg" href="#contact" style="background:rgba(0,0,0,.14); color:var(--bg);">Talk to us</a>
+  <!-- HOW CREDIT WORKS -->
+  <section class="section divider-top" id="how">
+    <div class="eyebrow">How credit works</div>
+    <h2 style="font-size: 34px; font-weight: 800; letter-spacing: -0.03em; margin: 12px 0 28px;">Simple, and it never expires.</h2>
+    <div class="how">
+      <div class="how-c">
+        <div class="n">01</div>
+        <h4>Top up your balance</h4>
+        <p>Pick a pack or enter a custom amount. Pay once by card &mdash; the balance lands on your account instantly.</p>
+      </div>
+      <div class="how-c">
+        <div class="n">02</div>
+        <h4>Send with no checkout</h4>
+        <p>Every parcel draws down from your credit. No card at booking, no per-order payment &mdash; just book and go.</p>
+      </div>
+      <div class="how-c">
+        <div class="n">03</div>
+        <h4>Discount scales with you</h4>
+        <p>Your per-parcel rate drops with the volume you actually send &mdash; see the tiers on the <a href="pricing.html#volume">pricing page</a>.</p>
+      </div>
     </div>
   </section>
 
@@ -440,48 +257,85 @@
       <a class="logo" href="index.html"><span class="logo-mark"><span>&rsaquo;</span></span><span class="logo-word">m<span class="o-wheel"></span>lli</span></a>
       <div class="tag">molli.ie · Dublin's same-day parcel network<br /><span style="color:var(--muted)">Through streets broad &amp; narrow.</span></div>
     </div>
-    <div class="col"><div class="col-title">Send</div><a href="booking.html">Parcels</a><a href="booking.html">Documents</a><a href="booking.html">Same-day</a><a href="business.html">Bulk &amp; API</a></div>
-    <div class="col"><div class="col-title">Business</div><a href="business.html">Business account</a><a href="business.html">Integrations</a><a href="pricing.html#credit">Billing &amp; credit</a><a href="account.html">Open account</a></div>
+    <div class="col"><div class="col-title">Send</div><a href="booking.html">Parcels</a><a href="booking.html">Documents</a><a href="booking.html">Same-day</a><a href="pricing.html">Bulk &amp; API</a></div>
+    <div class="col"><div class="col-title">Business</div><a href="pricing.html">Account pricing</a><a href="buy-credit.html">Buy credit</a><a href="pricing.html">Case studies</a><a href="pricing.html">Contact sales</a></div>
     <div class="col"><div class="col-title">Company</div><a href="#">About</a><a href="#">Jobs</a><a href="#">Sustainability</a><a href="#">Press</a></div>
     <div class="col"><div class="col-title">Help</div><a href="account.html">Track a parcel</a><a href="pricing.html">Pricing</a><a href="#">Contact</a><a href="pricing.html#faqs">FAQ</a></div>
   </footer>
   <div class="legal">&copy; 2026 Molli Logistics Ltd. &middot; 23 Sir John Rogerson's Quay, Dublin 2 &middot; CRO 612 884</div>
 
+  <!-- CHECKOUT MODAL -->
+  <div class="modal-scrim" id="scrim">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="m-cap">Confirm top-up</div>
+      <h3 id="m-title">Growth pack</h3>
+      <div class="m-line"><span>You pay</span><b id="m-pay">€500.00</b></div>
+      <div class="m-line" id="m-bonus-row"><span class="bonus">Bonus credit</span><b class="bonus" id="m-bonus">+€25.00</b></div>
+      <div class="m-line tot"><span>Credit added to balance</span><b id="m-total">€525.00</b></div>
+      <div class="m-actions">
+        <button class="btn btn--accent btn--md" id="m-pay-btn">Pay by card &rarr;</button>
+        <button class="close" id="m-close">Cancel</button>
+      </div>
+      <div class="pay-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Secure payment · powered by Stripe
+      </div>
+    </div>
+  </div>
+
   <script>
-    function bizContactSubmit(e) {
-      e.preventDefault();
-      document.getElementById('biz-contact').style.display = 'none';
-      document.getElementById('contact-done').classList.add('show');
-      return false;
-    }
-  </script>
-  <script>
-    // Live countdown for the badge showcase (mirrors badge.html cut-off logic).
     (function () {
-      var CUTOFF_TODAY = 14, CUTOFF_NEXTDAY = 17;
-      var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-      function pad(n){ return (n<10?'0':'')+n; }
-      function clockStr(ms){ var h=Math.floor(ms/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000); return pad(h)+':'+pad(m)+':'+pad(s); }
-      function nextWorkingDay(d){ var n=new Date(d); n.setDate(n.getDate()+1); while(n.getDay()===0||n.getDay()===6){n.setDate(n.getDate()+1);} return n; }
-      function nwdLabel(now){ var nwd=nextWorkingDay(now); var isTom=(nwd.getDate()===now.getDate()+1); return isTom?'tomorrow':DAYS[nwd.getDay()]; }
-      function render() {
-        var lead=document.getElementById('bz-lead'), main=document.getElementById('bz-main');
-        if(!lead||!main) return;
-        var now = new Date(), day = now.getDay(), weekend = (day===0||day===6);
-        var t2 = new Date(now); t2.setHours(CUTOFF_TODAY,0,0,0);
-        var t5 = new Date(now); t5.setHours(CUTOFF_NEXTDAY,0,0,0);
-        if(!weekend && now<t2){
-          lead.textContent='Order within';
-          main.innerHTML='<span class="mb-clock">'+clockStr(t2-now)+'</span> for delivery by 6pm today';
-        } else if(!weekend && now<t5){
-          lead.textContent='Same-day\u2019s closed \u2014 order within';
-          main.innerHTML='<span class="mb-clock">'+clockStr(t5-now)+'</span> for delivery by 1pm tomorrow';
+      var scrim = document.getElementById('scrim');
+      var mTitle = document.getElementById('m-title');
+      var mPay = document.getElementById('m-pay');
+      var mBonus = document.getElementById('m-bonus');
+      var mBonusRow = document.getElementById('m-bonus-row');
+      var mTotal = document.getElementById('m-total');
+      var payBtn = document.getElementById('m-pay-btn');
+
+      function money(n) { return '€' + n.toLocaleString('en-IE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+      function openModal(name, pay, bonus) {
+        mTitle.textContent = name;
+        mPay.textContent = money(pay);
+        if (bonus > 0) {
+          mBonusRow.style.display = '';
+          mBonus.textContent = '+' + money(bonus);
         } else {
-          lead.textContent = weekend ? 'Cut-off passed' : 'Today\u2019s runs have left';
-          main.innerHTML='Order now for delivery by <span class="mb-clock">1pm '+nwdLabel(now)+'</span>';
+          mBonusRow.style.display = 'none';
         }
+        mTotal.textContent = money(pay + bonus);
+        payBtn.textContent = 'Pay ' + money(pay) + ' by card →';
+        payBtn.disabled = false;
+        scrim.classList.add('open');
       }
-      render(); setInterval(render, 1000);
+      function closeModal() { scrim.classList.remove('open'); }
+
+      document.querySelectorAll('.buy').forEach(function (b) {
+        b.addEventListener('click', function () {
+          openModal(this.dataset.pack + ' pack', parseFloat(this.dataset.pay), parseFloat(this.dataset.bonus));
+        });
+      });
+
+      document.getElementById('custom-buy').addEventListener('click', function () {
+        var v = parseFloat(document.getElementById('custom-amt').value) || 0;
+        if (v < 50) { v = 50; document.getElementById('custom-amt').value = 50; }
+        var bonus = v >= 500 ? Math.round(v * 0.05 * 100) / 100 : 0;
+        openModal('Custom top-up', v, bonus);
+      });
+
+      payBtn.addEventListener('click', function () {
+        this.disabled = true;
+        this.textContent = 'Redirecting to secure checkout…';
+        setTimeout(function () {
+          payBtn.textContent = '✓ Payment confirmed';
+          setTimeout(closeModal, 900);
+        }, 1100);
+      });
+
+      document.getElementById('m-close').addEventListener('click', closeModal);
+      scrim.addEventListener('click', function (e) { if (e.target === scrim) closeModal(); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
     })();
   </script>
 </body>

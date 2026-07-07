@@ -39,9 +39,6 @@
     .price { font-family: var(--font-mono); font-weight: 700; text-align: right; }
     .row-x { cursor: pointer; color: var(--muted); font-size: 15px; }
     .row-x:hover { color: #ff7a7a; }
-    .ins-toggle { cursor: pointer; font-family: var(--font-mono); font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--soft); white-space: nowrap; user-select: none; }
-    .ins-toggle:hover { border-color: var(--accent); color: var(--ink); }
-    .ins-toggle.on { background: rgba(156,255,46,.14); border-color: rgba(156,255,46,.5); color: var(--accent); }
     .empty { text-align: center; color: var(--muted); font-size: 13px; padding: 30px 0; }
 
     .summary .line { display: flex; justify-content: space-between; font-size: 13px; color: var(--soft); padding: 7px 0; }
@@ -62,9 +59,7 @@
     <a class="logo" href="index.html"><span class="logo-mark"><span>&rsaquo;</span></span><span class="logo-word">m<span class="o-wheel"></span>lli</span></a>
     <nav class="topnav">
       <a href="sell.html">Sell more</a>
-      <a href="connect.html">Connect</a>
       <a href="pricing.html">Pricing</a>
-      <a href="buy-credit.html">Buy credit</a>
       <a href="fit.html">Will it fit?</a>
       <a href="zones.html">Coverage</a>
       <a href="pricing.html#faqs">Help</a>
@@ -93,12 +88,12 @@
       <div>
         <div class="card" style="margin-bottom:16px;">
           <h3>Import orders</h3>
-          <div class="hint">One order per line: <b>Recipient, Eircode, size</b> (small / package / box). Add <b>insure</b> at the end to cover a parcel &mdash; e.g. <span style="font-family:var(--font-mono);">Jane Doe, D02 X285, box, insure</span>. Or export a CSV from Shopify &amp; WooCommerce in the same shape.</div>
+          <div class="hint">One order per line: <b>Recipient, Eircode, size</b> (small / package / box). Or export a CSV from Shopify &amp; WooCommerce in the same shape.</div>
           <div class="paste-row">
             <button class="btn btn--ghost btn--sm" onclick="loadSample()">Load sample orders</button>
             <button class="btn btn--ghost btn--sm" onclick="document.querySelector('.orders').value='';">Clear</button>
           </div>
-          <textarea class="orders" id="orders" placeholder="Jane Doe, D02 X285, package&#10;Tom Ryan, D15, box, insure&#10;Aoife N, D08, small"></textarea>
+          <textarea class="orders" id="orders" placeholder="Jane Doe, D02 X285, package&#10;Tom Ryan, D15, box&#10;Aoife N, D08, small"></textarea>
           <button class="btn btn--accent btn--md" style="margin-top:12px;" onclick="parseOrders()">Build manifest &rarr;</button>
         </div>
 
@@ -106,8 +101,8 @@
           <h3>Manifest</h3>
           <div class="hint" id="manifest-hint">Your parcels for this collection.</div>
           <table>
-            <thead><tr><th>Recipient</th><th>Eircode</th><th>Zone</th><th>Size</th><th>Insure</th><th style="text-align:right;">Price</th><th></th></tr></thead>
-            <tbody id="manifest-body"><tr><td colspan="7" class="empty">No orders yet — paste some above and build your manifest.</td></tr></tbody>
+            <thead><tr><th>Recipient</th><th>Eircode</th><th>Zone</th><th>Size</th><th style="text-align:right;">Price</th><th></th></tr></thead>
+            <tbody id="manifest-body"><tr><td colspan="6" class="empty">No orders yet — paste some above and build your manifest.</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -118,7 +113,6 @@
         <div class="line"><span>Parcels</span><span class="v" id="sum-count">0</span></div>
         <div class="line"><span>City Centre · Zone 1</span><span class="v" id="sum-z1">0</span></div>
         <div class="line"><span>Greater Dublin · Zone 2</span><span class="v" id="sum-z2">0</span></div>
-        <div class="line" id="sum-ins-line" style="display:none;"><span>Insurance · <span id="sum-ins-count">0</span> parcel<span id="sum-ins-s"></span></span><span class="v" id="sum-ins">€0.00</span></div>
         <div class="line total"><span>Total</span><span class="v" id="sum-total">€0.00</span></div>
         <button class="btn btn--accent btn--block" style="margin-top:16px; padding:14px;" id="book-all" onclick="bookAll()">Book collection</button>
         <div class="bal-line" id="bal-line">Molli Credit balance: €0.00</div>
@@ -132,7 +126,6 @@
   <script>
     var SIZE_PRICE = { small: 7.99, package: 8.99, box: 9.99 };
     var ZONE2_FEE = 2.00;
-    var INSURE_FEE = 4.99;
     var manifest = [];
 
     function zoneFromEircode(ec) {
@@ -149,10 +142,10 @@
     function loadSample() {
       document.getElementById('orders').value =
         "Jane Doe, D02 X285, package\n" +
-        "Tom Ryan, D15, box, insure\n" +
+        "Tom Ryan, D15, box\n" +
         "Aoife Nolan, D08, small\n" +
         "Conor Walsh, D04, package\n" +
-        "Niamh Byrne, D24, package, insure:250\n" +
+        "Niamh Byrne, D24, package\n" +
         "Sean O'Brien, D06, small";
     }
 
@@ -167,25 +160,18 @@
           var ec = (parts[1] || '').toUpperCase();
           var size = (parts[2] || 'package').toLowerCase();
           if (!SIZE_PRICE[size]) size = 'package';
-          var insure = false, insVal = null;
-          for (var p = 3; p < parts.length; p++) {
-            var tok = (parts[p] || '').toLowerCase();
-            var mm = tok.match(/^insure(?::\s*\u20ac?(\d+))?$/);
-            if (mm) { insure = true; if (mm[1]) insVal = parseInt(mm[1], 10); }
-          }
-          manifest.push({ name: name, ec: ec, size: size, insure: insure, insVal: insVal });
+          manifest.push({ name: name, ec: ec, size: size });
         });
       }
       renderManifest();
     }
 
     function removeRow(i) { manifest.splice(i, 1); renderManifest(); }
-    function toggleInsure(i) { if (manifest[i]) { manifest[i].insure = !manifest[i].insure; if (!manifest[i].insure) manifest[i].insVal = null; renderManifest(); } }
 
     function renderManifest() {
       var body = document.getElementById('manifest-body');
       if (!manifest.length) {
-        body.innerHTML = '<tr><td colspan="7" class="empty">No orders yet — paste some above and build your manifest.</td></tr>';
+        body.innerHTML = '<tr><td colspan="6" class="empty">No orders yet — paste some above and build your manifest.</td></tr>';
         document.getElementById('manifest-hint').textContent = 'Your parcels for this collection.';
       } else {
         body.innerHTML = manifest.map(function (o, i) {
@@ -196,16 +182,13 @@
             price = null;
           } else {
             zoneCell = '<span class="zone-tag zone-' + zone + '">' + (zone === 1 ? 'City' : 'Greater') + '</span>';
-            price = SIZE_PRICE[o.size] + (zone === 2 ? ZONE2_FEE : 0) + (o.insure ? INSURE_FEE : 0);
+            price = SIZE_PRICE[o.size] + (zone === 2 ? ZONE2_FEE : 0);
           }
-          var insTitle = o.insVal ? ('Cover up to €' + o.insVal) : 'Cover up to €500';
-          var insCell = '<span class="ins-toggle' + (o.insure ? ' on' : '') + '" title="' + insTitle + '" onclick="toggleInsure(' + i + ')">' + (o.insure ? '✓ ' + money(INSURE_FEE) : '+ Add') + '</span>';
           return '<tr>'
             + '<td>' + escapeHtml(o.name) + '</td>'
             + '<td style="font-family:var(--font-mono);">' + escapeHtml(o.ec || '—') + '</td>'
             + '<td>' + zoneCell + '</td>'
             + '<td style="text-transform:capitalize;">' + o.size + '</td>'
-            + '<td style="text-align:center;">' + insCell + '</td>'
             + '<td class="price">' + (price === null ? '<span style="color:#ff7a7a;">check</span>' : money(price)) + '</td>'
             + '<td style="text-align:center;"><span class="row-x" onclick="removeRow(' + i + ')">✕</span></td>'
             + '</tr>';
@@ -218,23 +201,17 @@
     }
 
     function updateSummary() {
-      var count = 0, z1 = 0, z2 = 0, total = 0, bad = 0, insCount = 0, insTotal = 0;
+      var count = 0, z1 = 0, z2 = 0, total = 0, bad = 0;
       manifest.forEach(function (o) {
         var zone = zoneFromEircode(o.ec);
         if (zone === null) { bad++; return; }
         count++;
         if (zone === 1) z1++; else z2++;
         total += SIZE_PRICE[o.size] + (zone === 2 ? ZONE2_FEE : 0);
-        if (o.insure) { insCount++; insTotal += INSURE_FEE; total += INSURE_FEE; }
       });
       document.getElementById('sum-count').textContent = count;
       document.getElementById('sum-z1').textContent = z1;
       document.getElementById('sum-z2').textContent = z2;
-      var insLine = document.getElementById('sum-ins-line');
-      insLine.style.display = insCount ? 'flex' : 'none';
-      document.getElementById('sum-ins-count').textContent = insCount;
-      document.getElementById('sum-ins-s').textContent = insCount === 1 ? '' : 's';
-      document.getElementById('sum-ins').textContent = money(insTotal);
       document.getElementById('sum-total').textContent = money(total);
       var btn = document.getElementById('book-all');
       btn.textContent = count ? ('Book ' + count + ' parcel' + (count > 1 ? 's' : '') + ' · ' + money(total)) : 'Book collection';

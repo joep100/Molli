@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Molli — Colourway Comparison</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #ffffff; }
+  body { font-family: 'Inter Tight', sans-serif; position: relative; width: 746px; height: 476px; overflow: hidden; }
+  #scaler { position: absolute; top: 0; left: 0; width: 1800px; height: 1150px; transform: scale(0.414); transform-origin: top left; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  .tile {
+    position: absolute;
+    width: 380px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,.12);
+    box-shadow: 0 12px 40px rgba(0,0,0,.18);
+    background: var(--bg);
+    color: var(--ink);
+  }
+  .caption {
+    position: absolute; top: -30px; left: 2px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
+    color: #14140f; letter-spacing: .02em;
+  }
+  .caption span { color: #8b8b83; font-weight: 500; margin-left: 8px; }
+
+  /* nav */
+  .t-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; border-bottom: 1px solid var(--line);
+  }
+  .logo { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; display: flex; align-items: baseline; }
+  .o-wheel { display: inline-block; width: 0.6em; height: 0.6em; margin: 0 0.01em; position: relative; top: 0.02em; }
+  .t-nav .cta {
+    font-size: 12px; font-weight: 600; padding: 7px 14px; border-radius: 999px;
+    background: var(--accent); color: var(--on-accent);
+  }
+
+  /* hero */
+  .t-hero { padding: 22px 20px 20px; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .07em;
+    color: var(--accent); border: 1px solid var(--line-strong);
+    padding: 5px 10px; border-radius: 999px; margin-bottom: 14px;
+  }
+  .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .t-hero h1 { font-size: 25px; font-weight: 700; line-height: 1.12; letter-spacing: -0.02em; }
+  .t-hero h1 em { font-style: normal; color: var(--accent); }
+  .t-hero p { font-size: 12.5px; color: var(--soft); margin-top: 10px; line-height: 1.5; }
+
+  .price-row { display: flex; align-items: baseline; gap: 8px; margin-top: 16px; }
+  .price-row .from { font-size: 11px; color: var(--soft); }
+  .price-row .amt { font-family: 'JetBrains Mono', monospace; font-size: 30px; font-weight: 700; letter-spacing: -0.03em; color: var(--accent); }
+
+  .btn {
+    display: block; text-align: center; margin-top: 16px;
+    font-size: 14px; font-weight: 600; padding: 12px; border-radius: 10px;
+    background: var(--accent); color: var(--on-accent);
+  }
+
+  /* mini size card */
+  .t-card {
+    margin: 0 20px 20px; padding: 14px; border-radius: 12px;
+    background: var(--panel); border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .t-card .lbl { font-size: 13px; font-weight: 600; }
+  .t-card .sub { font-size: 11px; color: var(--soft); margin-top: 2px; }
+  .t-card .tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
+    color: var(--on-accent); background: var(--accent);
+    padding: 5px 10px; border-radius: 8px;
+  }
+
+  .desk-note {
+    position: absolute; font-family: 'Inter Tight', sans-serif;
+    color: #14140f;
+  }
+</style>
+</head>
+<body>
+<div id="scaler">
+
+  <!-- title -->
+  <div class="desk-note" style="left: 60px; top: 40px; width: 520px;">
+    <div style="font-size: 30px; font-weight: 700; letter-spacing: -0.02em;">Colourway comparison</div>
+    <div style="font-size: 14px; color: #6b6b63; margin-top: 6px;">Same brand slice across accents &amp; light/dark. Pan around · pinch to zoom.</div>
+  </div>
+
+  <!-- ============ TILE TEMPLATE via inline vars ============ -->
+
+  <!-- 1. Sprint (current) : lime on black -->
+  <div class="tile" style="left: 60px; top: 130px;
+      --bg:#0a0a0a; --panel:#141414; --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.14);
+      --ink:#fff; --soft:#8b8b8b; --accent:#9CFF2E; --on-accent:#0a0a0a;">
+    <div class="caption">01 · Sprint <span>current — lime on black</span></div>
+    <div class="t-nav"><div class="logo">m<span class="o-wheel" data-wheel></span>lli</div><div class="cta">Book</div></div>
+    <div class="t-hero">
+      <div class="pill"><span class="dot"></span> Same-day network</div>
+      <h1>Collect today,<br><em>deliver tomorrow.</em></h1>
+      <p>Dublin's same-day delivery network. Pick a collection and delivery slot.</p>
+      <div class="price-row"><span class="from">Pricing from</span><span class="amt">€7.99</span></div>
+      <div class="btn">Get a price</div>
+    </div>
+    <div class="t-card"><div><div class="lbl">Small parcel</div><div class="sub">Perfume, phone, jewellery</div></div><div class="tag">€7.99</div></div>
+  </div>
+
+  <!-- 2. Deep postal green on black -->
+  <div class="tile" style="left: 500px; top: 130px;
+      --bg:#0a0a0a; --panel:#141414; --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.14);
+      --ink:#fff; --soft:#8b8b8b; --accent:#1F9E5A; --on-accent:#ffffff;">
+    <div class="caption">02 · Postal <span>deep green on black</span></div>
+    <div class="t-nav"><div class="logo">m<span class="o-wheel" data-wheel></span>lli</div><div class="cta">Book</div></div>
+    <div class="t-hero">
+      <div class="pill"><span class="dot"></span> Same-day network</div>
+      <h1>Collect today,<br><em>deliver tomorrow.</em></h1>
+      <p>Dublin's same-day delivery network. Pick a collection and delivery slot.</p>
+      <div class="price-row"><span class="from">Pricing from</span><span class="amt">€7.99</span></div>
+      <div class="btn">Get a price</div>
+    </div>
+    <div class="t-card"><div><div class="lbl">Small parcel</div><div class="sub">Perfume, phone, jewellery</div></div><div class="tag">€7.99</div></div>
+  </div>
+
+  <!-- 3. Lime on white -->
+  <div class="tile" style="left: 940px; top: 130px;
+      --bg:#ffffff; --panel:#f6f6f1; --line:rgba(0,0,0,.08); --line-strong:rgba(0,0,0,.14);
+      --ink:#14140f; --soft:#6b6b63; --accent:#5CB308; --on-accent:#ffffff;">
+    <div class="caption">03 · Fresh <span>green on white</span></div>
+    <div class="t-nav"><div class="logo">m<span class="o-wheel" data-wheel data-dark></span>lli</div><div class="cta">Book</div></div>
+    <div class="t-hero">
+      <div class="pill"><span class="dot"></span> Same-day network</div>
+      <h1>Collect today,<br><em>deliver tomorrow.</em></h1>
+      <p>Dublin's same-day delivery network. Pick a collection and delivery slot.</p>
+      <div class="price-row"><span class="from">Pricing from</span><span class="amt">€7.99</span></div>
+      <div class="btn">Get a price</div>
+    </div>
+    <div class="t-card"><div><div class="lbl">Small parcel</div><div class="sub">Perfume, phone, jewellery</div></div><div class="tag">€7.99</div></div>
+  </div>
+
+  <!-- 4. Postal green on cream -->
+  <div class="tile" style="left: 1380px; top: 130px;
+      --bg:#f7f4ec; --panel:#efe9dc; --line:rgba(0,0,0,.09); --line-strong:rgba(0,0,0,.15);
+      --ink:#1c1a12; --soft:#6e6858; --accent:#12794a; --on-accent:#ffffff;">
+    <div class="caption">04 · Heritage <span>deep green on cream</span></div>
+    <div class="t-nav"><div class="logo">m<span class="o-wheel" data-wheel data-dark></span>lli</div><div class="cta">Book</div></div>
+    <div class="t-hero">
+      <div class="pill"><span class="dot"></span> Same-day network</div>
+      <h1>Collect today,<br><em>deliver tomorrow.</em></h1>
+      <p>Dublin's same-day delivery network. Pick a collection and delivery slot.</p>
+      <div class="price-row"><span class="from">Pricing from</span><span class="amt">€7.99</span></div>
+      <div class="btn">Get a price</div>
+    </div>
+    <div class="t-card"><div><div class="lbl">Small parcel</div><div class="sub">Perfume, phone, jewellery</div></div><div class="tag">€7.99</div></div>
+  </div>
+
+  <!-- 5. Amber on charcoal -->
+  <div class="tile" style="left: 280px; top: 620px;
+      --bg:#111010; --panel:#1b1917; --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.14);
+      --ink:#faf7f2; --soft:#9a9288; --accent:#FF9E2C; --on-accent:#1b1207;">
+    <div class="caption">05 · Warm <span>amber on charcoal</span></div>
+    <div class="t-nav"><div class="logo">m<span class="o-wheel" data-wheel></span>lli</div><div class="cta">Book</div></div>
+    <div class="t-hero">
+      <div class="pill"><span class="dot"></span> Same-day network</div>
+      <h1>Collect today,<br><em>deliver tomorrow.</em></h1>
+      <p>Dublin's same-day delivery network. Pick a collection and delivery slot.</p>
+      <div class="price-row"><span class="from">Pricing from</span><span class="amt">€7.99</span></div>
+      <div class="btn">Get a price</div>
+    </div>
+    <div class="t-card"><div><div class="lbl">Small parcel</div><div class="sub">Perfume, phone, jewellery</div></div><div class="tag">€7.99</div></div>
+  </div>
+
+  <!-- 6. Electric blue on ink -->
+  <div class="tile" style="left: 720px; top: 620px;
+      --bg:#0b0d12; --panel:#151821; --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.14);
+      --ink:#f2f5fb; --soft:#8890a3; --accent:#3D8BFF; --on-accent:#ffffff;">
+    <div class="caption">06 · Signal <span>blue on ink</span></div>
+    <div class="t-nav"><div class="logo">m<span class="o-wheel" data-wheel></span>lli</div><div class="cta">Book</div></div>
+    <div class="t-hero">
+      <div class="pill"><span class="dot"></span> Same-day network</div>
+      <h1>Collect today,<br><em>deliver tomorrow.</em></h1>
+      <p>Dublin's same-day delivery network. Pick a collection and delivery slot.</p>
+      <div class="price-row"><span class="from">Pricing from</span><span class="amt">€7.99</span></div>
+      <div class="btn">Get a price</div>
+    </div>
+    <div class="t-card"><div><div class="lbl">Small parcel</div><div class="sub">Perfume, phone, jewellery</div></div><div class="tag">€7.99</div></div>
+  </div>
+
+  <!-- 7. Coral / red on black -->
+  <div class="tile" style="left: 1160px; top: 620px;
+      --bg:#0c0a0a; --panel:#181414; --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.14);
+      --ink:#fbf5f4; --soft:#9a8d8b; --accent:#FF5A47; --on-accent:#ffffff;">
+    <div class="caption">07 · Punch <span>coral on black</span></div>
+    <div class="t-nav"><div class="logo">m<span class="o-wheel" data-wheel></span>lli</div><div class="cta">Book</div></div>
+    <div class="t-hero">
+      <div class="pill"><span class="dot"></span> Same-day network</div>
+      <h1>Collect today,<br><em>deliver tomorrow.</em></h1>
+      <p>Dublin's same-day delivery network. Pick a collection and delivery slot.</p>
+      <div class="price-row"><span class="from">Pricing from</span><span class="amt">€7.99</span></div>
+      <div class="btn">Get a price</div>
+    </div>
+    <div class="t-card"><div><div class="lbl">Small parcel</div><div class="sub">Perfume, phone, jewellery</div></div><div class="tag">€7.99</div></div>
+  </div>
+
+</div>
+<script>
+  // Inject the cartwheel SVG into every logo, coloured to the tile's ink.
+  document.querySelectorAll('[data-wheel]').forEach(function (el) {
+    var tile = el.closest('.tile');
+    var ink = getComputedStyle(tile).getPropertyValue('--ink').trim() || '#fff';
+    el.innerHTML = '<svg viewBox="0 0 100 100" width="100%" height="100%">'
+      + '<circle cx="50" cy="50" r="44" fill="none" stroke="' + ink + '" stroke-width="11"/>'
+      + '<circle cx="50" cy="50" r="7" fill="' + ink + '"/>'
+      + '<g stroke="' + ink + '" stroke-width="9">'
+      + '<line x1="50" y1="10" x2="50" y2="90"/><line x1="10" y1="50" x2="90" y2="50"/>'
+      + '<line x1="22" y1="22" x2="78" y2="78"/><line x1="78" y1="22" x2="22" y2="78"/></g></svg>';
+  });
+</script>
+</body>
+</html>

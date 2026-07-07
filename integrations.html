@@ -103,7 +103,9 @@
     </a>
     <nav class="topnav">
       <a href="sell.html">Sell more</a>
+      <a href="connect.html">Connect</a>
       <a href="pricing.html">Pricing</a>
+      <a href="buy-credit.html">Buy credit</a>
       <a href="fit.html">Will it fit?</a>
       <a href="zones.html">Coverage</a>
       <a href="pricing.html#faqs">Help</a>
@@ -117,13 +119,13 @@
   <section class="in-hero">
     <span class="pill"><span class="dot"></span> Store integration</span>
     <h1>Same-day, right there at checkout.</h1>
-    <p class="lead">Connect your store and Molli shows up as a live shipping rate — priced by the customer's Eircode, with a countdown that tells them exactly when it'll arrive. They pick it, you get the order, we collect today.</p>
+    <p class="lead">Connect your store and Molli shows up as a live shipping rate — priced by the customer's Eircode, with a countdown that tells them exactly when it'll arrive. They pick it, the order flows straight into your daily batch, and we collect it on your scheduled run — no spreadsheets, no re-keying.</p>
     <div class="plat-row">
       <span class="lbl">Works with</span>
       <span class="p">Shopify</span>
       <span class="p">WooCommerce</span>
       <span class="p">Squarespace</span>
-      <span class="p">Custom · API</span>
+      <a class="p" href="developers.html" style="color:var(--accent);text-decoration:none;">Custom · API &rarr;</a>
     </div>
   </section>
 
@@ -244,6 +246,23 @@
       <a class="btn btn--ghost btn--md" href="badge.html">Add the countdown badge &rarr;</a>
       <a class="btn btn--ghost btn--md" href="bulk.html">Prefer to bulk-book? &rarr;</a>
     </div>
+  </div>
+
+  <!-- CUSTOM / API CALLOUT -->
+  <div class="rules" style="padding-top:0;">
+    <a href="developers.html" style="display:block;text-decoration:none;color:inherit;">
+      <div class="rules-card" style="padding:26px;display:flex;gap:22px;align-items:center;flex-wrap:wrap;transition:border-color .15s;border:1px solid var(--line);">
+        <div style="flex:none;width:52px;height:52px;border-radius:13px;background:var(--accent-tint);display:flex;align-items:center;justify-content:center;color:var(--accent);">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <div style="flex:1;min-width:240px;">
+          <div style="font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);font-weight:700;">Custom stack</div>
+          <div style="font-size:21px;font-weight:700;letter-spacing:-0.02em;margin:5px 0 5px;">On your own checkout? Use the API.</div>
+          <div style="font-size:14.5px;color:var(--soft);line-height:1.55;max-width:560px;">Quote a live rate, push the order into your daily collection, and get status webhooks to the doorstep. A few endpoints, most integrations done in a day.</div>
+        </div>
+        <span class="btn btn--accent btn--md" style="flex:none;">Read the API docs &rarr;</span>
+      </div>
+    </a>
   </div>
 
   <!-- FOOTER -->

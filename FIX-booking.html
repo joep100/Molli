@@ -303,26 +303,6 @@
         .price-row.total span:last-child {
             color: var(--accent);
         }
-        /* Promo code */
-        .promo-box { display: flex; gap: 8px; margin-bottom: 12px; }
-        .promo-box input {
-            flex: 1; background: var(--panel); border: 1px solid var(--line);
-            border-radius: 8px; padding: 10px 12px; color: var(--ink);
-            font-size: 14px; text-transform: uppercase; letter-spacing: .02em;
-        }
-        .promo-box input:focus { outline: none; border-color: var(--accent); }
-        .promo-btn {
-            background: var(--panel); border: 1px solid var(--line); color: var(--ink);
-            border-radius: 8px; padding: 0 16px; font-size: 14px; font-weight: 500;
-            cursor: pointer; transition: border-color .15s, background .15s;
-        }
-        .promo-btn:hover { border-color: var(--accent); }
-        .promo-btn:disabled { cursor: default; opacity: .7; }
-        .promo-box.done input { opacity: .6; }
-        .promo-msg { font-size: 12.5px; margin: -4px 0 12px; font-weight: 500; }
-        .promo-msg.ok { color: var(--accent); }
-        .promo-msg.err { color: #ff6b6b; }
-        .price-row.promo-row span { color: var(--accent); }
 
         /* Buttons */
         .button-group {
@@ -929,13 +909,25 @@
                 <h3 style="font-size: 16px; font-weight: 500; margin: 16px 0 8px 0; color: #7FE001;">Optional Add-ons</h3>
 
                 <div class="form-section">
-                    <div style="display:flex; gap:12px; align-items:flex-start; padding:14px 16px; border:1px solid rgba(127,224,1,.3); background:rgba(127,224,1,.06); border-radius:12px; margin-bottom:12px;">
-                        <span style="color:var(--accent); font-weight:800; font-size:15px; line-height:1.3;">&#10003;</span>
+                    <label class="addon-card">
+                        <input type="checkbox" id="addon-insurance">
+                        <span class="sq"></span>
                         <span>
-                            <span style="display:block; font-size:15px; font-weight:600; color:#fff;">Proof of delivery included</span>
-                            <span style="display:block; font-size:12px; color:rgba(255,255,255,.6); line-height:1.4;">Every parcel is photographed at the door and logged with who took it, and your recipient gets a text when the courier is en route &mdash; all free on every delivery.</span>
+                            <span style="display: block; font-size: 15px; font-weight: 500; color: #fff;">Signature Required</span>
+                            <span style="display: block; font-size: 12px; color: rgba(255,255,255,.55); line-height: 1.4;">We'll text you the name of who signed for it</span>
                         </span>
-                    </div>
+                        <span style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 700; color: var(--accent); font-size: 14px;">+€1.99</span>
+                    </label>
+
+                    <label class="addon-card">
+                        <input type="checkbox" id="addon-photo">
+                        <span class="sq"></span>
+                        <span>
+                            <span style="display: block; font-size: 15px; font-weight: 500; color: #fff;">Photo Proof</span>
+                            <span style="display: block; font-size: 12px; color: rgba(255,255,255,.55); line-height: 1.4;">Delivery photo sent to you</span>
+                        </span>
+                        <span style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 700; color: var(--accent); font-size: 14px;">+€0.99</span>
+                    </label>
 
                     <label class="addon-card">
                         <input type="checkbox" id="addon-additional-insurance">
@@ -946,26 +938,38 @@
                         </span>
                         <span style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 700; color: var(--accent); font-size: 14px;">+€4.99</span>
                     </label>
-                </div>
 
-                <div class="promo-box" id="promo-box">
-                    <input type="text" id="promo-input" placeholder="Promo code" autocomplete="off">
-                    <button type="button" id="promo-apply" class="promo-btn">Apply</button>
+                    <label class="addon-card">
+                        <input type="checkbox" id="addon-sms">
+                        <span class="sq"></span>
+                        <span>
+                            <span style="display: block; font-size: 15px; font-weight: 500; color: #fff;">Text recipient when en route</span>
+                            <span style="display: block; font-size: 12px; color: rgba(255,255,255,.55); line-height: 1.4;">SMS sent when the courier is on the way</span>
+                        </span>
+                        <span style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 700; color: var(--accent); font-size: 14px;">+€0.99</span>
+                    </label>
                 </div>
-                <div id="promo-msg" class="promo-msg" style="display: none;"></div>
 
                 <div class="price-summary">
                     <div class="price-row">
                         <span>Delivery Fee:</span>
                         <span id="delivery-fee-page5">€9.99</span>
                     </div>
+                    <div id="addon-insurance-row" class="price-row" style="display: none;">
+                        <span>Signature Required:</span>
+                        <span>€1.99</span>
+                    </div>
+                    <div id="addon-photo-row" class="price-row" style="display: none;">
+                        <span>Photo Proof:</span>
+                        <span>€0.99</span>
+                    </div>
                     <div id="addon-additional-insurance-row" class="price-row" style="display: none;">
                         <span>Additional Insurance:</span>
                         <span>€4.99</span>
                     </div>
-                    <div id="promo-row" class="price-row promo-row" style="display: none;">
-                        <span>Free delivery (MOLLI)</span>
-                        <span id="promo-amount">-€0.00</span>
+                    <div id="addon-sms-row" class="price-row" style="display: none;">
+                        <span>Text when en route:</span>
+                        <span>€0.99</span>
                     </div>
                     <div class="price-row total">
                         <span>Total:</span>
@@ -1024,13 +1028,21 @@
                         <span>Delivery Fee:</span>
                         <span id="delivery-fee-summary">€7.99</span>
                     </div>
+                    <div id="addon-insurance-row-summary" class="price-row" style="display: none;">
+                        <span>Signature Required:</span>
+                        <span>€1.99</span>
+                    </div>
+                    <div id="addon-photo-row-summary" class="price-row" style="display: none;">
+                        <span>Photo Proof:</span>
+                        <span>€0.99</span>
+                    </div>
                     <div id="addon-additional-insurance-row-summary" class="price-row" style="display: none;">
                         <span>Additional Insurance:</span>
                         <span>€4.99</span>
                     </div>
-                    <div id="promo-row-summary" class="price-row promo-row" style="display: none;">
-                        <span>Free delivery (MOLLI)</span>
-                        <span id="promo-amount-summary">-€0.00</span>
+                    <div id="addon-sms-row-summary" class="price-row" style="display: none;">
+                        <span>Text when en route:</span>
+                        <span>€0.99</span>
                     </div>
                     <div class="price-row total">
                         <span>Total:</span>
@@ -1107,17 +1119,6 @@
                 <div style="background: rgba(127,224,1,.06); border: 1px solid rgba(127,224,1,.3); border-radius: 10px; padding: 12px 14px; font-size: 13px; color: var(--soft); margin-bottom: 12px;">
                     A confirmation and tracking link has been sent to your email and the recipient will get an SMS on the way.
                 </div>
-
-                <a href="pricing.html" style="display:flex; align-items:center; gap:12px; text-align:left; text-decoration:none; background: var(--bg-soft, rgba(255,255,255,.03)); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; transition: border-color .15s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--line)'">
-                    <div style="width:38px; height:38px; border-radius:9px; background: rgba(127,224,1,.1); display:flex; align-items:center; justify-content:center; flex:none;">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M7 15l4-4 3 3 5-6"></path></svg>
-                    </div>
-                    <div style="flex:1;">
-                        <div style="font-size:14px; font-weight:700; color:var(--ink, #fff); margin-bottom:2px;">Sending in volume?</div>
-                        <div style="font-size:12.5px; color:var(--soft); line-height:1.4;">Shops on a Molli Credit account get up to 15% off &mdash; see business pricing.</div>
-                    </div>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-                </a>
 
                 <div class="button-group">
                     <button class="btn-secondary" onclick="resetBooking()">Book another</button>
@@ -1634,38 +1635,10 @@
             });
 
             // Handle add-on checkboxes for price calculation
-            const addOnCheckboxes = document.querySelectorAll('#addon-additional-insurance');
+            const addOnCheckboxes = document.querySelectorAll('#addon-insurance, #addon-photo, #addon-additional-insurance, #addon-sms');
             addOnCheckboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', updateTotal);
             });
-
-            // Promo code: MOLLI = first delivery free (base fee waived)
-            const promoApply = document.getElementById('promo-apply');
-            if (promoApply) {
-                promoApply.addEventListener('click', function () {
-                    const input = document.getElementById('promo-input');
-                    const msg = document.getElementById('promo-msg');
-                    const box = document.getElementById('promo-box');
-                    const code = (input.value || '').trim().toUpperCase();
-                    if (code === 'MOLLI') {
-                        window.__promoFree = true;
-                        input.value = 'MOLLI';
-                        input.disabled = true;
-                        box.classList.add('done');
-                        promoApply.textContent = 'Applied';
-                        promoApply.disabled = true;
-                        msg.textContent = '\u2713 First delivery free \u2014 base fee waived.';
-                        msg.className = 'promo-msg ok';
-                        msg.style.display = 'block';
-                    } else {
-                        window.__promoFree = false;
-                        msg.textContent = code ? 'That code isn\u2019t valid.' : 'Enter a promo code.';
-                        msg.className = 'promo-msg err';
-                        msg.style.display = 'block';
-                    }
-                    updateTotal();
-                });
-            }
 
             // Add event listeners to ALL postcode fields for zone detection
             const postcodeFields = [
@@ -1765,29 +1738,28 @@
             
             let total = basePrice;
 
+            const insuranceChecked = document.getElementById('addon-insurance').checked;
+            const photoChecked = document.getElementById('addon-photo').checked;
             const additionalInsuranceChecked = document.getElementById('addon-additional-insurance').checked;
+            const smsChecked = document.getElementById('addon-sms').checked;
 
             // Show/hide add-on rows and add to total
+            document.getElementById('addon-insurance-row').style.display = insuranceChecked ? 'flex' : 'none';
+            document.getElementById('addon-photo-row').style.display = photoChecked ? 'flex' : 'none';
             document.getElementById('addon-additional-insurance-row').style.display = additionalInsuranceChecked ? 'flex' : 'none';
+            document.getElementById('addon-sms-row').style.display = smsChecked ? 'flex' : 'none';
 
+            if (insuranceChecked) {
+                total += 1.99;
+            }
+            if (photoChecked) {
+                total += 0.99;
+            }
             if (additionalInsuranceChecked) {
                 total += 4.99;
             }
-
-            // Promo: MOLLI waives the base delivery fee (add-ons still charged)
-            var promoFree = window.__promoFree === true;
-            if (promoFree) { total -= basePrice; }
-            var pRow = document.getElementById('promo-row');
-            if (pRow) {
-                pRow.style.display = promoFree ? 'flex' : 'none';
-                var pa = document.getElementById('promo-amount');
-                if (pa) pa.textContent = '-\u20ac' + basePrice.toFixed(2);
-            }
-            var pRowS = document.getElementById('promo-row-summary');
-            if (pRowS) {
-                pRowS.style.display = promoFree ? 'flex' : 'none';
-                var paS = document.getElementById('promo-amount-summary');
-                if (paS) paS.textContent = '-\u20ac' + basePrice.toFixed(2);
+            if (smsChecked) {
+                total += 0.99;
             }
 
             // Update total price
@@ -1805,8 +1777,17 @@
             if (document.getElementById('delivery-fee-summary')) {
                 document.getElementById('delivery-fee-summary').textContent = '€' + basePrice.toFixed(2);
             }
+            if (document.getElementById('addon-insurance-row-summary')) {
+                document.getElementById('addon-insurance-row-summary').style.display = insuranceChecked ? 'flex' : 'none';
+            }
+            if (document.getElementById('addon-photo-row-summary')) {
+                document.getElementById('addon-photo-row-summary').style.display = photoChecked ? 'flex' : 'none';
+            }
             if (document.getElementById('addon-additional-insurance-row-summary')) {
                 document.getElementById('addon-additional-insurance-row-summary').style.display = additionalInsuranceChecked ? 'flex' : 'none';
+            }
+            if (document.getElementById('addon-sms-row-summary')) {
+                document.getElementById('addon-sms-row-summary').style.display = smsChecked ? 'flex' : 'none';
             }
         }
 
@@ -2079,7 +2060,10 @@
             const am = (document.querySelector('input[name="delivery-time"]:checked')?.value === 'am');
             const zone2 = (getAutoDetectedZone() === 'zone2');
             const addons = [];
+            if (document.getElementById('addon-insurance')?.checked) addons.push('signature');
+            if (document.getElementById('addon-photo')?.checked) addons.push('photo');
             if (document.getElementById('addon-additional-insurance')?.checked) addons.push('insurance');
+            if (document.getElementById('addon-sms')?.checked) addons.push('sms');
             return { size, am, zone2, addons };
         }
 

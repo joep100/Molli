@@ -6,9 +6,10 @@
   <title>Molli — Coverage &amp; vehicles</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="theme-light.css" />
   <style>
     body { padding: 0; }
     .graphic {
@@ -42,7 +43,7 @@
     .why-item { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
     .why-h { font-size: 17px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 10px; color: var(--accent); }
     .why-item p { font-size: 14px; line-height: 1.6; color: var(--soft); }
-    .why-item p b { color: #fff; font-weight: 500; }
+    .why-item p b { color: var(--ink); font-weight: 500; }
     @media (max-width: 820px) { .why-tight { grid-template-columns: 1fr; } }
 
     /* ---------- Fit finder (standalone) ---------- */
@@ -58,7 +59,7 @@
     .ff-panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
     .ff-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 5px; background: var(--bg); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 22px; }
     .ff-toggle button { all: unset; box-sizing: border-box; cursor: pointer; text-align: center; padding: 12px 8px; border-radius: 9px; transition: all .15s; }
-    .ff-toggle button .zt { display: block; font-size: 14px; font-weight: 500; color: #fff; }
+    .ff-toggle button .zt { display: block; font-size: 14px; font-weight: 500; color: var(--ink); }
     .ff-toggle button .zc { display: block; font-size: 11px; color: var(--soft); font-family: var(--font-mono); margin-top: 3px; }
     .ff-toggle button.active { background: var(--accent-tint); box-shadow: inset 0 0 0 1.5px var(--accent); }
     .ff-rows { display: flex; flex-direction: column; gap: 15px; }
@@ -80,7 +81,7 @@
     .ff-note { margin-top: 16px; font-size: 12px; color: var(--muted); line-height: 1.5; }
   </style>
 </head>
-<body>
+<body class="light">
   <!-- TOP BAR -->
   <header class="topbar">
     <a class="logo" href="index.html">
@@ -114,67 +115,67 @@
         <svg viewBox="0 0 760 600" width="100%" style="display:block">
           <defs>
             <radialGradient id="z1g" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="rgba(156,255,46,0.22)"/>
-              <stop offset="100%" stop-color="rgba(156,255,46,0.05)"/>
+              <stop offset="0%" stop-color="rgba(61,139,255,0.22)"/>
+              <stop offset="100%" stop-color="rgba(61,139,255,0.05)"/>
             </radialGradient>
           </defs>
 
           <!-- Zone 2 fill -->
-          <circle cx="380" cy="300" r="250" fill="rgba(156,255,46,0.05)" stroke="rgba(156,255,46,0.28)" stroke-width="1.5" stroke-dasharray="3 6"/>
+          <circle cx="380" cy="300" r="250" fill="rgba(61,139,255,0.05)" stroke="rgba(61,139,255,0.28)" stroke-width="1.5" stroke-dasharray="3 6"/>
           <!-- Zone 1 fill -->
-          <circle cx="380" cy="300" r="135" fill="url(#z1g)" stroke="rgba(156,255,46,0.7)" stroke-width="1.5"/>
+          <circle cx="380" cy="300" r="135" fill="url(#z1g)" stroke="rgba(61,139,255,0.7)" stroke-width="1.5"/>
 
           <!-- M50 outer ring hint -->
           <circle cx="380" cy="300" r="285" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1.5" stroke-dasharray="2 8"/>
           <text x="380" y="28" fill="rgba(255,255,255,0.35)" font-family="'JetBrains Mono',monospace" font-size="11" text-anchor="middle" letter-spacing="2">M50</text>
 
           <!-- River Liffey -->
-          <path d="M 70 312 Q 240 300 380 306 Q 520 312 690 300" fill="none" stroke="rgba(156,255,46,0.3)" stroke-width="4"/>
-          <text x="96" y="300" fill="rgba(156,255,46,0.4)" font-family="'JetBrains Mono',monospace" font-size="10" letter-spacing="1">RIVER LIFFEY</text>
+          <path d="M 70 312 Q 240 300 380 306 Q 520 312 690 300" fill="none" stroke="rgba(61,139,255,0.3)" stroke-width="4"/>
+          <text x="96" y="300" fill="rgba(61,139,255,0.4)" font-family="'JetBrains Mono',monospace" font-size="10" letter-spacing="1">RIVER LIFFEY</text>
 
           <!-- Radius labels -->
-          <text x="380" y="176" fill="rgba(156,255,46,0.55)" font-family="'JetBrains Mono',monospace" font-size="10" text-anchor="middle">~3 km</text>
-          <text x="380" y="60" fill="rgba(156,255,46,0.4)" font-family="'JetBrains Mono',monospace" font-size="10" text-anchor="middle">~12 km</text>
+          <text x="380" y="176" fill="rgba(61,139,255,0.55)" font-family="'JetBrains Mono',monospace" font-size="10" text-anchor="middle">~3 km</text>
+          <text x="380" y="60" fill="rgba(61,139,255,0.4)" font-family="'JetBrains Mono',monospace" font-size="10" text-anchor="middle">~12 km</text>
 
           <!-- Zone labels -->
-          <text x="380" y="235" fill="#9CFF2E" font-family="'Inter Tight',sans-serif" font-size="15" font-weight="800" text-anchor="middle">CITY CENTRE</text>
-          <text x="380" y="470" fill="rgba(156,255,46,0.7)" font-family="'Inter Tight',sans-serif" font-size="15" font-weight="800" text-anchor="middle">GREATER DUBLIN</text>
+          <text x="380" y="235" fill="#3D8BFF" font-family="'Inter Tight',sans-serif" font-size="15" font-weight="800" text-anchor="middle">CITY CENTRE</text>
+          <text x="380" y="470" fill="rgba(61,139,255,0.7)" font-family="'Inter Tight',sans-serif" font-size="15" font-weight="800" text-anchor="middle">GREATER DUBLIN</text>
 
           <!-- Neighbourhood dots (zone 1) -->
           <g font-family="'JetBrains Mono',monospace" font-size="10" fill="rgba(255,255,255,0.6)">
-            <circle cx="380" cy="300" r="4.5" fill="#9CFF2E"/>
+            <circle cx="380" cy="300" r="4.5" fill="#3D8BFF"/>
             <text x="380" y="322" fill="#fff" font-size="10" text-anchor="middle" font-weight="700">O'Connell Bridge</text>
-            <circle cx="315" cy="268" r="2.5" fill="rgba(156,255,46,0.8)"/><text x="305" y="262" text-anchor="end">Stoneybatter</text>
-            <circle cx="452" cy="272" r="2.5" fill="rgba(156,255,46,0.8)"/><text x="462" y="266">IFSC</text>
-            <circle cx="430" cy="350" r="2.5" fill="rgba(156,255,46,0.8)"/><text x="440" y="362">Grand Canal</text>
-            <circle cx="330" cy="352" r="2.5" fill="rgba(156,255,46,0.8)"/><text x="322" y="364" text-anchor="end">Liberties</text>
-            <circle cx="392" cy="238" r="2.5" fill="rgba(156,255,46,0.8)"/><text x="400" y="232">Phibsboro</text>
+            <circle cx="315" cy="268" r="2.5" fill="rgba(61,139,255,0.8)"/><text x="305" y="262" text-anchor="end">Stoneybatter</text>
+            <circle cx="452" cy="272" r="2.5" fill="rgba(61,139,255,0.8)"/><text x="462" y="266">IFSC</text>
+            <circle cx="430" cy="350" r="2.5" fill="rgba(61,139,255,0.8)"/><text x="440" y="362">Grand Canal</text>
+            <circle cx="330" cy="352" r="2.5" fill="rgba(61,139,255,0.8)"/><text x="322" y="364" text-anchor="end">Liberties</text>
+            <circle cx="392" cy="238" r="2.5" fill="rgba(61,139,255,0.8)"/><text x="400" y="232">Phibsboro</text>
           </g>
 
           <!-- Neighbourhood dots (zone 2) -->
           <g font-family="'JetBrains Mono',monospace" font-size="11" fill="rgba(255,255,255,0.78)" font-weight="500">
-            <circle cx="250" cy="170" r="4" fill="rgba(156,255,46,0.95)" stroke="rgba(156,255,46,0.3)" stroke-width="3"/><text x="238" y="164" text-anchor="end">Castleknock · D15</text>
-            <circle cx="540" cy="180" r="4" fill="rgba(156,255,46,0.95)" stroke="rgba(156,255,46,0.3)" stroke-width="3"/><text x="552" y="174">Clontarf · D3</text>
-            <circle cx="565" cy="330" r="4" fill="rgba(156,255,46,0.95)" stroke="rgba(156,255,46,0.3)" stroke-width="3"/><text x="577" y="334">Sandymount · D4</text>
-            <circle cx="520" cy="430" r="4" fill="rgba(156,255,46,0.95)" stroke="rgba(156,255,46,0.3)" stroke-width="3"/><text x="532" y="440">Sandyford · D18</text>
-            <circle cx="300" cy="440" r="4" fill="rgba(156,255,46,0.95)" stroke="rgba(156,255,46,0.3)" stroke-width="3"/><text x="290" y="450" text-anchor="end">Tallaght · D24</text>
-            <circle cx="220" cy="380" r="4" fill="rgba(156,255,46,0.95)" stroke="rgba(156,255,46,0.3)" stroke-width="3"/><text x="208" y="384" text-anchor="end">Clondalkin · D22</text>
-            <circle cx="470" cy="120" r="4" fill="rgba(156,255,46,0.95)" stroke="rgba(156,255,46,0.3)" stroke-width="3"/><text x="482" y="114">Drumcondra · D9</text>
+            <circle cx="250" cy="170" r="4" fill="rgba(61,139,255,0.95)" stroke="rgba(61,139,255,0.3)" stroke-width="3"/><text x="238" y="164" text-anchor="end">Castleknock · D15</text>
+            <circle cx="540" cy="180" r="4" fill="rgba(61,139,255,0.95)" stroke="rgba(61,139,255,0.3)" stroke-width="3"/><text x="552" y="174">Clontarf · D3</text>
+            <circle cx="565" cy="330" r="4" fill="rgba(61,139,255,0.95)" stroke="rgba(61,139,255,0.3)" stroke-width="3"/><text x="577" y="334">Sandymount · D4</text>
+            <circle cx="520" cy="430" r="4" fill="rgba(61,139,255,0.95)" stroke="rgba(61,139,255,0.3)" stroke-width="3"/><text x="532" y="440">Sandyford · D18</text>
+            <circle cx="300" cy="440" r="4" fill="rgba(61,139,255,0.95)" stroke="rgba(61,139,255,0.3)" stroke-width="3"/><text x="290" y="450" text-anchor="end">Tallaght · D24</text>
+            <circle cx="220" cy="380" r="4" fill="rgba(61,139,255,0.95)" stroke="rgba(61,139,255,0.3)" stroke-width="3"/><text x="208" y="384" text-anchor="end">Clondalkin · D22</text>
+            <circle cx="470" cy="120" r="4" fill="rgba(61,139,255,0.95)" stroke="rgba(61,139,255,0.3)" stroke-width="3"/><text x="482" y="114">Drumcondra · D9</text>
           </g>
 
           <!-- Cargo bike glyph (zone 1) -->
-          <g transform="translate(340,392)" stroke="#9CFF2E" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <g transform="translate(340,392)" stroke="#3D8BFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="6" cy="20" r="6"/><circle cx="60" cy="20" r="6"/>
-            <rect x="14" y="4" width="20" height="14" rx="1.5" fill="rgba(156,255,46,0.18)"/>
+            <rect x="14" y="4" width="20" height="14" rx="1.5" fill="rgba(61,139,255,0.18)"/>
             <path d="M14 20 L40 20 L48 8 L40 8 M40 20 L52 20"/>
             <path d="M34 8 L34 20"/>
           </g>
 
           <!-- Motorbike glyph (zone 2) -->
-          <g transform="translate(428,116)" stroke="rgba(156,255,46,0.9)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <g transform="translate(428,116)" stroke="rgba(61,139,255,0.9)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="23" r="6.5"/><circle cx="49" cy="23" r="6.5"/>
             <path d="M4 15 Q10 13 16 15"/>
-            <path d="M12 16 L27 16 Q31 10 37 13" fill="rgba(156,255,46,0.22)"/>
+            <path d="M12 16 L27 16 Q31 10 37 13" fill="rgba(61,139,255,0.22)"/>
             <path d="M11 23 L41 23"/>
             <path d="M27 16 L23 23"/>
             <path d="M37 13 L42 21"/>
@@ -187,11 +188,11 @@
       <div class="legend">
         <div class="zone-card z1">
           <div class="price">from €7.99</div>
-          <div class="badge"><span class="swatch" style="background:#9CFF2E"></span>Zone 1</div>
+          <div class="badge"><span class="swatch" style="background:#3D8BFF"></span>Zone 1</div>
           <h3>City Centre</h3>
           <div class="sub">Within ~3 km of O'Connell Bridge · D1–D8</div>
           <div class="veh">
-            <div class="ic"><svg width="26" height="26" viewBox="0 0 68 30" stroke="#9CFF2E" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="22" r="6"/><circle cx="60" cy="22" r="6"/><rect x="15" y="5" width="21" height="15" rx="1.5" fill="rgba(156,255,46,0.2)"/><path d="M15 22 L42 22 L50 8 L42 8 M42 22 L54 22"/></svg></div>
+            <div class="ic"><svg width="26" height="26" viewBox="0 0 68 30" stroke="#3D8BFF" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="22" r="6"/><circle cx="60" cy="22" r="6"/><rect x="15" y="5" width="21" height="15" rx="1.5" fill="rgba(61,139,255,0.2)"/><path d="M15 22 L42 22 L50 8 L42 8 M42 22 L54 22"/></svg></div>
             <div><div class="vt">Cargo bike</div><div class="vs">Zero-emission, beats the traffic</div></div>
           </div>
           <ul>
@@ -203,11 +204,11 @@
 
         <div class="zone-card">
           <div class="price">By route</div>
-          <div class="badge"><span class="swatch" style="background:rgba(156,255,46,0.4)"></span>Zone 2</div>
+          <div class="badge"><span class="swatch" style="background:rgba(61,139,255,0.4)"></span>Zone 2</div>
           <h3>Greater Dublin</h3>
           <div class="sub">Out to the M50 · D9–D24 · further out, still reachable</div>
           <div class="veh">
-            <div class="ic"><svg width="28" height="28" viewBox="0 0 60 32" stroke="#9CFF2E" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="23" r="6.5"/><circle cx="49" cy="23" r="6.5"/><path d="M4 15 Q10 13 16 15"/><path d="M12 16 L27 16 Q31 10 37 13" fill="rgba(156,255,46,0.22)"/><path d="M11 23 L41 23"/><path d="M27 16 L23 23"/><path d="M37 13 L42 21"/><path d="M49 23 L44 12"/><path d="M44 12 L53 9"/></svg></div>
+            <div class="ic"><svg width="28" height="28" viewBox="0 0 60 32" stroke="#3D8BFF" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="23" r="6.5"/><circle cx="49" cy="23" r="6.5"/><path d="M4 15 Q10 13 16 15"/><path d="M12 16 L27 16 Q31 10 37 13" fill="rgba(61,139,255,0.22)"/><path d="M11 23 L41 23"/><path d="M27 16 L23 23"/><path d="M37 13 L42 21"/><path d="M49 23 L44 12"/><path d="M44 12 L53 9"/></svg></div>
             <div><div class="vt">Motorbike</div><div class="vs">Fast over longer distances</div></div>
           </div>
           <ul>
@@ -283,17 +284,17 @@
       var ground = top + maxOx + mH * scale;
       var fy = ground - ch, s = '';
       s += '<ellipse cx="' + (fx + cw / 2 + cox / 2) + '" cy="' + (ground + 11) + '" rx="' + (cw * 0.72) + '" ry="7" fill="#000" opacity="0.35"/>';
-      s += '<polygon points="' + fx + ',' + ground + ' ' + (fx + cw) + ',' + ground + ' ' + (fx + cw + cox) + ',' + (ground - cox) + ' ' + (fx + cox) + ',' + (ground - cox) + '" fill="#7FE001" fill-opacity="0.08" stroke="#7FE001" stroke-opacity="0.45" stroke-width="1"/>';
-      s += faces(fx, fy, lim.w, lim.h, lim.l, '#7FE001', false, true, 1);
+      s += '<polygon points="' + fx + ',' + ground + ' ' + (fx + cw) + ',' + ground + ' ' + (fx + cw + cox) + ',' + (ground - cox) + ' ' + (fx + cox) + ',' + (ground - cox) + '" fill="#3D8BFF" fill-opacity="0.08" stroke="#3D8BFF" stroke-opacity="0.45" stroke-width="1"/>';
+      s += faces(fx, fy, lim.w, lim.h, lim.l, '#3D8BFF', false, true, 1);
       var ox = cox, oy = cox, bw = cw, bh = ch;
       var verts = [[fx, fy], [fx + bw, fy], [fx, fy + bh], [fx + bw, fy + bh], [fx + ox, fy - oy], [fx + bw + ox, fy - oy], [fx + ox, fy + bh - oy], [fx + bw + ox, fy + bh - oy]];
-      verts.forEach(function (p) { s += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="2.4" fill="#7FE001"/>'; });
-      s += '<text x="' + (fx + bw / 2) + '" y="' + (fy + bh + 16) + '" fill="#7FE001" font-size="9" font-family="monospace" text-anchor="middle">' + lim.w + ' cm</text>';
+      verts.forEach(function (p) { s += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="2.4" fill="#3D8BFF"/>'; });
+      s += '<text x="' + (fx + bw / 2) + '" y="' + (fy + bh + 16) + '" fill="#3D8BFF" font-size="9" font-family="monospace" text-anchor="middle">' + lim.w + ' cm</text>';
       var hx = fx - 10, hy = fy + bh / 2;
-      s += '<text x="' + hx + '" y="' + hy + '" fill="#7FE001" font-size="9" font-family="monospace" text-anchor="middle" transform="rotate(-90 ' + hx + ' ' + hy + ')">' + lim.h + ' cm</text>';
-      s += '<text x="' + (fx + bw + ox / 2 + 11) + '" y="' + (fy - oy / 2 - 3) + '" fill="#7FE001" font-size="9" font-family="monospace" text-anchor="middle">' + lim.l + ' cm</text>';
+      s += '<text x="' + hx + '" y="' + hy + '" fill="#3D8BFF" font-size="9" font-family="monospace" text-anchor="middle" transform="rotate(-90 ' + hx + ' ' + hy + ')">' + lim.h + ' cm</text>';
+      s += '<text x="' + (fx + bw + ox / 2 + 11) + '" y="' + (fy - oy / 2 - 3) + '" fill="#3D8BFF" font-size="9" font-family="monospace" text-anchor="middle">' + lim.l + ' cm</text>';
       if (parcel) {
-        var col = (fits === false) ? '#ff5a5a' : '#7FE001';
+        var col = (fits === false) ? '#ff5a5a' : '#3D8BFF';
         s += faces(fx, ground - parcel.h * scale, parcel.w, parcel.h, parcel.l, col, true, false, 1.75);
       }
       svg.innerHTML = s;

@@ -1,252 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Connect Molli — choose your integration</title>
-  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-  <meta name="theme-color" content="#0a0a0a" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-  <style>
-    .cn-hero { max-width: 1080px; margin: 0 auto; padding: 54px 40px 12px; }
-    .cn-hero h1 { font-size: 52px; line-height: 1.02; letter-spacing: -0.03em; font-weight: 800; margin: 16px 0 16px; max-width: 720px; }
-    .cn-hero h1 .accent { color: var(--accent); }
-    .cn-hero .lead { font-size: 18px; color: var(--soft); max-width: 620px; line-height: 1.55; }
-
-    /* quick chooser */
-    .chooser { max-width: 1080px; margin: 22px auto 0; padding: 0 40px; }
-    .chooser-inner { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 8px 10px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-    .chooser .q { font-size: 13px; color: var(--muted); font-weight: 600; padding: 8px 12px; letter-spacing: .02em; }
-    .chooser .opt { flex: 1; min-width: 190px; background: var(--bg); border: 1px solid var(--line); border-radius: 11px; padding: 12px 14px; cursor: pointer; transition: .14s; text-decoration: none; color: inherit; display: block; }
-    .chooser .opt:hover { border-color: var(--accent); background: var(--accent-tint); }
-    .chooser .opt .ot { font-size: 14px; font-weight: 700; color: var(--ink); }
-    .chooser .opt .os { font-size: 12px; color: var(--soft); margin-top: 2px; }
-
-    /* path cards */
-    .paths { max-width: 1080px; margin: 40px auto 0; padding: 0 40px; }
-    .paths-head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
-    .paths-head h2 { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
-    .paths-head .hint { font-size: 14px; color: var(--muted); }
-    .path-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-    .path { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 26px 24px 24px; display: flex; flex-direction: column; position: relative; }
-    .path.feat { border-color: rgba(156,255,46,.4); }
-    .path .flag { position: absolute; top: -10px; left: 24px; font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; background: var(--accent); color: #06140d; padding: 4px 10px; border-radius: 6px; }
-    .path .ic { width: 46px; height: 46px; border-radius: 12px; background: var(--accent-tint); display: flex; align-items: center; justify-content: center; color: var(--accent); margin-bottom: 16px; }
-    .path h3 { font-size: 21px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 6px; }
-    .path .who { font-size: 12.5px; font-weight: 600; color: var(--accent); letter-spacing: .01em; margin-bottom: 12px; }
-    .path > p { font-size: 14px; color: var(--soft); line-height: 1.55; margin: 0 0 16px; }
-    .path .meta { display: flex; flex-direction: column; gap: 9px; margin-bottom: 20px; }
-    .path .meta .mrow { display: flex; align-items: center; gap: 9px; font-size: 13px; color: var(--soft); }
-    .path .meta .mrow svg { color: var(--accent); flex: none; }
-    .path .plat { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 18px; }
-    .path .plat span { font-size: 11px; font-weight: 600; color: var(--soft); background: var(--panel2); border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; }
-    .path .go { margin-top: auto; }
-    .path .go .btn { width: 100%; }
-
-    /* layer strip */
-    .layer { max-width: 1080px; margin: 22px auto 0; padding: 0 40px; }
-    .layer a { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; background: var(--panel); border: 1px dashed var(--line-strong, rgba(255,255,255,.16)); border-radius: 16px; padding: 22px 24px; text-decoration: none; color: inherit; transition: border-color .15s; }
-    .layer a:hover { border-color: var(--accent); }
-    .layer .ic { flex: none; width: 48px; height: 48px; border-radius: 12px; background: var(--accent-tint); display: flex; align-items: center; justify-content: center; color: var(--accent); }
-    .layer .txt { flex: 1; min-width: 240px; }
-    .layer .txt .k { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
-    .layer .txt h3 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; margin: 4px 0 4px; }
-    .layer .txt p { font-size: 14px; color: var(--soft); line-height: 1.5; max-width: 560px; }
-
-    /* comparison */
-    .cmp { max-width: 1080px; margin: 52px auto 0; padding: 0 40px; }
-    .cmp h2 { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 18px; }
-    .cmp-table { width: 100%; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; border-collapse: collapse; }
-    .cmp-table th, .cmp-table td { padding: 15px 18px; text-align: left; border-bottom: 1px solid var(--line); font-size: 14px; }
-    .cmp-table thead th { background: var(--panel); font-weight: 700; font-size: 13px; letter-spacing: .01em; }
-    .cmp-table thead th:first-child { color: var(--muted); font-weight: 600; }
-    .cmp-table tbody th { font-weight: 500; color: var(--soft); }
-    .cmp-table td { color: var(--ink); font-weight: 600; }
-    .cmp-table tr:last-child th, .cmp-table tr:last-child td { border-bottom: none; }
-    .cmp-table .yes { color: var(--accent); }
-    .cmp-table .no { color: var(--muted); }
-    .cmp-col-feat { background: rgba(156,255,46,.05); }
-
-    /* not sure */
-    .unsure { max-width: 1080px; margin: 46px auto 70px; padding: 0 40px; }
-    .unsure-card { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
-    .unsure-card h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
-    .unsure-card p { font-size: 15px; color: var(--soft); margin-top: 6px; max-width: 480px; line-height: 1.55; }
-
-    @media (max-width: 900px) {
-      .cn-hero { padding: 38px 20px 8px; } .cn-hero h1 { font-size: 34px; }
-      .chooser, .paths, .layer, .cmp, .unsure { padding-left: 20px; padding-right: 20px; }
-      .path-grid { grid-template-columns: 1fr; }
-      .cmp-table { font-size: 13px; } .cmp-table th, .cmp-table td { padding: 12px 12px; }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Molli — Mono compare: dark vs light</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { font-family: 'Inter Tight', sans-serif; background: #26262b; color: #fff; display: flex; flex-direction: column; }
+  .bar {
+    display: flex; align-items: center; gap: 14px; padding: 12px 20px;
+    border-bottom: 1px solid rgba(255,255,255,.1); flex: none;
+  }
+  .bar .title { font-size: 14px; font-weight: 700; letter-spacing: -0.01em; }
+  .bar .note { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #9a9aa2; }
+  .bar .sync { margin-left: auto; display: flex; align-items: center; gap: 7px; font-size: 12px; color: #c2c2c8; cursor: pointer; }
+  .bar .sync input { accent-color: #3D8BFF; width: 15px; height: 15px; }
+  .cols { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(255,255,255,.1); min-height: 0; }
+  .col { display: flex; flex-direction: column; min-height: 0; background: #000; }
+  .col .lbl {
+    flex: none; padding: 9px 16px; font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    font-weight: 700; letter-spacing: .04em; display: flex; align-items: center; gap: 9px;
+  }
+  .col .lbl .sw { width: 11px; height: 11px; border-radius: 3px; }
+  .col.dark .lbl { background: #0a0a0a; color: #fff; }
+  .col.light .lbl { background: #fff; color: #14181a; }
+  .col iframe { flex: 1; width: 100%; border: 0; background: #fff; }
+</style>
 </head>
 <body>
-  <header class="topbar">
-    <a class="logo" href="index.html">
-      <span class="logo-mark"><span>&rsaquo;</span></span>
-      <span class="logo-word">m<span class="o-wheel"></span>lli</span>
-    </a>
-    <nav class="topnav">
-      <a href="sell.html">Sell more</a>
-      <a href="connect.html" class="active">Connect</a>
-      <a href="pricing.html">Pricing</a>
-      <a href="buy-credit.html">Buy credit</a>
-      <a href="fit.html">Will it fit?</a>
-      <a href="zones.html">Coverage</a>
-      <a href="pricing.html#faqs">Help</a>
-    </nav>
-    <div class="topbar-cta">
-      <a class="signin" href="account.html">Sign in</a>
-      <a class="btn btn--accent btn--sm" href="business.html">Create business account &rarr;</a>
+  <div class="bar">
+    <div class="title">Mono + Signal blue</div>
+    <div class="note">dark vs light · scroll either panel</div>
+    <label class="sync"><input type="checkbox" id="syncScroll" checked> Sync scroll</label>
+  </div>
+  <div class="cols">
+    <div class="col dark">
+      <div class="lbl"><span class="sw" style="background:#0a0a0a;border:1px solid #333"></span> 01 · Dark — white on black</div>
+      <iframe id="fDark" src="index-mono-dark.html"></iframe>
     </div>
-  </header>
-
-  <!-- HERO -->
-  <section class="cn-hero">
-    <span class="pill"><span class="dot"></span> Connect</span>
-    <h1>One network.<br /><span class="accent">Three ways in.</span></h1>
-    <p class="lead">However your orders come in &mdash; a Shopify store, a phone and a notebook, or a custom checkout your team built &mdash; there's a way to feed them into Molli's daily collection. Pick the one that fits your setup.</p>
-  </section>
-
-  <!-- QUICK CHOOSER -->
-  <div class="chooser">
-    <div class="chooser-inner">
-      <div class="q">Where do your orders come from?</div>
-      <a class="opt" href="#store">
-        <div class="ot">A Shopify / Woo store</div>
-        <div class="os">Use the no-code app &rarr;</div>
-      </a>
-      <a class="opt" href="#dashboard">
-        <div class="ot">Phone, social, mixed</div>
-        <div class="os">Book from the dashboard &rarr;</div>
-      </a>
-      <a class="opt" href="#api">
-        <div class="ot">A custom checkout</div>
-        <div class="os">Build with the API &rarr;</div>
-      </a>
+    <div class="col light">
+      <div class="lbl"><span class="sw" style="background:#fff;border:1px solid #ccc"></span> 02 · Light — dark on white</div>
+      <iframe id="fLight" src="index-mono.html"></iframe>
     </div>
   </div>
 
-  <!-- PATHS -->
-  <section class="paths">
-    <div class="paths-head">
-      <h2>Choose your path</h2>
-      <div class="hint">You can mix these &mdash; start on the dashboard, add the app later.</div>
-    </div>
-    <div class="path-grid">
-
-      <!-- STORE APP -->
-      <div class="path feat" id="store">
-        <div class="flag">Most popular</div>
-        <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
-        <h3>Store app</h3>
-        <div class="who">Small–mid retailers on a supported platform</div>
-        <p>Molli appears as a same-day option at checkout, priced live by the shopper's Eircode. They pick it; the order flows straight into your daily collection.</p>
-        <div class="plat"><span>Shopify</span><span>WooCommerce</span><span>Squarespace</span></div>
-        <div class="meta">
-          <div class="mrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Live in ~15 minutes</div>
-          <div class="mrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> No developer needed</div>
-          <div class="mrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Same-day at checkout</div>
-        </div>
-        <div class="go"><a class="btn btn--accent btn--md" href="integrations.html">See the store integration &rarr;</a></div>
-      </div>
-
-      <!-- DASHBOARD / BULK -->
-      <div class="path" id="dashboard">
-        <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></div>
-        <h3>Dashboard &amp; bulk</h3>
-        <div class="who">Orders from many channels, or starting today</div>
-        <p>No integration at all. Book from your Molli dashboard, or paste and upload a whole day's orders at once &mdash; addresses validated, labels ready, one collection.</p>
-        <div class="plat"><span>Any channel</span><span>CSV upload</span><span>Manual</span></div>
-        <div class="meta">
-          <div class="mrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Nothing to install</div>
-          <div class="mrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Works with any sales channel</div>
-          <div class="mrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Best way to get started</div>
-        </div>
-        <div class="go"><a class="btn btn--ghost btn--md" href="bulk.html">See bulk booking &rarr;</a></div>
-      </div>
-
-      <!-- API -->
-      <div class="path" id="api">
-        <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
-        <h3>Custom API</h3>
-        <div class="who">Custom checkout, high volume, dev team</div>
-        <p>Full control on your own stack. Quote a live rate, push the order into your daily collection, and get status webhooks all the way to the doorstep.</p>
-        <div class="plat"><span>REST</span><span>Webhooks</span><span>Test mode</span></div>
-        <div class="meta">
-          <div class="mrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ~1 day of dev work</div>
-          <div class="mrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Full control of the flow</div>
-          <div class="mrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Scales to any volume</div>
-        </div>
-        <div class="go"><a class="btn btn--ghost btn--md" href="developers.html">Read the API docs &rarr;</a></div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- BADGE LAYER -->
-  <div class="layer">
-    <a href="badge.html">
-      <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
-      <div class="txt">
-        <div class="k">Works with any path &middot; the demand layer</div>
-        <h3>Add the countdown badge</h3>
-        <p>Whichever way you connect, drop a live "order within&hellip;" cut-off on your product pages. It grows same-day volume &mdash; the fuller your daily run, the better the whole thing works.</p>
-      </div>
-      <span class="btn btn--accent btn--md" style="flex:none;">Get the badge &rarr;</span>
-    </a>
-  </div>
-
-  <!-- COMPARISON -->
-  <section class="cmp">
-    <h2>Compare the paths</h2>
-    <table class="cmp-table">
-      <thead>
-        <tr>
-          <th>&nbsp;</th>
-          <th class="cmp-col-feat">Store app</th>
-          <th>Dashboard &amp; bulk</th>
-          <th>Custom API</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><th>Setup effort</th><td class="cmp-col-feat">~15 min</td><td>None</td><td>~1 day (dev)</td></tr>
-        <tr><th>Needs a developer</th><td class="cmp-col-feat no">No</td><td class="no">No</td><td class="yes">Yes</td></tr>
-        <tr><th>Same-day at checkout</th><td class="cmp-col-feat yes">Yes</td><td class="no">&ndash;</td><td class="yes">Yes</td></tr>
-        <tr><th>Orders flow automatically</th><td class="cmp-col-feat yes">Yes</td><td class="no">Manual / CSV</td><td class="yes">Yes</td></tr>
-        <tr><th>Works with any sales channel</th><td class="cmp-col-feat no">Platform only</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
-        <tr><th>Status webhooks</th><td class="cmp-col-feat yes">Built in</td><td class="no">&ndash;</td><td class="yes">Yes</td></tr>
-        <tr><th>Best for</th><td class="cmp-col-feat">Shopify / Woo shops</td><td>Mixed or low volume</td><td>High / custom</td></tr>
-      </tbody>
-    </table>
-  </section>
-
-  <!-- NOT SURE -->
-  <div class="unsure">
-    <div class="unsure-card">
-      <div>
-        <h3>Not sure which fits?</h3>
-        <p>Tell us your platform and roughly how many orders you send a day &mdash; we'll point you at the shortest path and help you set it up.</p>
-      </div>
-      <a class="btn btn--accent btn--lg" href="business.html#contact" style="flex:none;">Tell us your setup &rarr;</a>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div>
-      <a class="logo" href="index.html"><span class="logo-mark"><span>&rsaquo;</span></span><span class="logo-word">m<span class="o-wheel"></span>lli</span></a>
-      <div class="tag">molli.ie · Dublin's same-day parcel network<br /><span style="color:var(--muted)">Through streets broad &amp; narrow.</span></div>
-    </div>
-    <div class="col"><div class="col-title">Service</div><a href="pricing.html">Pricing</a><a href="zones.html">Coverage</a><a href="fit.html">Fit finder</a><a href="booking.html">Book</a></div>
-    <div class="col"><div class="col-title">Retailers</div><a href="business.html">For retailers</a><a href="connect.html">Connect</a><a href="integrations.html">Store integration</a><a href="developers.html">API docs</a></div>
-    <div class="col"><div class="col-title">Account</div><a href="account.html">Sign in</a><a href="track.html">Track a delivery</a><a href="returns.html">Returns</a></div>
-    <div class="col"><div class="col-title">Company</div><a href="index.html#name">The name</a><a href="pricing.html#faqs">Help</a></div>
-  </footer>
-  <div class="legal">© 2026 Molli · molli.ie · Dublin, Ireland</div>
+<script>
+  // Sync scrolling between the two iframes.
+  var a = document.getElementById('fDark');
+  var b = document.getElementById('fLight');
+  var sync = document.getElementById('syncScroll');
+  var lock = false;
+  function link(from, to) {
+    try {
+      from.contentWindow.addEventListener('scroll', function () {
+        if (!sync.checked || lock) return;
+        lock = true;
+        to.contentWindow.scrollTo(0, from.contentWindow.scrollY);
+        requestAnimationFrame(function () { lock = false; });
+      }, { passive: true });
+    } catch (e) {}
+  }
+  var ready = 0;
+  function onReady() {
+    ready++;
+    if (ready === 2) { link(a, b); link(b, a); }
+  }
+  a.addEventListener('load', onReady);
+  b.addEventListener('load', onReady);
+</script>
 </body>
 </html>

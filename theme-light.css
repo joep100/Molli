@@ -1,0 +1,73 @@
+/* ============================================================
+   Molli — Light + Signal-blue + Inter theme.
+   Layered OVER styles.css on marketing pages (body needs class="light").
+   The dark "app" pages (booking, account) do NOT link this file.
+   ============================================================ */
+
+/* 1. Accent: lime -> Signal blue */
+:root {
+  --accent: #3D8BFF;
+  --accent-rgb: 61, 139, 255;
+  --accent-tint: rgba(61, 139, 255, .12);
+}
+
+/* 2. Type: Inter body (light 300), Inter Tight headings */
+body {
+  font-family: "Inter", -apple-system, "Segoe UI", sans-serif;
+  font-weight: 300;
+  letter-spacing: -0.005em;
+}
+h1, h2, h3, h4, h5, .logo-word, .eyebrow { font-family: "Inter Tight", "Inter", sans-serif; }
+
+/* 3. Light theme applied to the whole page */
+body.light {
+  --bg: #ffffff;
+  --panel: #ffffff;
+  --panel2: #f4f5f2;
+  --ink: #14181a;
+  --soft: #565d59;
+  --muted: #9aa19c;
+  --line: rgba(18, 28, 22, .10);
+  --line-strong: rgba(18, 28, 22, .16);
+  background: var(--bg);
+  color: var(--ink);
+}
+/* nested .light sections inside a light body just re-use the same vars */
+body.light .light { --bg: #ffffff; --panel: #ffffff; }
+
+/* 4. Header */
+body.light .topbar { background: #ffffff; border-bottom: 1px solid var(--line); padding-top: 22px; padding-bottom: 22px; }
+body.light .topnav { font-weight: 400; gap: 34px; font-size: 13px; }
+body.light .topnav a { color: #14181a; }
+body.light .signin { color: #14181a; }
+body.light .topbar-cta .btn--accent { background: transparent; color: #14181a; border: 1px solid rgba(18,24,26,.22); }
+body.light .topbar-cta .btn--accent:hover { border-color: #14181a; opacity: 1; }
+
+/* 5. Logo — dark wordmark + dark wheel */
+body.light .logo-word,
+body.light .mega-word { color: #14181a; }
+body.light .o-wheel {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2314181a' stroke-width='3.5' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='10.2'/%3E%3Ccircle cx='12' cy='12' r='3.4' fill='%2314181a' stroke='none'/%3E%3Cline x1='12' y1='3.6' x2='12' y2='20.4'/%3E%3Cline x1='17.9' y1='6.1' x2='6.1' y2='17.9'/%3E%3Cline x1='17.9' y1='17.9' x2='6.1' y2='6.1'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+
+/* 6. Primary buttons: white text on blue */
+.btn--accent { color: #fff; }
+
+/* 7. Eyebrows dark on light (accent blue too pale at that size) */
+body.light .eyebrow { color: #14181a; }
+body.light h2 .accent { color: inherit; }
+
+/* 8. Accent-filled cards (blue): white text for contrast */
+body.light .usp-card.us,
+body.light .usp-card.us h3,
+body.light .usp-card.us .k,
+body.light .usp-card.us ul li,
+body.light .tier.featured,
+body.light .tier.featured .name,
+body.light .tier.featured .blurb,
+body.light .tier.featured .price,
+body.light .cta-strip,
+body.light .cta-strip .k,
+body.light .cta-strip .h { color: #ffffff; }
+body.light .us-badge,
+body.light .tier.featured .tier-flag { background: #ffffff; color: var(--accent); }

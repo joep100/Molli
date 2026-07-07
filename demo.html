@@ -8,8 +8,9 @@
   <meta name="theme-color" content="#0a0a0a" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="theme-light.css" />
   <style>
     .cn-hero { max-width: 1080px; margin: 0 auto; padding: 54px 40px 12px; }
     .cn-hero h1 { font-size: 52px; line-height: 1.02; letter-spacing: -0.03em; font-weight: 800; margin: 16px 0 16px; max-width: 720px; }
@@ -32,7 +33,7 @@
     .paths-head .hint { font-size: 14px; color: var(--muted); }
     .path-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
     .path { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 26px 24px 24px; display: flex; flex-direction: column; position: relative; }
-    .path.feat { border-color: rgba(156,255,46,.4); }
+    .path.feat { border-color: rgba(61,139,255,.4); }
     .path .flag { position: absolute; top: -10px; left: 24px; font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; background: var(--accent); color: #06140d; padding: 4px 10px; border-radius: 6px; }
     .path .ic { width: 46px; height: 46px; border-radius: 12px; background: var(--accent-tint); display: flex; align-items: center; justify-content: center; color: var(--accent); margin-bottom: 16px; }
     .path h3 { font-size: 21px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 6px; }
@@ -68,7 +69,7 @@
     .cmp-table tr:last-child th, .cmp-table tr:last-child td { border-bottom: none; }
     .cmp-table .yes { color: var(--accent); }
     .cmp-table .no { color: var(--muted); }
-    .cmp-col-feat { background: rgba(156,255,46,.05); }
+    .cmp-col-feat { background: rgba(61,139,255,.05); }
 
     /* not sure */
     .unsure { max-width: 1080px; margin: 46px auto 70px; padding: 0 40px; }
@@ -84,7 +85,7 @@
     }
   </style>
 </head>
-<body>
+<body class="light">
   <header class="topbar">
     <a class="logo" href="index.html">
       <span class="logo-mark"><span>&rsaquo;</span></span>

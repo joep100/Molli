@@ -8,8 +8,9 @@
   <meta name="theme-color" content="#0a0a0a" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="theme-light.css" />
   <style>
     .track-wrap { max-width: 1080px; margin: 0 auto; padding: 40px; }
     .track-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; margin-bottom: 28px; }
@@ -84,7 +85,7 @@
     }
   </style>
 </head>
-<body>
+<body class="light">
   <!-- TOP BAR -->
   <header class="topbar">
     <a class="logo" href="index.html">
@@ -130,12 +131,12 @@
         <div class="mini-map">
           <svg viewBox="0 0 480 170" preserveAspectRatio="xMidYMid slice">
             <!-- faint street grid -->
-            <g stroke="rgba(156,255,46,.09)" stroke-width="1">
+            <g stroke="rgba(61,139,255,.09)" stroke-width="1">
               <path d="M0 40 H480 M0 90 H480 M0 130 H480" />
               <path d="M90 0 V170 M200 0 V170 M310 0 V170 M400 0 V170" />
             </g>
             <!-- route -->
-            <path id="route" d="M60 135 C 140 120, 150 60, 240 60 S 360 55, 415 45" fill="none" stroke="rgba(156,255,46,.35)" stroke-width="2.5" stroke-dasharray="5 5" />
+            <path id="route" d="M60 135 C 140 120, 150 60, 240 60 S 360 55, 415 45" fill="none" stroke="rgba(61,139,255,.35)" stroke-width="2.5" stroke-dasharray="5 5" />
             <!-- collected / destination markers -->
             <circle cx="60" cy="135" r="5" fill="rgba(255,255,255,.5)" />
             <text x="60" y="156" fill="rgba(255,255,255,.4)" font-size="9" font-family="monospace" text-anchor="middle">DEPOT</text>

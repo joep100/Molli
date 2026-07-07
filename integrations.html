@@ -8,8 +8,9 @@
   <meta name="theme-color" content="#0a0a0a" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="theme-light.css" />
   <style>
     .in-hero { max-width: 1080px; margin: 0 auto; padding: 56px 40px 20px; }
     .in-hero h1 { font-size: 52px; line-height: 1.02; letter-spacing: -0.03em; font-weight: 800; margin: 16px 0 16px; max-width: 760px; }
@@ -39,7 +40,7 @@
     .ship-opt .so-price { margin-left: auto; font-family: var(--font-mono); font-size: 15px; font-weight: 700; }
     .ship-opt.molli { position: relative; }
     .ship-opt.molli .brand { display: inline-flex; align-items: center; gap: 6px; }
-    .ship-opt.molli .m-badge { font-size: 9px; font-weight: 800; letter-spacing: .1em; background: #14210a; color: #9CFF2E; padding: 2px 6px; border-radius: 5px; }
+    .ship-opt.molli .m-badge { font-size: 9px; font-weight: 800; letter-spacing: .1em; background: #14210a; color: #3D8BFF; padding: 2px 6px; border-radius: 5px; }
     .ship-opt .cd { font-family: var(--font-mono); color: #3f7a12; font-weight: 700; }
     .co-total { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e4ebd8; margin-top: 8px; padding-top: 14px; font-weight: 700; }
     .co-total .amt { font-family: var(--font-mono); font-size: 18px; }
@@ -66,8 +67,8 @@
     .so-price .was { color: var(--muted); text-decoration: line-through; font-size: .8em; margin-right: 6px; }
     .co-fallback { display: none; font-size: 13px; color: var(--soft); background: var(--panel2); border: 1px dashed var(--line-strong); border-radius: 10px; padding: 12px 14px; margin: 4px 0 2px; }
     .co-fallback.show { display: block; }
-    .conn-status { display: flex; align-items: center; gap: 10px; background: var(--accent-tint); border: 1px solid rgba(156,255,46,.3); border-radius: 11px; padding: 13px 15px; margin-top: 18px; font-size: 13.5px; color: var(--ink); }
-    .conn-status .live { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px rgba(156,255,46,.8); flex: none; }
+    .conn-status { display: flex; align-items: center; gap: 10px; background: var(--accent-tint); border: 1px solid rgba(61,139,255,.3); border-radius: 11px; padding: 13px 15px; margin-top: 18px; font-size: 13.5px; color: var(--ink); }
+    .conn-status .live { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px rgba(61,139,255,.8); flex: none; }
     .conn-status b { color: var(--accent); }
 
     /* how it works */
@@ -95,7 +96,7 @@
     }
   </style>
 </head>
-<body>
+<body class="light">
   <header class="topbar">
     <a class="logo" href="index.html">
       <span class="logo-mark"><span>&rsaquo;</span></span>

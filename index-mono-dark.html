@@ -8,38 +8,17 @@
   <meta name="theme-color" content="#0a0a0a" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* ===== MONO + SIGNAL preview: swap lime accent for signal blue ===== */
+    /* ===== MONO + SIGNAL (dark) ===== */
     :root {
       --accent: #3D8BFF;
       --accent-rgb: 61, 139, 255;
       --accent-tint: rgba(61, 139, 255, .12);
     }
     .btn--accent { color: #fff; }
-    /* lighter overall type weight */
-    body { font-weight: 300; }
-    /* Body copy in Inter (regular, not Tight); headings stay Inter Tight */
-    body { font-family: "Inter", -apple-system, "Segoe UI", sans-serif; letter-spacing: -0.005em; }
-    h1, h2, h3, h4, h5, .logo-word, .eyebrow { font-family: "Inter Tight", "Inter", sans-serif; }
-    /* white background instead of the cream .light default */
-    body.light { --bg: #ffffff; --panel2: #f4f5f2; }
-    body.light .topbar { background: #ffffff; border-bottom: 1px solid var(--line); }
-    body.light .topnav a { color: #14181a; }
-    body.light .topnav { font-weight: 400; gap: 34px; font-size: 13px; }
-    body.light .topbar { padding-top: 22px; padding-bottom: 22px; }
-    /* lighter, outlined CTA so the bar reads calmer */
-    body.light .topbar-cta .btn--accent {
-      background: transparent; color: #14181a; border: 1px solid rgba(18,24,26,.22);
-    }
-    body.light .topbar-cta .btn--accent:hover { border-color: #14181a; opacity: 1; }
-    body.light .signin { color: #14181a; }
-    /* logo: dark wordmark, Signal-blue wheel */
-    body.light .logo-word { color: #14181a; }
-    body.light .o-wheel {
-      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2314181a' stroke-width='3.5' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='10.2'/%3E%3Ccircle cx='12' cy='12' r='3.4' fill='%2314181a' stroke='none'/%3E%3Cline x1='12' y1='3.6' x2='12' y2='20.4'/%3E%3Cline x1='17.9' y1='6.1' x2='6.1' y2='17.9'/%3E%3Cline x1='17.9' y1='17.9' x2='6.1' y2='6.1'/%3E%3C/svg%3E") center/contain no-repeat;
-    }
+    body { font-weight: 500; }
     /* Home-specific layout */
     .hero { padding: 56px 40px 40px; position: relative; overflow: hidden; }
     .hero-map {
@@ -56,7 +35,7 @@
       font-size: 76px; line-height: .95; letter-spacing: -0.03em;
       font-weight: 800; margin: 18px 0 22px;
     }
-    .hero .blurb { font-size: 21px; color: var(--soft); max-width: 560px; margin: 0 0 20px; line-height: 1.5; font-weight: 300; letter-spacing: -0.03em; }
+    .hero .blurb { font-size: 18px; color: var(--soft); max-width: 520px; margin: 0 0 20px; line-height: 1.5; font-weight: 600; }
     .promo-flag {
       display: inline-flex; align-items: center; gap: 8px; margin-top: 18px;
       padding: 8px 14px; border: 1px dashed rgba(var(--accent-rgb), .5);
@@ -267,7 +246,7 @@
     }
   </style>
 </head>
-<body class="light">
+<body>
 <!-- TOP BAR -->
   <header class="topbar">
     <a class="logo" href="index.html">
@@ -432,7 +411,7 @@
       .cc-result { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 30px; min-height: 260px; display: flex; flex-direction: column; justify-content: center; }
       .cc-result .cc-idle { color: var(--muted); font-size: 14px; line-height: 1.6; }
       .cc-tag { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; padding: 7px 13px; border-radius: 999px; }
-      .cc-tag.ok { background: var(--accent-tint); color: var(--accent); border: 1px solid rgba(61,139,255,.3); }
+      .cc-tag.ok { background: var(--accent-tint); color: var(--accent); border: 1px solid rgba(156,255,46,.3); }
       .cc-tag.no { background: rgba(255,120,90,.12); color: #ff8a6a; border: 1px solid rgba(255,120,90,.3); }
       .cc-zone { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin: 16px 0 4px; }
       .cc-desc { font-size: 14.5px; color: var(--soft); line-height: 1.55; }
@@ -1033,7 +1012,7 @@
   </style>
   <a class="demo-fab" href="demo.html" id="demo-fab" aria-label="Try the guided demo">
     <span class="fab-ic">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="#3D8BFF" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="#7FE001" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg>
     </span>
     <span class="fab-txt">Try the demo<span class="fab-sub">Book one in 30 seconds</span></span>
     <button class="demo-fab-close" id="demo-fab-close" aria-label="Hide demo button" title="Hide">&times;</button>

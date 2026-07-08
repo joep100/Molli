@@ -25,6 +25,7 @@
   }
 
   * { box-sizing: border-box; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
   doc-page {
     font-family: "Inter", -apple-system, "Segoe UI", sans-serif;
@@ -169,7 +170,7 @@
     <div class="grid g3">
       <div class="card"><div class="kicker">Same-day</div><h3>Collect &amp; deliver in a day</h3><p>One run picks up the whole batch and it's delivered across Dublin by 6pm — not "there the day after."</p></div>
       <div class="card"><div class="kicker">Local</div><h3>One city, done properly</h3><p>Tracked, photographed and signed for by a local team of riders — not a national network passing through.</p></div>
-      <div class="card"><div class="kicker">The name</div><h3>After Molly Malone</h3><p>Dublin's original one-woman logistics network. They nicknamed her statue "the tart with the cart" — we kept the cart, and gave it faster wheels.</p></div>
+      <div class="card"><div class="kicker">The name</div><h3>After Molly Malone</h3><p>Dublin's original one-woman logistics network, wheeling her barrow through streets broad and narrow.</p></div>
     </div>
   </section>
 
@@ -326,5 +327,18 @@
 
 </doc-page>
 <script src="doc-page.js"></script>
+<script>
+addEventListener('load', () => {
+  (async () => {
+    try { await document.fonts.ready; } catch (e) {}
+    const imgs = Array.from(document.images).filter((i) => !i.complete);
+    await Promise.race([
+      Promise.allSettled(imgs.map((i) => i.decode())),
+      new Promise((r) => setTimeout(r, 8000)),
+    ]);
+    setTimeout(() => window.print(), 500);
+  })();
+});
+</script>
 </body>
 </html>

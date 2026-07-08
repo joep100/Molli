@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Molli — Bulk booking</title>
+  <title>Molli for Business — Same-day collection for Dublin retailers</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <meta name="theme-color" content="#ffffff" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -12,57 +12,140 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="theme-light.css" />
   <style>
-    .wrap { max-width: 1040px; margin: 0 auto; padding: 40px 40px 80px; }
-    .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: 8px; }
-    h1 { font-size: 44px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
-    .sub { font-size: 15px; color: var(--soft); margin-bottom: 30px; }
+    .biz-hero { padding: 64px 40px 40px; position: relative; }
+    .biz-hero h1 { font-size: 88px; line-height: .92; letter-spacing: -0.04em; font-weight: 800; margin: 18px 0 22px; max-width: 900px; }
+    .biz-hero .sub { font-size: 21px; color: var(--soft); max-width: 600px; line-height: 1.5; font-weight: 300; letter-spacing: -0.03em; margin-bottom: 30px; }
+    .biz-hero .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-demo-link { display: inline-block; margin-top: 20px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none; border-bottom: 1px solid var(--line); padding-bottom: 2px; transition: color .15s, border-color .15s; }
+    .hero-demo-link:hover { color: var(--accent); border-color: var(--accent); }
 
-    .run-note { display: flex; align-items: center; gap: 10px; background: rgba(61,139,255,.08); border: 1px solid rgba(61,139,255,.3); border-radius: 10px; padding: 12px 16px; font-size: 13px; color: var(--soft); margin-bottom: 22px; }
-    .run-note b { color: var(--accent); }
+    .seeit { display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
+    .seeit h2 { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; margin: 12px 0 16px; }
+    .seeit p { font-size: 16px; color: var(--soft); line-height: 1.6; margin-bottom: 24px; max-width: 460px; font-weight: 300; }
+    .seeit-steps { display: flex; flex-direction: column; gap: 10px; margin: 0 0 26px; }
+    .seeit-steps li { display: grid; grid-template-columns: 26px 1fr; gap: 12px; align-items: center; font-size: 15px; color: var(--ink); }
+    .seeit-steps .n { width: 26px; height: 26px; border-radius: 50%; background: rgba(61,139,255,.14); border: 1px solid rgba(61,139,255,.4); color: var(--accent); font-family: var(--font-mono); font-size: 12px; font-weight: 700; display: grid; place-items: center; }
+    .seeit-note { font-size: 12px; color: var(--muted); margin-left: 14px; }
+    .seeit-frame { display: block; text-decoration: none; color: inherit; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--panel); box-shadow: 0 24px 60px rgba(0,0,0,.4); transition: transform .18s, box-shadow .18s; }
+    .seeit-frame:hover { transform: translateY(-3px); box-shadow: 0 30px 70px rgba(0,0,0,.5); }
+    .seeit-bar { display: flex; align-items: center; gap: 10px; padding: 11px 14px; background: var(--bg); border-bottom: 1px solid var(--line); }
+    .seeit-lights { display: flex; gap: 5px; }
+    .seeit-lights span { width: 9px; height: 9px; border-radius: 50%; background: #3a3a3a; }
+    .seeit-addr { font-family: var(--font-mono); font-size: 12px; color: var(--soft); }
+    .seeit-addr b { color: var(--ink); }
+    .seeit-body { padding: 22px; }
+    .seeit-counter { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: .1em; margin-bottom: 10px; }
+    .seeit-body h3 { font-size: 20px; font-weight: 500; letter-spacing: -0.02em; margin: 0 0 4px; }
+    .seeit-body .sub { font-size: 13px; color: var(--soft); margin-bottom: 16px; }
+    .seeit-opt { display: flex; align-items: center; gap: 12px; padding: 13px 14px; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 8px; font-size: 14px; }
+    .seeit-opt .dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line); flex-shrink: 0; }
+    .seeit-opt.sel { border-color: var(--accent); background: rgba(61,139,255,.06); }
+    .seeit-opt.sel .dot { border-color: var(--accent); background: var(--accent); }
+    .seeit-opt .lbl { flex: 1; }
+    .seeit-opt .meta { font-family: var(--font-mono); color: var(--soft); }
+    .seeit-go { margin-top: 6px; background: var(--accent); color: #06140d; border-radius: 10px; padding: 12px; text-align: center; font-weight: 700; font-size: 14px; }
+    @media (max-width: 860px) { .seeit { grid-template-columns: 1fr; gap: 32px; } .seeit h2 { font-size: 32px; } }
 
-    .cols { display: grid; grid-template-columns: 1fr 320px; gap: 20px; align-items: start; }
-    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px; }
-    .card h3 { font-size: 13px; font-weight: 500; letter-spacing: .04em; margin-bottom: 4px; }
-    .card .hint { font-size: 12px; color: var(--soft); margin-bottom: 14px; line-height: 1.5; }
+    .why { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .why-card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 26px; }
+    .why-card .n { font-family: var(--font-mono); font-size: 12px; color: var(--accent); font-weight: 700; letter-spacing: .1em; }
+    .why-card h3 { font-size: 21px; font-weight: 500; letter-spacing: -0.02em; margin: 14px 0 10px; }
+    .why-card p { font-size: 14px; color: var(--soft); line-height: 1.6; }
 
-    .paste-row { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
-    textarea.orders { width: 100%; min-height: 150px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); font-family: var(--font-mono); font-size: 13px; line-height: 1.6; resize: vertical; }
-    textarea.orders:focus { outline: none; border-color: var(--accent); }
+    .integrations { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .intg { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 24px; transition: border-color .15s ease, transform .15s ease; }
+    .intg:hover { border-color: rgba(61,139,255,.4); transform: translateY(-2px); }
+    .intg .name { font-size: 17px; font-weight: 500; letter-spacing: -0.01em; }
+    .intg .desc { font-size: 13px; color: var(--soft); margin-top: 6px; line-height: 1.5; }
+    /* Countdown badge feature */
+    .badgefeat { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: center; }
+    .bf-copy p { font-size: 16px; color: var(--soft); line-height: 1.6; margin-bottom: 18px; max-width: 460px; font-weight: 300; }
+    .bf-copy ul { display: flex; flex-direction: column; gap: 10px; margin: 0 0 22px; }
+    .bf-copy li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; font-size: 15px; color: var(--ink); align-items: baseline; }
+    .bf-copy li .tick { color: var(--accent); font-weight: 800; }
+    .molli-badge { display: flex; align-items: center; gap: 13px; border-radius: 12px; padding: 14px 16px; font-family: var(--font-sans); }
+    .molli-badge .mb-ic { width: 38px; height: 38px; border-radius: 9px; flex: none; display: flex; align-items: center; justify-content: center; }
+    .molli-badge .mb-lead { font-size: 12px; font-weight: 600; letter-spacing: .02em; }
+    .molli-badge .mb-main { font-size: 15px; font-weight: 500; letter-spacing: -0.01em; margin-top: 2px; }
+    .molli-badge .mb-clock { font-family: var(--font-mono); font-weight: 700; letter-spacing: -0.02em; }
+    .mb-light { background: #f5f7f2; border: 1px solid #d8e3c8; }
+    .mb-light .mb-ic { background: rgba(60,120,20,.12); }
+    .mb-light .mb-lead { color: #5f7050; }
+    .mb-light .mb-main { color: #14210a; }
+    .mb-light .mb-clock { color: #3f7a12; }
+    .shop { background: #fff; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); }
+    .shop-bar { background: #14210a; color: #fff; padding: 12px 18px; font-size: 13px; font-weight: 600; letter-spacing: .04em; display: flex; justify-content: space-between; align-items: center; }
+    .shop-bar .cart { font-size: 12px; opacity: .7; }
+    .shop-body { padding: 22px; color: #14210a; display: grid; grid-template-columns: 88px 1fr; gap: 18px; }
+    .shop-thumb { width: 88px; height: 110px; border-radius: 10px; background: linear-gradient(135deg,#eef1e8,#dbe4cd); border: 1px solid #d8e3c8; }
+    .shop-title { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; color: #14210a; }
+    .shop-price { font-family: var(--font-mono); font-size: 20px; font-weight: 700; margin: 4px 0 14px; color: #14210a; }
+    .shop-buy { background: #14210a; color: #fff; border: none; border-radius: 10px; padding: 13px 22px; font-family: var(--font-sans); font-weight: 600; font-size: 14px; cursor: pointer; margin-top: 14px; }
 
-    table { width: 100%; border-collapse: collapse; margin-top: 6px; }
-    th { text-align: left; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--soft); font-weight: 500; padding: 8px 10px; border-bottom: 1px solid var(--line); }
-    td { padding: 11px 10px; border-bottom: 1px solid var(--line); font-size: 13px; }
-    tr:last-child td { border-bottom: none; }
-    .zone-tag { font-family: var(--font-mono); font-size: 11px; padding: 2px 7px; border-radius: 999px; }
-    .zone-1 { background: rgba(61,139,255,.14); color: var(--accent); }
-    .zone-2 { background: rgba(255,255,255,.08); color: var(--soft); }
-    .zone-bad { background: rgba(255,90,90,.14); color: #ff7a7a; }
-    .price { font-family: var(--font-mono); font-weight: 700; text-align: right; }
-    .row-x { cursor: pointer; color: var(--muted); font-size: 15px; }
-    .row-x:hover { color: #ff7a7a; }
-    .ins-toggle { cursor: pointer; font-family: var(--font-mono); font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--soft); white-space: nowrap; user-select: none; }
-    .ins-toggle:hover { border-color: var(--accent); color: var(--ink); }
-    .ins-toggle.on { background: rgba(61,139,255,.14); border-color: rgba(61,139,255,.5); color: var(--accent); }
-    .empty { text-align: center; color: var(--muted); font-size: 13px; padding: 30px 0; }
+    .intg .badge { display: inline-block; margin-top: 12px; font-family: var(--font-mono); font-size: 10px; color: var(--accent); border: 1px solid rgba(61,139,255,.35); border-radius: 999px; padding: 3px 9px; }
 
-    .summary .line { display: flex; justify-content: space-between; font-size: 13px; color: var(--soft); padding: 7px 0; }
-    .summary .line.total { border-top: 1px solid var(--line); margin-top: 6px; padding-top: 12px; font-size: 16px; color: var(--ink); font-weight: 500; }
-    .summary .line .v { font-family: var(--font-mono); color: var(--ink); }
-    .summary .line.total .v { color: var(--accent); font-size: 22px; }
-    .bal-line { font-size: 12px; color: var(--soft); margin-top: 12px; text-align: center; }
-    .pay-note { font-size: 11px; color: var(--muted); text-align: center; margin-top: 10px; line-height: 1.5; }
+    .dash { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .dash-card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 24px; }
+    .dash-card h3 { font-size: 18px; font-weight: 500; letter-spacing: -0.01em; margin-bottom: 8px; }
+    .dash-card p { font-size: 14px; color: var(--soft); line-height: 1.55; }
 
-    .toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(20px); background: var(--accent); color: var(--bg); font-weight: 500; padding: 14px 22px; border-radius: 10px; opacity: 0; pointer-events: none; transition: all .3s; font-size: 14px; }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .cta-strip { margin: 0 40px 40px; padding: 44px; background: var(--accent); color: var(--bg); border-radius: 18px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .cta-strip .k { font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; opacity: .7; }
+    .cta-strip .h { font-size: 44px; font-weight: 800; letter-spacing: -0.03em; margin-top: 8px; line-height: 1; }
 
-    @media (max-width: 820px) { .cols { grid-template-columns: 1fr; } .wrap { padding: 32px 20px 80px; } h1 { font-size: 32px; } th:nth-child(3), td:nth-child(3) { display: none; } }
+    /* Hero fork */
+    .fork { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; max-width: 720px; margin-top: 8px; }
+    .fork-c { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; }
+    .fork-c.lead { border-color: rgba(61,139,255,.4); background: linear-gradient(135deg, rgba(61,139,255,.08), var(--panel)); }
+    .fork-c .k { font-size: 11px; color: var(--soft); font-weight: 500; letter-spacing: .12em; text-transform: uppercase; }
+    .fork-c .t { font-size: 18px; font-weight: 500; letter-spacing: -0.01em; margin: 8px 0 14px; }
+
+    /* Onboarding */
+    .onb { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .onb-c { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 26px; }
+    .onb-c .n { font-family: var(--font-mono); font-size: 12px; color: var(--accent); font-weight: 700; letter-spacing: .1em; }
+    .onb-c h3 { font-size: 19px; font-weight: 500; letter-spacing: -0.01em; margin: 12px 0 8px; }
+    .onb-c p { font-size: 14px; color: var(--soft); line-height: 1.55; }
+
+    /* Contact */
+    .contact { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+    .contact-lead h2 { font-size: 46px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; margin: 12px 0 18px; }
+    .contact-lead p { font-size: 16px; color: var(--soft); line-height: 1.6; margin-bottom: 18px; max-width: 460px; font-weight: 300; }
+    .contact-lead ul { display: flex; flex-direction: column; gap: 10px; }
+    .contact-lead li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; font-size: 15px; color: var(--ink); align-items: baseline; }
+    .contact-lead li .tick { color: var(--accent); font-weight: 800; }
+    .contact-form { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 28px; }
+    .contact-form .fg { margin-bottom: 14px; }
+    .contact-form .fg2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .contact-form label { display: block; font-size: 14px; color: var(--ink); font-weight: 600; letter-spacing: .01em; margin-bottom: 7px; }
+    .contact-form input, .contact-form select, .contact-form textarea { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 15px; color: var(--ink); font-family: inherit; }
+    .contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus { outline: none; border-color: var(--accent); }
+    .contact-form input::placeholder, .contact-form textarea::placeholder { color: var(--soft); opacity: 1; }
+    .contact-done { display: none; text-align: center; padding: 20px 0; }
+    .contact-done.show { display: block; }
+    .contact-done .big { font-size: 40px; }
+    .contact-done h3 { font-size: 22px; font-weight: 500; margin: 10px 0 6px; }
+    .contact-done p { font-size: 14px; color: var(--soft); line-height: 1.55; }
+
+    @media (max-width: 860px) {
+      .biz-hero { padding: 40px 20px; }
+      .biz-hero h1 { font-size: 48px; }
+      .why, .credit, .integrations, .dash, .fork, .vol, .onb, .contact, .badgefeat { grid-template-columns: 1fr; }
+      .credit h2 { font-size: 32px; }
+      .cta-strip { margin: 0 20px 40px; flex-direction: column; align-items: flex-start; }
+      .cta-strip .h { font-size: 30px; }
+    }
   </style>
 </head>
 <body class="light">
+  <!-- TOP BAR -->
   <header class="topbar">
-    <a class="logo" href="index.html"><span class="logo-mark"><span>&rsaquo;</span></span><span class="logo-word">m<span class="o-wheel"></span>lli</span></a>
+    <a class="logo" href="index.html">
+      <span class="logo-mark"><span>&rsaquo;</span></span>
+      <span class="logo-word">m<span class="o-wheel"></span>lli</span>
+    </a>
     <nav class="topnav">
-      <a href="sell.html">Sell more</a>
+      <a href="sell.html" class="active">Sell more</a>
       <a href="connect.html">Connect</a>
       <a href="pricing.html">Pricing</a>
       <a href="buy-credit.html">Buy credit</a>
@@ -71,222 +154,331 @@
       <a href="pricing.html#faqs">Help</a>
     </nav>
     <div class="topbar-cta">
-      <a class="signin" href="account.html">Account</a>
-      <a class="btn btn--accent btn--sm" href="booking.html">Single parcel &rarr;</a>
+      <a class="signin" href="account.html">Sign in</a>
+      <a class="btn btn--accent btn--sm" href="#signup">Create business account &rarr;</a>
     </div>
   </header>
 
-  <div class="wrap">
-    <div class="head">
-      <div>
-        <div class="eyebrow">Business · Bulk booking</div>
-        <h1 style="margin-top:10px;">Book the day's orders in one go.</h1>
+  <!-- HERO -->
+  <section class="biz-hero">
+    <span class="pill"><span class="dot"></span> For Dublin retailers</span>
+    <h1>Sell it today.<br /><span class="accent">Deliver it today.</span></h1>
+    <p class="sub">Molli is the same-day dispatch network Dublin retailers run on. Show a live cut-off at checkout, orders flow straight to us, and we collect the day's batch on one scheduled run &mdash; sorted at our hub and delivered across the city by 6pm, under your name. No fleet, no routing, no post-office runs, no pickup windows tying up your counter.</p>
+    <div class="fork">
+      <div class="fork-c lead">
+        <div class="k">Getting started</div>
+        <div class="t">Set up a scheduled account</div>
+        <a class="btn btn--accent btn--md btn--block" href="account.html">Create a business account &rarr;</a>
+      </div>
+      <div class="fork-c">
+        <div class="k">Doing serious volume?</div>
+        <div class="t">Get a rate + hands-on setup</div>
+        <a class="btn btn--ghost btn--md btn--block" href="#contact">Tell us your daily volume</a>
       </div>
     </div>
-    <div class="sub">Paste your orders or drop a CSV. One collection covers the lot — every parcel on the same run.</div>
+    <a class="hero-demo-link" href="demo.html">Or watch a booking in 30 seconds &rarr;</a>
+  </section>
 
-    <div class="run-note">
-      <span style="width:8px;height:8px;border-radius:50%;background:var(--accent);"></span>
-      <span id="run-note-text">Book by <b>2pm</b> and today's whole batch is delivered <b>by 6pm today</b>. After 2pm, it goes on the next working day's run.</span>
-    </div>
-
-    <div class="cols">
-      <div>
-        <div class="card" style="margin-bottom:16px;">
-          <h3>Import orders</h3>
-          <div class="hint">One order per line: <b>Recipient, Eircode, size</b> (small / package / box). Add <b>insure</b> at the end to cover a parcel &mdash; e.g. <span style="font-family:var(--font-mono);">Jane Doe, D02 X285, box, insure</span>. Or export a CSV from Shopify &amp; WooCommerce in the same shape.</div>
-          <div class="paste-row">
-            <button class="btn btn--ghost btn--sm" onclick="loadSample()">Load sample orders</button>
-            <button class="btn btn--ghost btn--sm" onclick="document.querySelector('.orders').value='';">Clear</button>
-          </div>
-          <textarea class="orders" id="orders" placeholder="Jane Doe, D02 X285, package&#10;Tom Ryan, D15, box, insure&#10;Aoife N, D08, small"></textarea>
-          <button class="btn btn--accent btn--md" style="margin-top:12px;" onclick="parseOrders()">Build manifest &rarr;</button>
-        </div>
-
-        <div class="card">
-          <h3>Manifest</h3>
-          <div class="hint" id="manifest-hint">Your parcels for this collection.</div>
-          <table>
-            <thead><tr><th>Recipient</th><th>Eircode</th><th>Zone</th><th>Size</th><th>Insure</th><th style="text-align:right;">Price</th><th></th></tr></thead>
-            <tbody id="manifest-body"><tr><td colspan="7" class="empty">No orders yet — paste some above and build your manifest.</td></tr></tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="card summary" style="position:sticky; top:90px;">
-        <h3>Collection summary</h3>
-        <div class="hint">One pickup from your address, all parcels together.</div>
-        <div class="line"><span>Parcels</span><span class="v" id="sum-count">0</span></div>
-        <div class="line"><span>City Centre · Zone 1</span><span class="v" id="sum-z1">0</span></div>
-        <div class="line"><span>Greater Dublin · Zone 2</span><span class="v" id="sum-z2">0</span></div>
-        <div class="line" id="sum-ins-line" style="display:none;"><span>Insurance · <span id="sum-ins-count">0</span> parcel<span id="sum-ins-s"></span></span><span class="v" id="sum-ins">€0.00</span></div>
-        <div class="line total"><span>Total</span><span class="v" id="sum-total">€0.00</span></div>
-        <button class="btn btn--accent btn--block" style="margin-top:16px; padding:14px;" id="book-all" onclick="bookAll()">Book collection</button>
-        <div class="bal-line" id="bal-line">Molli Credit balance: €0.00</div>
-        <div class="pay-note">Paid from your Molli Credit balance. Auto top-up covers any shortfall.</div>
-      </div>
-    </div>
+  <!-- STATS -->
+  <div class="stats" style="grid-template-columns: repeat(4, 1fr);">
+    <div class="stat"><div class="num">2pm</div><div class="lbl">Book by, collected today</div></div>
+    <div class="stat"><div class="num">98.4%</div><div class="lbl">On-time, last 90 days</div></div>
+    <div class="stat"><div class="num">24</div><div class="lbl">Dublin postal codes</div></div>
+    <div class="stat"><div class="num">€7.99</div><div class="lbl">Per parcel, from</div></div>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <!-- VERTICALS -->
+  <section class="verticals">
+    <div class="eyebrow">Built for</div>
+    <p class="vert-lead">We're built around the high-value, handle-with-care categories &mdash; where <span class="accent">same-day and a careful doorstep</span> win the repeat customer. Our one rule: same-day needs a minimum of <span class="accent">10 orders a day</span> &mdash; enough to fill a shared run, which is exactly what makes an affordable 6pm promise possible.</p>
+    <div class="vert-row">
+      <span class="vert vert--hero">Beauty &amp; skincare</span>
+      <span class="vert vert--hero">Health &amp; wellness</span>
+      <span class="vert vert--hero">Pharmacy</span>
+      <span class="vert">Jewellery</span>
+      <span class="vert">Boutique fashion</span>
+      <span class="vert">Gifting &amp; florists</span>
+    </div>
+  </section>
+
+  <!-- WHY -->
+  <section class="section">
+    <div class="eyebrow">Why retailers switch</div>
+    <h2 style="font-size: 40px; font-weight: 800; letter-spacing: -0.03em; margin: 12px 0 32px;">Same-day collection changes the maths.</h2>
+    <div class="why">
+      <div class="why-card">
+        <div class="n">01</div>
+        <h3>Ship the day you sell</h3>
+        <p>An order placed at 11am is collected on today's run and delivered by 6pm that day — not "picked up tomorrow, there the day after." Faster fulfilment, happier customers, fewer "where is it?" emails.</p>
+      </div>
+      <div class="why-card">
+        <div class="n">02</div>
+        <h3>No post office runs</h3>
+        <p>Your team never leaves the shop floor. We come to you, on a collection window you choose. That's staff hours back in the till, not queuing with a trolley of parcels.</p>
+      </div>
+      <div class="why-card">
+        <div class="n">03</div>
+        <h3>One dashboard, every parcel</h3>
+        <p>Bulk-book the day's orders, track them all live, and see your spend at a glance. Your whole Dublin dispatch, in one screen.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEE IT WORK -->
+  <section class="section divider-top" id="see-it-work">
+    <div class="seeit">
+      <div>
+        <div class="eyebrow">See it work</div>
+        <h2>Watch a booking,<br /><span class="accent">start to finish.</span></h2>
+        <p>No sign-up, nothing charged. Follow the guided flow and see exactly what your counter staff would do &mdash; a real same-day collection booked in under a minute.</p>
+        <ul class="seeit-steps">
+          <li><span class="n">1</span> Enter collection &amp; delivery addresses</li>
+          <li><span class="n">2</span> Check it fits — timing is set by your cut-off</li>
+          <li><span class="n">3</span> Confirm &mdash; we collect on the next run</li>
+        </ul>
+        <div class="cta-row">
+          <a class="btn btn--accent btn--md" href="demo.html">Watch the guided demo &rarr;</a>
+        </div>
+        <div class="seeit-note">Interactive &middot; 30 seconds &middot; nothing charged</div>
+      </div>
+      <a class="seeit-frame" href="demo.html">
+        <div class="seeit-bar">
+          <div class="seeit-lights"><span></span><span></span><span></span></div>
+          <div class="seeit-addr"><b>molli.ie</b>/book</div>
+        </div>
+        <div class="seeit-body">
+          <div class="seeit-counter">STEP 4 OF 7</div>
+          <h3>What are we sending?</h3>
+          <div class="sub">Choose your parcel size</div>
+          <div class="seeit-opt sel"><span class="dot"></span><span class="lbl">Small</span><span class="meta">&euro;7.99</span></div>
+          <div class="seeit-opt"><span class="dot"></span><span class="lbl">Medium</span><span class="meta">&euro;8.99</span></div>
+          <div class="seeit-opt"><span class="dot"></span><span class="lbl">Large</span><span class="meta">&euro;9.99</span></div>
+          <div class="seeit-go">Next</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- INTEGRATIONS -->
+  <section class="section divider-top">
+    <div class="eyebrow">Plugs into how you already work</div>
+    <h2 style="font-size: 40px; font-weight: 800; letter-spacing: -0.03em; margin: 12px 0 32px;">Connect your store. Orders book themselves.</h2>
+    <div class="integrations">
+      <a class="intg" href="integrations.html" style="text-decoration:none; cursor:pointer; display:block;"><div class="name">Shopify</div><div class="desc">Orders sync automatically. Print a label and book collection without leaving admin.</div><div class="badge">1-click app &rarr;</div></a>
+      <a class="intg" href="integrations.html" style="text-decoration:none; cursor:pointer; display:block;"><div class="name">WooCommerce</div><div class="desc">A plugin drops Molli into your checkout and dispatch flow.</div><div class="badge">Free plugin &rarr;</div></a>
+      <a class="intg" href="bulk.html" style="text-decoration:none; cursor:pointer; display:block;"><div class="name">CSV bulk upload</div><div class="desc">Drop a spreadsheet of the day's orders and book one collection for all of them.</div><div class="badge">Try it &rarr;</div></a>
+      <a class="intg" href="integrations.html#api" style="text-decoration:none; cursor:pointer; display:block;"><div class="name">API</div><div class="desc">Wire Molli straight into your own systems with a REST API and webhooks.</div><div class="badge">Developer docs &rarr;</div></a>
+    </div>
+    <div class="intg-cta" style="display:flex; gap:12px; flex-wrap:wrap; margin-top:26px;">
+      <a class="btn btn--accent btn--sm" href="integrations.html">See same-day at checkout &rarr;</a>
+      <a class="btn btn--ghost btn--sm" href="badge.html">Add the countdown badge &rarr;</a>
+    </div>
+  </section>
+
+  <!-- COUNTDOWN BADGE -->
+  <section class="section divider-top" id="badge-feature">
+    <div class="eyebrow">Turn browsers into same-day buyers</div>
+    <h2 style="font-size: 40px; font-weight: 800; letter-spacing: -0.03em; margin: 12px 0 32px;">A live countdown, right under your buy button.</h2>
+    <div class="badgefeat">
+      <div class="bf-copy">
+        <p>Drop one line of code on your store and shoppers see exactly how long they've got to order for same-day delivery. A visible deadline is the oldest trick in retail &mdash; it turns a browse into a checkout.</p>
+        <ul>
+          <li><span class="tick">&#10003;</span><span>Counts down live against your daily cut-off — 2pm in the city centre, 1pm for greater Dublin.</span></li>
+          <li><span class="tick">&#10003;</span><span>Skips weekends and bank holidays automatically &mdash; never shows a promise you can't keep.</span></li>
+          <li><span class="tick">&#10003;</span><span>Works on Shopify, WooCommerce or plain HTML. No build step. Free.</span></li>
+        </ul>
+        <a class="btn btn--accent btn--sm" href="badge.html">Get the badge &mdash; free &rarr;</a>
+      </div>
+      <div class="bf-demo">
+        <div class="shop">
+          <div class="shop-bar"><span>GR&Aacute; &middot; Dublin</span><span class="cart">Bag (1)</span></div>
+          <div class="shop-body">
+            <div class="shop-thumb"></div>
+            <div>
+              <div class="shop-title">Eau de Parfum &middot; 50ml</div>
+              <div class="shop-price">&euro;68.00</div>
+              <div class="molli-badge mb-light" id="bz-badge">
+                <div class="mb-ic">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:inherit"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                </div>
+                <div>
+                  <div class="mb-lead" id="bz-lead">Order within</div>
+                  <div class="mb-main" id="bz-main"><span class="mb-clock" id="bz-clock">02:14:08</span> for delivery by 6pm today</div>
+                </div>
+              </div>
+              <button class="shop-buy">Add to bag</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section class="section divider-top">
+    <div class="eyebrow">Your dispatch, one screen</div>
+    <h2 style="font-size: 40px; font-weight: 800; letter-spacing: -0.03em; margin: 12px 0 32px;">Everything a busy shop needs.</h2>
+    <div class="dash">
+      <a class="dash-card" href="bulk.html" style="text-decoration:none; display:block;"><h3>Bulk booking &rarr;</h3><p>Book the day's orders in one go — a single collection window covers the lot.</p></a>
+      <div class="dash-card"><h3>Live tracking</h3><p>Every parcel, tracked end-to-end, with the recipient notified when the courier's minutes away.</p></div>
+      <div class="dash-card"><h3>Saved addresses &amp; recipients</h3><p>Regular customers and pickup points saved, so repeat sends are two taps.</p></div>
+      <div class="dash-card"><h3>Spend &amp; credit at a glance</h3><p>Balance, draw-downs, and monthly volume — the numbers finance asks for, ready to export.</p></div>
+    </div>
+  </section>
+
+  <!-- INSURANCE CALLOUT -->
+  <section class="section divider-top">
+    <div style="display:flex; gap:28px; align-items:center; background:linear-gradient(120deg, var(--accent-tint), rgba(var(--accent-rgb),.04)); border:1px solid rgba(var(--accent-rgb),.28); border-radius:22px; padding:34px 36px; flex-wrap:wrap;">
+      <div style="width:60px; height:60px; border-radius:16px; background:var(--accent-tint); border:1px solid rgba(var(--accent-rgb),.3); display:flex; align-items:center; justify-content:center; flex:none;">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      </div>
+      <div style="flex:1; min-width:280px;">
+        <div class="eyebrow" style="color:var(--accent);">Peace of mind, per parcel</div>
+        <h3 style="font-size:26px; font-weight:800; letter-spacing:-0.02em; margin:8px 0 10px;">Insure any order — your call, not all‑or‑nothing.</h3>
+        <p style="font-size:15px; color:var(--soft); line-height:1.6; max-width:640px; margin:0;">Add cover up to €500 to any parcel for €4.99 — opt in per shipment, whether you book on the web, in a bulk manifest, or with one field in the API. Photo proof of delivery and an en‑route text land on every parcel, free.</p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;">
+          <span class="pill">Cover up to €500 · €4.99</span>
+          <span class="pill">Photo proof · included</span>
+          <span class="pill">En‑route SMS · included</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ONBOARDING -->
+  <section class="section divider-top">
+    <div class="eyebrow">Getting set up</div>
+    <h2 style="font-size: 40px; font-weight: 800; letter-spacing: -0.03em; margin: 12px 0 32px;">From first call to daily collections.</h2>
+    <div class="onb">
+      <div class="onb-c">
+        <div class="n">01</div>
+        <h3>Tell us your volume</h3>
+        <p>A few details about your shop and your typical daily orders. We agree a fixed collection slot that fits your day &mdash; the same time, every day.</p>
+      </div>
+      <div class="onb-c">
+        <div class="n">02</div>
+        <h3>Connect your store &amp; badge</h3>
+        <p>Link Shopify or WooCommerce so orders flow straight in, and drop the countdown badge on your product pages to grow same-day volume. Five minutes, once.</p>
+      </div>
+      <div class="onb-c">
+        <div class="n">03</div>
+        <h3>We collect, every day</h3>
+        <p>Hand over the day's batch on your scheduled run &mdash; sorted at our hub and delivered across Dublin by 6pm. Nothing to route, nothing to chase.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section divider-top" id="contact">
+    <div class="contact" id="signup">
+      <div class="contact-lead">
+        <div class="eyebrow">Talk to us for volume</div>
+        <h2>Sending more than <span class="accent">50 a day?</span></h2>
+        <p>For higher volumes we'll set you up personally &mdash; a rate matched to your numbers, help connecting your store, and a dedicated collection window that fits your day.</p>
+        <ul>
+          <li><span class="tick">&#10003;</span><span>A volume rate, quoted to your weekly numbers</span></li>
+          <li><span class="tick">&#10003;</span><span>Hands-on onboarding &amp; store integration</span></li>
+          <li><span class="tick">&#10003;</span><span>A named contact, not a ticket queue</span></li>
+        </ul>
+      </div>
+      <div class="contact-form">
+        <form id="biz-contact" onsubmit="return bizContactSubmit(event)">
+          <div class="fg">
+            <label>Shop / business name</label>
+            <input type="text" required placeholder="Brennan &amp; Co" />
+          </div>
+          <div class="fg2">
+            <div class="fg">
+              <label>Your name</label>
+              <input type="text" required placeholder="Aoife Brennan" />
+            </div>
+            <div class="fg">
+              <label>Parcels / week</label>
+              <select required>
+                <option value="">Select&hellip;</option>
+                <option>Under 50</option>
+                <option>50&ndash;200</option>
+                <option>200&ndash;500</option>
+                <option>500+</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg">
+            <label>Email</label>
+            <input type="email" required placeholder="aoife@brennanco.ie" />
+          </div>
+          <div class="fg">
+            <label>Anything we should know? (optional)</label>
+            <textarea rows="3" placeholder="We ship jewellery across Dublin, mostly D1&ndash;D8&hellip;"></textarea>
+          </div>
+          <button type="submit" class="btn btn--accent btn--md btn--block">Request a call &rarr;</button>
+        </form>
+        <div class="contact-done" id="contact-done">
+          <div class="big">&#9989;</div>
+          <h3>Thanks &mdash; we'll be in touch</h3>
+          <p>A Molli account manager will email you within one working day to set up your rate.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-strip">
+    <div>
+      <div class="k">Sell today, ship today</div>
+      <div class="h">Create a business account in minutes.</div>
+    </div>
+    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+      <a class="btn btn--invert btn--lg" href="account.html">Get started &rarr;</a>
+      <a class="btn btn--lg" href="#contact" style="background:rgba(0,0,0,.14); color:var(--bg);">Talk to us</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div>
+      <a class="logo" href="index.html"><span class="logo-mark"><span>&rsaquo;</span></span><span class="logo-word">m<span class="o-wheel"></span>lli</span></a>
+      <div class="tag">molli.ie · Dublin's same-day parcel network<br /><span style="color:var(--muted)">Through streets broad &amp; narrow.</span></div>
+    </div>
+    <div class="col"><div class="col-title">Send</div><a href="booking.html">Parcels</a><a href="booking.html">Documents</a><a href="booking.html">Same-day</a><a href="business.html">Bulk &amp; API</a></div>
+    <div class="col"><div class="col-title">Business</div><a href="business.html">Business account</a><a href="business.html">Integrations</a><a href="pricing.html#credit">Billing &amp; credit</a><a href="account.html">Open account</a></div>
+    <div class="col"><div class="col-title">Company</div><a href="#">About</a><a href="#">Jobs</a><a href="#">Sustainability</a><a href="#">Press</a></div>
+    <div class="col"><div class="col-title">Help</div><a href="account.html">Track a parcel</a><a href="pricing.html">Pricing</a><a href="#">Contact</a><a href="pricing.html#faqs">FAQ</a></div>
+  </footer>
+  <div class="legal">&copy; 2026 Molli Logistics Ltd. &middot; 23 Sir John Rogerson's Quay, Dublin 2 &middot; CRO 612 884</div>
 
   <script>
-    var SIZE_PRICE = { small: 7.99, package: 8.99, box: 9.99 };
-    var ZONE2_FEE = 2.00;
-    var INSURE_FEE = 4.99;
-    var manifest = [];
-
-    function zoneFromEircode(ec) {
-      if (!ec) return null;
-      var m = ec.toUpperCase().replace(/\s+/g, '').match(/^D(\d{1,2})W?/);
-      if (!m) return null;
-      var d = parseInt(m[1], 10);
-      if (d >= 1 && d <= 8) return 1;
-      if (d >= 9 && d <= 24) return 2;
-      return null;
+    function bizContactSubmit(e) {
+      e.preventDefault();
+      document.getElementById('biz-contact').style.display = 'none';
+      document.getElementById('contact-done').classList.add('show');
+      return false;
     }
-    function money(n) { return '€' + n.toFixed(2); }
-
-    function loadSample() {
-      document.getElementById('orders').value =
-        "Jane Doe, D02 X285, package\n" +
-        "Tom Ryan, D15, box, insure\n" +
-        "Aoife Nolan, D08, small\n" +
-        "Conor Walsh, D04, package\n" +
-        "Niamh Byrne, D24, package, insure:250\n" +
-        "Sean O'Brien, D06, small";
-    }
-
-    function parseOrders() {
-      var raw = document.getElementById('orders').value.trim();
-      manifest = [];
-      if (raw) {
-        raw.split(/\n+/).forEach(function (line) {
-          var parts = line.split(',').map(function (s) { return s.trim(); });
-          if (parts.length < 2 || !parts[0]) return;
-          var name = parts[0];
-          var ec = (parts[1] || '').toUpperCase();
-          var size = (parts[2] || 'package').toLowerCase();
-          if (!SIZE_PRICE[size]) size = 'package';
-          var insure = false, insVal = null;
-          for (var p = 3; p < parts.length; p++) {
-            var tok = (parts[p] || '').toLowerCase();
-            var mm = tok.match(/^insure(?::\s*\u20ac?(\d+))?$/);
-            if (mm) { insure = true; if (mm[1]) insVal = parseInt(mm[1], 10); }
-          }
-          manifest.push({ name: name, ec: ec, size: size, insure: insure, insVal: insVal });
-        });
-      }
-      renderManifest();
-    }
-
-    function removeRow(i) { manifest.splice(i, 1); renderManifest(); }
-    function toggleInsure(i) { if (manifest[i]) { manifest[i].insure = !manifest[i].insure; if (!manifest[i].insure) manifest[i].insVal = null; renderManifest(); } }
-
-    function renderManifest() {
-      var body = document.getElementById('manifest-body');
-      if (!manifest.length) {
-        body.innerHTML = '<tr><td colspan="7" class="empty">No orders yet — paste some above and build your manifest.</td></tr>';
-        document.getElementById('manifest-hint').textContent = 'Your parcels for this collection.';
-      } else {
-        body.innerHTML = manifest.map(function (o, i) {
-          var zone = zoneFromEircode(o.ec);
-          var zoneCell, price;
-          if (zone === null) {
-            zoneCell = '<span class="zone-tag zone-bad">?</span>';
-            price = null;
-          } else {
-            zoneCell = '<span class="zone-tag zone-' + zone + '">' + (zone === 1 ? 'City' : 'Greater') + '</span>';
-            price = SIZE_PRICE[o.size] + (zone === 2 ? ZONE2_FEE : 0) + (o.insure ? INSURE_FEE : 0);
-          }
-          var insTitle = o.insVal ? ('Cover up to €' + o.insVal) : 'Cover up to €500';
-          var insCell = '<span class="ins-toggle' + (o.insure ? ' on' : '') + '" title="' + insTitle + '" onclick="toggleInsure(' + i + ')">' + (o.insure ? '✓ ' + money(INSURE_FEE) : '+ Add') + '</span>';
-          return '<tr>'
-            + '<td>' + escapeHtml(o.name) + '</td>'
-            + '<td style="font-family:var(--font-mono);">' + escapeHtml(o.ec || '—') + '</td>'
-            + '<td>' + zoneCell + '</td>'
-            + '<td style="text-transform:capitalize;">' + o.size + '</td>'
-            + '<td style="text-align:center;">' + insCell + '</td>'
-            + '<td class="price">' + (price === null ? '<span style="color:#ff7a7a;">check</span>' : money(price)) + '</td>'
-            + '<td style="text-align:center;"><span class="row-x" onclick="removeRow(' + i + ')">✕</span></td>'
-            + '</tr>';
-        }).join('');
-        var bad = manifest.filter(function (o) { return zoneFromEircode(o.ec) === null; }).length;
-        document.getElementById('manifest-hint').innerHTML = manifest.length + ' parcel' + (manifest.length > 1 ? 's' : '') + ' on this collection'
-          + (bad ? ' · <span style="color:#ff7a7a;">' + bad + ' need a valid Dublin Eircode</span>' : '');
-      }
-      updateSummary();
-    }
-
-    function updateSummary() {
-      var count = 0, z1 = 0, z2 = 0, total = 0, bad = 0, insCount = 0, insTotal = 0;
-      manifest.forEach(function (o) {
-        var zone = zoneFromEircode(o.ec);
-        if (zone === null) { bad++; return; }
-        count++;
-        if (zone === 1) z1++; else z2++;
-        total += SIZE_PRICE[o.size] + (zone === 2 ? ZONE2_FEE : 0);
-        if (o.insure) { insCount++; insTotal += INSURE_FEE; total += INSURE_FEE; }
-      });
-      document.getElementById('sum-count').textContent = count;
-      document.getElementById('sum-z1').textContent = z1;
-      document.getElementById('sum-z2').textContent = z2;
-      var insLine = document.getElementById('sum-ins-line');
-      insLine.style.display = insCount ? 'flex' : 'none';
-      document.getElementById('sum-ins-count').textContent = insCount;
-      document.getElementById('sum-ins-s').textContent = insCount === 1 ? '' : 's';
-      document.getElementById('sum-ins').textContent = money(insTotal);
-      document.getElementById('sum-total').textContent = money(total);
-      var btn = document.getElementById('book-all');
-      btn.textContent = count ? ('Book ' + count + ' parcel' + (count > 1 ? 's' : '') + ' · ' + money(total)) : 'Book collection';
-      btn.style.opacity = count ? '1' : '.5';
-      btn.style.pointerEvents = count ? 'auto' : 'none';
-      window.__bulkTotal = total;
-      renderBalance();
-    }
-
-    function creditBalance() { try { return parseFloat(localStorage.getItem('cp_credit_balance') || '0') || 0; } catch (e) { return 0; } }
-    function renderBalance() {
-      document.getElementById('bal-line').textContent = 'Molli Credit balance: ' + money(creditBalance());
-    }
-
-    function bookAll() {
-      var total = window.__bulkTotal || 0;
-      if (!total) return;
-      var bal = creditBalance();
-      var auto = (function () { try { return localStorage.getItem('cp_credit_auto') !== '0'; } catch (e) { return true; } })();
-      var last = (function () { try { return parseInt(localStorage.getItem('cp_credit_last') || '500', 10); } catch (e) { return 500; } })();
-      try {
-        var log = JSON.parse(localStorage.getItem('cp_credit_log') || '[]');
-        if (bal < total) {
-          if (!auto) { showToast('Balance too low — top up in your account'); return; }
-          while (bal < total) { bal += last; log.unshift({ desc: 'Auto top-up · €' + last + ' pack', amt: last, ts: Date.now() }); }
-        }
-        bal -= total;
-        log.unshift({ desc: 'Bulk collection · ' + document.getElementById('sum-count').textContent + ' parcels', amt: -total, ts: Date.now() });
-        localStorage.setItem('cp_credit_balance', bal.toFixed(2));
-        localStorage.setItem('cp_credit_log', JSON.stringify(log));
-      } catch (e) {}
-      renderBalance();
-      showToast('✓ Collection booked · ' + document.getElementById('sum-count').textContent + ' parcels on today\u2019s run');
-      manifest = [];
-      document.getElementById('orders').value = '';
-      renderManifest();
-    }
-
-    function showToast(msg) {
-      var t = document.getElementById('toast');
-      t.textContent = msg; t.classList.add('show');
-      setTimeout(function () { t.classList.remove('show'); }, 3200);
-    }
-    function escapeHtml(s) { return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-
-    // After 2pm, reflect the next-run message.
+  </script>
+  <script>
+    // Live countdown for the badge showcase (mirrors badge.html cut-off logic).
     (function () {
-      if (new Date().getHours() >= 14) {
-        document.getElementById('run-note-text').innerHTML = "Today's <b>2pm</b> cut-off has passed — this batch goes on the next working day's run, delivered <b>by 6pm</b>.";
+      var CUTOFF_TODAY = 14, CUTOFF_NEXTDAY = 17;
+      var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      function pad(n){ return (n<10?'0':'')+n; }
+      function clockStr(ms){ var h=Math.floor(ms/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000); return pad(h)+':'+pad(m)+':'+pad(s); }
+      function nextWorkingDay(d){ var n=new Date(d); n.setDate(n.getDate()+1); while(n.getDay()===0||n.getDay()===6){n.setDate(n.getDate()+1);} return n; }
+      function nwdLabel(now){ var nwd=nextWorkingDay(now); var isTom=(nwd.getDate()===now.getDate()+1); return isTom?'tomorrow':DAYS[nwd.getDay()]; }
+      function render() {
+        var lead=document.getElementById('bz-lead'), main=document.getElementById('bz-main');
+        if(!lead||!main) return;
+        var now = new Date(), day = now.getDay(), weekend = (day===0||day===6);
+        var t2 = new Date(now); t2.setHours(CUTOFF_TODAY,0,0,0);
+        var t5 = new Date(now); t5.setHours(CUTOFF_NEXTDAY,0,0,0);
+        if(!weekend && now<t2){
+          lead.textContent='Order within';
+          main.innerHTML='<span class="mb-clock">'+clockStr(t2-now)+'</span> for delivery by 6pm today';
+        } else {
+          lead.textContent = weekend ? 'Cut-off passed' : 'Today\u2019s run has left';
+          main.innerHTML='Order now for delivery by <span class="mb-clock">6pm '+nwdLabel(now)+'</span>';
+        }
       }
-      renderBalance();
+      render(); setInterval(render, 1000);
     })();
   </script>
 </body>

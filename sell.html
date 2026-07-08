@@ -15,7 +15,7 @@
     /* ---- Hero ---- */
     .sell-hero { padding: 64px 40px 44px; }
     .sell-hero h1 { font-size: 82px; line-height: .93; letter-spacing: -0.04em; font-weight: 800; margin: 18px 0 22px; max-width: 940px; }
-    .sell-hero .sub { font-size: 19px; color: var(--soft); max-width: 620px; line-height: 1.55; font-weight: 600; margin-bottom: 30px; }
+    .sell-hero .sub { font-size: 21px; color: var(--soft); max-width: 620px; line-height: 1.5; font-weight: 300; letter-spacing: -0.03em; margin-bottom: 30px; }
     .sell-hero .cta-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
 
     /* ---- Levers ---- */
@@ -394,7 +394,7 @@
       <div class="est-controls">
         <div class="est-field">
           <div class="fl"><label for="s-orders">Orders a day</label><span class="val" id="v-orders">40</span></div>
-          <input type="range" class="est-slider" id="s-orders" min="5" max="300" step="5" value="40" />
+          <input type="range" class="est-slider" id="s-orders" min="10" max="300" step="5" value="40" />
           <div class="hint">Roughly how many online orders you take on a normal day.</div>
         </div>
         <div class="est-field">
@@ -518,12 +518,9 @@
         if(!weekend && now<t2){
           lead.textContent='Order within';
           main.innerHTML='<span class="mb-clock">'+clockStr(t2-now)+'</span> for delivery by 6pm today';
-        } else if(!weekend && now<t5){
-          lead.textContent='Same-day\u2019s closed \u2014 order within';
-          main.innerHTML='<span class="mb-clock">'+clockStr(t5-now)+'</span> for delivery by 1pm tomorrow';
         } else {
-          lead.textContent = weekend ? 'Cut-off passed' : 'Today\u2019s runs have left';
-          main.innerHTML='Order now for delivery by <span class="mb-clock">1pm '+nwdLabel(now)+'</span>';
+          lead.textContent = weekend ? 'Cut-off passed' : 'Today\u2019s run has left';
+          main.innerHTML='Order now for delivery by <span class="mb-clock">6pm '+nwdLabel(now)+'</span>';
         }
       }
       render(); setInterval(render, 1000);

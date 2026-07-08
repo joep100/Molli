@@ -15,6 +15,10 @@
  * page has the same inset you see on screen. Standard break-hygiene rules
  * (`break-inside: avoid` on figures, code blocks, images and table rows;
  * `orphans/widows: 3`) are applied so paragraphs and groups split cleanly.
+ * On screen and at print, headings default to `text-wrap: balance` and
+ * body text (p, li, blockquote, figcaption) to `text-wrap: pretty`, so
+ * the document avoids widowed/orphaned words; the defaults have zero
+ * specificity, so any text-wrap you declare on those elements wins.
  *
  * Usage:
  *   <style>doc-page:not(:defined){visibility:hidden}</style>
@@ -131,6 +135,7 @@
       if (!this._sheet) this._render();
       this._syncSize();
       this._syncPrintPageRule();
+      this._ensureTextWrapDefaults();
       if (this._mo) this._mo.observe(this, {
         subtree: true, childList: true, characterData: true, attributes: true,
       });
@@ -146,11 +151,14 @@
       window.removeEventListener('resize', this._onResize);
       if (this._mo) this._mo.disconnect();
       if (this._raf) { cancelAnimationFrame(this._raf); this._raf = null; }
-      // Drop the head rule when the last doc-page leaves, so a deleted
-      // document's @page geometry can't apply to whatever replaces it.
+      // Drop the head rules when the last doc-page leaves, so a deleted
+      // document's @page geometry and text-wrap defaults can't apply to
+      // whatever replaces it.
       if (!document.querySelector('doc-page')) {
-        const tag = document.getElementById('doc-page-print');
-        if (tag) tag.remove();
+        ['doc-page-print', 'doc-page-text-wrap'].forEach((id) => {
+          const tag = document.getElementById(id);
+          if (tag) tag.remove();
+        });
       }
     }
 
@@ -209,6 +217,24 @@
         '*, *::before, *::after { animation-delay: -99s !important; animation-duration: .001s !important; ' +
         'animation-iteration-count: 1 !important; animation-fill-mode: both !important; ' +
         'animation-play-state: running !important; transition-duration: 0s !important; } }';
+    }
+
+    /** Typographic defaults for document text: balance headings, avoid
+     *  widowed/orphaned words in body copy (browsers without text-wrap
+     *  support drop the declarations). Zero-specificity via :where() so
+     *  any text-wrap authored on those elements wins; document-level so the
+     *  rules reach the slotted (light DOM) content — shadow styles can't.
+     *  data-omelette-injected marks the tag for the host editor to strip
+     *  at serialize, so it is never written back as authored source. */
+    _ensureTextWrapDefaults() {
+      if (document.getElementById('doc-page-text-wrap')) return;
+      const tag = document.createElement('style');
+      tag.id = 'doc-page-text-wrap';
+      tag.setAttribute('data-omelette-injected', '');
+      tag.textContent =
+        ':where(h1,h2,h3,h4,h5,h6){text-wrap:balance}' +
+        ':where(p,li,blockquote,figcaption){text-wrap:pretty}';
+      document.head.appendChild(tag);
     }
 
     _scheduleMeasure() {

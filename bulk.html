@@ -771,23 +771,23 @@
         <div id="page-3" class="page">
             <div class="page-content">
                 <h1>When will it arrive?</h1>
-                <p class="subtitle">We run two collection waves a day. Where you land depends on the clock.</p>
+                <p class="subtitle">One run a day, everything delivered by 6pm. Beat your cut-off and it goes today.</p>
 
                 <div class="form-section" id="run-card" style="text-align: center;">
                     <div id="run-badge" style="font-family: var(--font-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); font-weight: 700;">Today’s run</div>
-                    <div id="run-headline" style="font-size: 26px; font-weight: 800; letter-spacing: -0.02em; margin: 10px 0 4px;">Delivered today</div>
+                    <div id="run-headline" style="font-size: 26px; font-weight: 800; letter-spacing: -0.02em; margin: 10px 0 4px;">Delivered by 6pm today</div>
                     <div id="run-countdown" style="font-family: var(--font-mono); font-size: 44px; font-weight: 700; letter-spacing: -0.03em; color: var(--accent); line-height: 1; margin: 12px 0 6px;">—</div>
-                    <div id="run-sub" style="font-size: 13px; color: var(--soft); font-weight: 600;">left to order for same-day delivery</div>
+                    <div id="run-sub" style="font-size: 13px; color: var(--soft); font-weight: 600;">left to make today’s run</div>
                 </div>
 
                 <div class="form-section" style="padding: 0; overflow: hidden;">
                     <div id="run-row-today" class="run-row" style="display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-bottom: 1px solid var(--line);">
-                        <div style="font-family: var(--font-mono); font-size: 12px; color: var(--accent); font-weight: 700; min-width: 62px;">by 2pm</div>
-                        <div><div style="font-size: 14px; font-weight: 500;">Delivered today</div><div style="font-size: 12px; color: var(--soft);">Collected on the midday run, delivered this afternoon/evening.</div></div>
+                        <div id="run-cut-today" style="font-family: var(--font-mono); font-size: 12px; color: var(--accent); font-weight: 700; min-width: 62px;">by 2pm</div>
+                        <div><div style="font-size: 14px; font-weight: 500;">Delivered by 6pm today</div><div style="font-size: 12px; color: var(--soft);">Collected on today’s run and delivered across Dublin by 6pm.</div></div>
                     </div>
                     <div id="run-row-tomorrow" class="run-row" style="display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px;">
-                        <div style="font-family: var(--font-mono); font-size: 12px; color: var(--soft); font-weight: 700; min-width: 62px;">after 2pm</div>
-                        <div><div style="font-size: 14px; font-weight: 500;">Before 1pm tomorrow</div><div style="font-size: 12px; color: var(--soft);">Collected on the evening run, delivered first thing next morning.</div></div>
+                        <div id="run-cut-tomorrow" style="font-family: var(--font-mono); font-size: 12px; color: var(--soft); font-weight: 700; min-width: 62px;">after 2pm</div>
+                        <div><div style="font-size: 14px; font-weight: 500;">Delivered by 6pm tomorrow</div><div style="font-size: 12px; color: var(--soft);">Misses today’s run — goes on the next working day’s run, delivered by 6pm.</div></div>
                     </div>
                 </div>
 
@@ -899,13 +899,13 @@
 
                 <div class="form-section" style="text-align: center;">
                     <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); font-weight: 700;" id="deliv-badge">On today’s run</div>
-                    <div style="font-size: 24px; font-weight: 800; letter-spacing: -0.02em; margin: 10px 0 6px;" id="deliv-headline">Delivered today</div>
-                    <div style="font-size: 13px; color: var(--soft); font-weight: 600;" id="deliv-sub">Order before 2pm and it’s there this evening.</div>
+                    <div style="font-size: 24px; font-weight: 800; letter-spacing: -0.02em; margin: 10px 0 6px;" id="deliv-headline">Delivered by 6pm today</div>
+                    <div style="font-size: 13px; color: var(--soft); font-weight: 600;" id="deliv-sub">Beat your cut-off and it’s there by 6pm this evening.</div>
                 </div>
 
                 <div class="form-section" style="display: flex; gap: 10px; align-items: center;">
                     <span style="font-size: 20px;">✓</span>
-                    <div style="font-size: 13px; color: var(--soft); line-height: 1.5;">Same flat price whether it goes today or before 1pm tomorrow. Same-day is included — it’s what we do.</div>
+                    <div style="font-size: 13px; color: var(--soft); line-height: 1.5;">Same flat price whether it goes today or on tomorrow’s run. One run a day, always by 6pm — it’s what we do.</div>
                 </div>
 
                 <div class="button-group">
@@ -1097,12 +1097,12 @@
                 <div style="width: 84px; height: 84px; border-radius: 50%; background: var(--accent); color: #0a0a0a; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 900; margin: 8px auto 20px;">✓</div>
                 <div style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 10px;">Booking confirmed</div>
                 <h1 style="font-size: 30px; margin-bottom: 8px;">We've got it from here.</h1>
-                <p class="subtitle" id="confirm-sub">We'll collect and deliver the next working day.</p>
+                <p class="subtitle" id="confirm-sub">We'll collect on today's run and deliver by 6pm.</p>
 
                 <div class="price-summary" style="text-align: left; margin-top: 8px;">
                     <div class="price-row"><span>Tracking number</span><span id="confirm-tracking" style="font-family: 'JetBrains Mono', monospace; color: var(--accent);">CP-00000-D</span></div>
                     <div class="price-row"><span>Collection</span><span id="confirm-collection">—</span></div>
-                    <div class="price-row"><span>Delivery</span><span id="confirm-delivery">Next working day</span></div>
+                    <div class="price-row"><span>Delivery</span><span id="confirm-delivery">By 6pm</span></div>
                     <div class="price-row total"><span>Paid</span><span id="confirm-total">€0.00</span></div>
                 </div>
 
@@ -1285,10 +1285,17 @@
         }
 
         function updateCollectionTimeOptions() {
-            // Two runs a day, split at the 2pm cutoff. Order by 2pm → delivered today;
-            // after 2pm → before 1pm tomorrow. Nothing for the customer to pick.
+            // One run a day. Cut-off depends on collection zone: city centre (zone1) 2pm,
+            // greater Dublin (zone2) 1pm. Beat it → delivered by 6pm today; miss it → next
+            // working day's run, by 6pm. Nothing for the customer to pick.
             var now = new Date();
-            var beforeCutoff = now.getHours() < 14;
+            var collZone = getZoneFromPostcode((
+                (document.getElementById('collection-eircode') || {}).value ||
+                (document.getElementById('collection-eircode-other') || {}).value || ''
+            ).toUpperCase());
+            var cutHour = collZone === 'zone2' ? 13 : 14; // 1pm greater Dublin, else 2pm
+            var cutLabel = cutHour === 13 ? '1pm' : '2pm';
+            var beforeCutoff = now.getHours() < cutHour;
             window.__deliveryRun = beforeCutoff ? 'today' : 'tomorrow';
 
             var badge = document.getElementById('run-badge');
@@ -1297,26 +1304,30 @@
             var sub = document.getElementById('run-sub');
             var rowToday = document.getElementById('run-row-today');
             var rowTom = document.getElementById('run-row-tomorrow');
+            var cutToday = document.getElementById('run-cut-today');
+            var cutTom = document.getElementById('run-cut-tomorrow');
+            if (cutToday) cutToday.textContent = 'by ' + cutLabel;
+            if (cutTom) cutTom.textContent = 'after ' + cutLabel;
             if (!badge) return;
 
             if (beforeCutoff) {
-                var cut = new Date(now); cut.setHours(14, 0, 0, 0);
+                var cut = new Date(now); cut.setHours(cutHour, 0, 0, 0);
                 var ms = cut - now;
                 var h = Math.floor(ms / 3600000);
                 var m = Math.floor((ms % 3600000) / 60000);
                 var s = Math.floor((ms % 60000) / 1000);
                 badge.textContent = "Today\u2019s run";
-                headline.textContent = 'Delivered today';
+                headline.textContent = 'Delivered by 6pm today';
                 cd.style.display = '';
                 cd.textContent = (h > 0 ? h + 'h ' : '') + m + 'm ' + s + 's';
-                sub.textContent = 'left to order for same-day delivery';
+                sub.textContent = 'left to make today\u2019s run';
                 if (rowToday) rowToday.style.background = 'rgba(127,224,1,.08)';
                 if (rowTom) rowTom.style.background = '';
             } else {
                 badge.textContent = 'Next run';
-                headline.textContent = 'Before 1pm tomorrow';
+                headline.textContent = 'Delivered by 6pm tomorrow';
                 cd.style.display = 'none';
-                sub.textContent = "Today\u2019s 2pm cutoff has passed \u2014 you\u2019re on the evening run, delivered before 1pm tomorrow.";
+                sub.textContent = "Today\u2019s " + cutLabel + " cut-off has passed \u2014 you\u2019re on the next working day\u2019s run, delivered by 6pm.";
                 if (rowToday) rowToday.style.background = '';
                 if (rowTom) rowTom.style.background = 'rgba(127,224,1,.08)';
             }
@@ -1324,10 +1335,10 @@
             var db = document.getElementById('deliv-badge');
             if (db) {
                 document.getElementById('deliv-badge').textContent = beforeCutoff ? "On today\u2019s run" : 'On the next run';
-                document.getElementById('deliv-headline').textContent = beforeCutoff ? 'Delivered today' : 'Before 1pm tomorrow';
+                document.getElementById('deliv-headline').textContent = beforeCutoff ? 'Delivered by 6pm today' : 'Delivered by 6pm tomorrow';
                 document.getElementById('deliv-sub').textContent = beforeCutoff
-                    ? 'Order before 2pm and it\u2019s there this evening.'
-                    : 'Collected this evening, delivered first thing tomorrow.';
+                    ? 'Beat your ' + cutLabel + ' cut-off and it\u2019s there by 6pm this evening.'
+                    : 'Collected on the next working day\u2019s run, delivered by 6pm.';
             }
         }
         setInterval(function () {
@@ -2092,9 +2103,9 @@
             const dateVal = '';
             let dateLabel = '';
             const beforeCutoff = (window.__deliveryRun || 'today') === 'today';
-            const collectionLabel = beforeCutoff ? 'Today · midday run' : 'This evening · evening run';
+            const collectionLabel = beforeCutoff ? 'Today · on today\u2019s run' : 'Next working day\u2019s run';
             const ctimeLabel = '';
-            const dtimeLabel = beforeCutoff ? 'Delivered today' : 'Before 1pm tomorrow';
+            const dtimeLabel = beforeCutoff ? 'By 6pm today' : 'By 6pm tomorrow';
             const rname = ((document.getElementById('recipient-name') || {}).value || '').trim();
             return {
                 total: totalEl ? totalEl.textContent : '€0.00',
@@ -2137,7 +2148,7 @@
             document.getElementById('confirm-tracking').textContent = tn;
             document.getElementById('confirm-total').textContent = d.total || '€0.00';
             document.getElementById('confirm-collection').textContent = d.collection || 'Today';
-            document.getElementById('confirm-delivery').textContent = d.delivery || 'Next working day · anytime';
+            document.getElementById('confirm-delivery').textContent = d.delivery || 'By 6pm';
             document.getElementById('confirm-sub').textContent = d.recipient
                 ? ('We\'ll collect from you and get it to ' + d.recipient + ' \u2014 ' + (d.delivery || '').toLowerCase() + '.')
                 : 'We\'ll collect and deliver on the next run.';

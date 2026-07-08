@@ -14,7 +14,7 @@
   <style>
     .b-hero { max-width: 1080px; margin: 0 auto; padding: 56px 40px 20px; }
     .b-hero h1 { font-size: 52px; line-height: 1.02; letter-spacing: -0.03em; font-weight: 800; margin: 16px 0 16px; max-width: 780px; }
-    .b-hero .lead { font-size: 18px; color: var(--soft); max-width: 620px; line-height: 1.55; font-weight: 600; }
+    .b-hero .lead { font-size: 21px; color: var(--soft); max-width: 620px; line-height: 1.5; font-weight: 300; letter-spacing: -0.03em; }
 
     .b-grid { max-width: 1080px; margin: 0 auto; padding: 32px 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }
 
@@ -114,14 +114,14 @@
   <section class="b-hero">
     <span class="pill"><span class="dot"></span> For retailers · free</span>
     <h1>Put a live countdown on every product page.</h1>
-    <p class="lead">Drop one line of code on your store. Shoppers see exactly how long they've got to order for same-day or next-morning Molli delivery — the urgency that turns a browse into a checkout. It counts down live and respects your cut-offs, weekends and bank holidays automatically.</p>
+    <p class="lead">Drop one line of code on your store. Shoppers see exactly how long they've got to order for same-day Molli delivery — the urgency that turns a browse into a checkout. It counts down live and respects your cut-offs, weekends and bank holidays automatically.</p>
   </section>
 
   <div class="b-grid">
     <!-- LIVE WIDGET PREVIEW -->
     <div class="demo-card">
       <h3>The badge · live preview</h3>
-      <p class="note">This is the real widget, ticking against Molli's 2pm same-day / 5pm next-morning cut-offs.</p>
+      <p class="note">This is the real widget, ticking against Molli's daily cut-off for same-day delivery.</p>
 
       <div class="molli-badge mb-dark" id="badge">
         <div class="mb-ic">
@@ -185,7 +185,7 @@
   <!-- HOW IT WORKS -->
   <div class="how">
     <div class="step"><div class="n">01</div><h4>Paste one line</h4><p>Copy the snippet into your theme — Shopify, WooCommerce, or plain HTML. No build step, no dependencies.</p></div>
-    <div class="step"><div class="n">02</div><h4>It counts down live</h4><p>The badge reads Molli's cut-offs and the shopper's clock, then updates every second — same-day before 2pm, next-morning before 5pm, closed on weekends.</p></div>
+    <div class="step"><div class="n">02</div><h4>It counts down live</h4><p>The badge reads Molli's cut-offs and the shopper's clock, then updates every second — same-day before your 2pm cut-off, next working day after, closed on weekends.</p></div>
     <div class="step"><div class="n">03</div><h4>They order sooner</h4><p>A visible deadline is the oldest trick in retail. Stores running the badge see more baskets cleared before the van leaves.</p></div>
   </div>
 
@@ -229,12 +229,9 @@
           if(!weekend && now<t2){
             lead.textContent='Order within';
             main.innerHTML='<span class="mb-clock">'+clockStr(t2-now)+'</span> for delivery by 6pm today';
-          } else if(!weekend && now<t5){
-            lead.textContent='Same-day\u2019s closed — order within';
-            main.innerHTML='<span class="mb-clock">'+clockStr(t5-now)+'</span> for delivery by 1pm tomorrow';
           } else {
-            lead.textContent = weekend ? 'Cut-off passed' : 'Today\u2019s runs have left';
-            main.innerHTML='Order now for delivery by <span class="mb-clock">1pm '+nwdLabel(now)+'</span>';
+            lead.textContent = weekend ? 'Cut-off passed' : 'Today\u2019s run has left';
+            main.innerHTML='Order now for delivery by <span class="mb-clock">6pm '+nwdLabel(now)+'</span>';
           }
         });
       }

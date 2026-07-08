@@ -304,7 +304,7 @@
 
         <h1>Store to door,<br><span class="accent">Same day</span></h1>
 
-        <p class="blurb">Molli is Dublin's same-day dispatch network for retailers. Show a live cut-off on your product pages, let shoppers pick same-day at checkout, and orders flow straight to us &mdash; we collect the day's batch on a scheduled run, sort it at our hub, and deliver across the city by 6pm. Tracked, photographed, handled by a local team. No van, no drivers, no routing to manage. Built for shops shipping a daily batch of small, high-value orders: beauty &amp; skincare, health &amp; wellness, optical, pharmacy.</p>
+        <p class="blurb">Molli is Dublin's same-day dispatch network for retailers. Show a live cut-off on your product pages, let shoppers pick same-day at checkout, and orders flow straight to us &mdash; we collect the day's batch on a scheduled run, sort it at our hub, and deliver across the city by 6pm. Tracked, photographed, handled by a local team. No van, no drivers, no routing to manage. Built for shops shipping 10 or more orders a day of medium to high-value goods: beauty &amp; skincare, health &amp; wellness, optical, pharmacy.</p>
 
         <div class="cutoff" id="cutoff">
           <div class="co-ic">
@@ -757,7 +757,7 @@
       <p>No app, no account, no delivery window to argue with. Follow the prompts and you'll have a real same-day collection booked in well under a minute &mdash; try it yourself.</p>
       <ul class="dt-steps">
         <li><span class="n">1</span> Enter where it's going from and to</li>
-        <li><span class="n">2</span> Check it fits and pick same-day or next-morning</li>
+        <li><span class="n">2</span> Check it fits — timing is set by your cut-off</li>
         <li><span class="n">3</span> Confirm &mdash; we've got it from there</li>
       </ul>
       <div class="dt-cta">
@@ -901,8 +901,7 @@
       var main = document.getElementById('co-main');
       var clock = document.getElementById('co-clock');
       if (!wrap) return;
-      var CUTOFF_TODAY = 14;   // 2pm — same-day delivery
-      var CUTOFF_NEXTDAY = 17; // 5pm — next working day before 1pm
+      var CUTOFF_TODAY = 14;   // 2pm — one run a day, delivered by 6pm
       var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
       function pad(n){ return (n < 10 ? '0' : '') + n; }
       function clockStr(ms){
@@ -926,28 +925,19 @@
         var day = now.getDay();
         var weekend = (day === 0 || day === 6);
         var today2 = new Date(now); today2.setHours(CUTOFF_TODAY, 0, 0, 0);
-        var today5 = new Date(now); today5.setHours(CUTOFF_NEXTDAY, 0, 0, 0);
         if (!weekend && now < today2) {
-          // Stage 1 — same-day window, counting to 2pm.
+          // Before the 2pm cut-off — on today's run, delivered by 6pm.
           wrap.classList.remove('closed');
           lead.textContent = 'Order within';
           clock.textContent = clockStr(today2 - now);
           main.innerHTML = '';
           main.appendChild(clock);
           main.insertAdjacentText('beforeend', ' for delivery by 6pm today');
-        } else if (!weekend && now < today5) {
-          // Stage 2 — next-day window, counting to 5pm.
-          wrap.classList.remove('closed');
-          lead.textContent = 'Same-day\u2019s closed \u2014 order within';
-          clock.textContent = clockStr(today5 - now);
-          main.innerHTML = '';
-          main.appendChild(clock);
-          main.insertAdjacentText('beforeend', ' for delivery by 1pm tomorrow');
         } else {
-          // After 5pm (or weekend): next run lands before 1pm on the next working day.
+          // After 2pm (or weekend): next run lands by 6pm the next working day.
           wrap.classList.add('closed');
-          lead.textContent = weekend ? 'Cut-off passed for today' : 'Today\u2019s runs have left';
-          main.innerHTML = 'Order now for delivery by <span class="co-clock">1pm ' + nwdLabel(now) + '</span>';
+          lead.textContent = weekend ? 'Cut-off passed for today' : 'Today\u2019s run has left';
+          main.innerHTML = 'Order now for delivery by <span class="co-clock">6pm ' + nwdLabel(now) + '</span>';
         }
       }
       render();
@@ -1031,11 +1021,11 @@
     @media (prefers-reduced-motion: reduce) { .demo-fab { animation: none; } .demo-fab .fab-ic::after { display: none; } }
     @media (max-width: 600px) { .demo-fab { right: 14px; bottom: 90px; padding: 12px 17px 12px 14px; font-size: 14px; } }
   </style>
-  <a class="demo-fab" href="demo.html" id="demo-fab" aria-label="Try the guided demo">
+  <a class="demo-fab" href="demo.html" id="demo-fab" aria-label="Fast one-off booking">
     <span class="fab-ic">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="#3D8BFF" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg>
     </span>
-    <span class="fab-txt">Try the demo<span class="fab-sub">Book one in 30 seconds</span></span>
+    <span class="fab-txt">Fast one-off booking<span class="fab-sub">Try it in 30 seconds</span></span>
     <button class="demo-fab-close" id="demo-fab-close" aria-label="Hide demo button" title="Hide">&times;</button>
   </a>
   <script>

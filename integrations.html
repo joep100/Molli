@@ -14,7 +14,7 @@
   <style>
     .in-hero { max-width: 1080px; margin: 0 auto; padding: 56px 40px 20px; }
     .in-hero h1 { font-size: 52px; line-height: 1.02; letter-spacing: -0.03em; font-weight: 800; margin: 16px 0 16px; max-width: 760px; }
-    .in-hero .lead { font-size: 18px; color: var(--soft); max-width: 600px; line-height: 1.55; font-weight: 600; }
+    .in-hero .lead { font-size: 21px; color: var(--soft); max-width: 600px; line-height: 1.5; font-weight: 300; letter-spacing: -0.03em; }
     .plat-row { display: flex; align-items: center; gap: 22px; margin-top: 24px; flex-wrap: wrap; }
     .plat-row .lbl { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
     .plat-row .p { font-size: 15px; font-weight: 700; color: var(--soft); letter-spacing: -0.01em; }
@@ -161,11 +161,11 @@
             <span class="so-price" id="sameday-price">€7.99</span>
           </div>
 
-          <div class="ship-opt molli" id="opt-nextam" data-price="7.99" data-label="Molli next-morning">
+          <div class="ship-opt molli" id="opt-nextam" data-price="7.99" data-label="Molli next-day">
             <span class="radio"></span>
             <div>
-              <div class="so-main brand">Molli <span class="m-badge">NEXT-AM</span></div>
-              <div class="so-sub">Collected today — delivered by 1pm tomorrow</div>
+              <div class="so-main brand">Molli <span class="m-badge">NEXT-DAY</span></div>
+              <div class="so-sub">Next working day — delivered by 6pm</div>
             </div>
             <span class="so-price">€7.99</span>
           </div>
@@ -198,7 +198,7 @@
         <div class="sw on" id="sw-sameday" data-sw></div>
       </div>
       <div class="toggle-row">
-        <div><div class="tl">Show next-morning rate</div><div class="ts">After the 2pm same-day cut-off</div></div>
+        <div><div class="tl">Show next-day rate</div><div class="ts">After the daily cut-off</div></div>
         <div class="sw on" id="sw-nextam" data-sw></div>
       </div>
       <div class="toggle-row">
@@ -221,7 +221,7 @@
     <div class="flow">
       <div class="step"><div class="n">01</div><h4>Read the address</h4><p>At checkout we take the delivery Eircode and find the zone — city centre or greater Dublin.</p></div>
       <div class="step"><div class="n">02</div><h4>Check the cart</h4><p>Weight and size are matched against what a bike or van can carry. Too big? The rate quietly hides.</p></div>
-      <div class="step"><div class="n">03</div><h4>Check the clock</h4><p>Before 2pm shows same-day; after 2pm shows next-morning by 1pm. Weekends handled automatically.</p></div>
+      <div class="step"><div class="n">03</div><h4>Check the clock</h4><p>Before the cut-off shows same-day; after, next working day by 6pm. Weekends handled automatically.</p></div>
       <div class="step"><div class="n">04</div><h4>Return the price</h4><p>The exact rate lands in the customer's shipping list in under a second — the same price you'd pay us.</p></div>
     </div>
   </div>

@@ -1,305 +1,342 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="design_doc_mode" content="canvas" />
-<title>Molli — Colourway Comparison</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Inter Tight', sans-serif; }
-  .mono { font-family: 'JetBrains Mono', monospace; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Molli — Buy credit</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="theme-light.css" />
+  <style>
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--ink); }
 
-  .tile {
-    position: absolute;
-    width: 380px;
-    border-radius: 16px;
-    overflow: hidden;
-    border: 1px solid rgba(0,0,0,.12);
-    box-shadow: 0 12px 40px rgba(0,0,0,.18);
-    background: var(--bg);
-    color: var(--ink);
-  }
-  .caption {
-    position: absolute; top: -30px; left: 2px;
-    font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
-    color: #14140f; letter-spacing: .02em;
-  }
-  .caption span { color: #8b8b83; font-weight: 500; margin-left: 8px; }
+    .bc-hero { padding: 72px 40px 8px; text-align: center; }
+    .bc-hero .from { font-size: 15px; color: var(--soft); font-weight: 600; letter-spacing: .04em; }
+    .bc-hero h1 { font-size: 76px; line-height: .96; letter-spacing: -0.04em; font-weight: 800; margin: 10px auto 20px; max-width: 900px; }
+    .bc-hero p { font-size: 21px; color: var(--soft); max-width: 600px; margin: 0 auto; line-height: 1.5; font-weight: 300; letter-spacing: -0.03em; }
+    .bc-hero p b { color: var(--accent); }
+    .hub-note { font-size: 14px; color: var(--soft); max-width: 620px; margin: 18px auto 0; line-height: 1.5; font-weight: 600; }
+    .hub-note a { color: var(--accent); white-space: nowrap; }
+    .hub-note a:hover { color: var(--ink); }
+    .hub-flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 16px; align-items: stretch; }
+    .hub-node { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; }
+    .hub-node.core { border-color: rgba(var(--accent-rgb), .5); background: linear-gradient(160deg, rgba(var(--accent-rgb), .1), var(--panel) 60%); }
+    .hn-step { font-family: var(--font-mono); font-size: 12px; color: var(--soft); letter-spacing: .1em; text-transform: uppercase; }
+    .hn-badge { display: inline-flex; align-self: flex-start; font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--bg); background: var(--accent); border-radius: 999px; padding: 4px 11px; }
+    .hn-h { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; margin: 12px 0 8px; }
+    .hn-p { font-size: 13.5px; color: var(--soft); line-height: 1.5; }
+    .hub-arrow { display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--muted); }
 
-  /* nav */
-  .t-nav {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 20px; border-bottom: 1px solid var(--line);
-  }
-  .logo { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; display: flex; align-items: baseline; }
-  .o-wheel { display: inline-block; width: 0.6em; height: 0.6em; margin: 0 0.01em; position: relative; top: 0.02em; }
-  .t-nav .cta {
-    font-size: 12px; font-weight: 600; padding: 7px 14px; border-radius: 999px;
-    background: var(--accent); color: var(--on-accent);
-  }
+    /* Pack grid */
+    .packs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 8px; }
+    .pack {
+      position: relative; background: var(--panel); border: 1px solid var(--line);
+      border-radius: 20px; padding: 30px 26px; display: flex; flex-direction: column;
+      transition: border-color .2s, transform .2s;
+    }
+    .pack:hover { border-color: var(--line-strong); transform: translateY(-3px); }
+    .pack.best { border-color: rgba(var(--accent-rgb), .5); background: linear-gradient(160deg, rgba(var(--accent-rgb), .1), var(--panel) 55%); }
+    .pack .flag { position: absolute; top: -11px; left: 50%; transform: translateX(-50%); background: var(--accent); color: var(--bg); padding: 4px 12px; font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; border-radius: 999px; }
+    .pack .pk-name { font-size: 12px; color: var(--soft); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+    .pack .pk-price { font-family: var(--font-mono); font-size: 56px; font-weight: 700; letter-spacing: -0.05em; line-height: 1; margin: 14px 0 4px; }
+    .pack.best .pk-price { color: var(--accent); }
+    .pack .pk-bonus { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--accent); background: var(--accent-tint); border: 1px solid rgba(var(--accent-rgb), .3); border-radius: 999px; padding: 5px 11px; align-self: flex-start; margin-bottom: 4px; }
+    .pack .pk-bonus.empty { visibility: hidden; }
+    .pack .pk-total { font-size: 13px; color: var(--soft); margin: 10px 0 18px; }
+    .pack .pk-total b { color: var(--ink); font-family: var(--font-mono); }
+    .pack ul { list-style: none; display: flex; flex-direction: column; gap: 9px; margin: 0 0 24px; flex: 1; }
+    .pack li { display: grid; grid-template-columns: 18px 1fr; gap: 9px; font-size: 13.5px; color: var(--soft); align-items: baseline; line-height: 1.4; }
+    .pack li .tick { color: var(--accent); font-weight: 700; }
+    .pack .buy { width: 100%; }
 
-  /* hero */
-  .t-hero { padding: 22px 20px 20px; }
-  .pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: .07em;
-    color: var(--accent); border: 1px solid var(--line-strong);
-    padding: 5px 10px; border-radius: 999px; margin-bottom: 14px;
-  }
-  .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-  .t-hero h1 { font-size: 25px; font-weight: 700; line-height: 1.12; letter-spacing: -0.02em; }
-  .t-hero h1 em { font-style: normal; color: var(--accent); }
-  .t-hero p { font-size: 12.5px; color: var(--soft); margin-top: 10px; line-height: 1.5; }
+    /* Custom amount */
+    .custom {
+      margin-top: 16px; background: var(--panel); border: 1px solid var(--line);
+      border-radius: 20px; padding: 26px 30px; display: grid; grid-template-columns: 1fr auto;
+      gap: 24px; align-items: center;
+    }
+    .custom .c-l .cap { font-size: 12px; color: var(--soft); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+    .custom .c-l h3 { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin: 6px 0 4px; }
+    .custom .c-l p { font-size: 13.5px; color: var(--soft); line-height: 1.5; max-width: 460px; }
+    .custom .c-r { display: flex; align-items: center; gap: 12px; }
+    .amt-field { display: flex; align-items: center; background: var(--bg); border: 1px solid var(--line-strong); border-radius: 12px; padding: 0 16px; height: 58px; }
+    .amt-field .cur { font-family: var(--font-mono); font-size: 26px; color: var(--soft); }
+    .amt-field input { background: transparent; border: none; outline: none; color: var(--ink); font-family: var(--font-mono); font-size: 26px; font-weight: 700; width: 120px; letter-spacing: -0.02em; }
+    .amt-field input::-webkit-outer-spin-button, .amt-field input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
-  .price-row { display: flex; align-items: baseline; gap: 8px; margin-top: 16px; }
-  .price-row .from { font-size: 11px; color: var(--soft); }
-  .price-row .amt { font-family: 'JetBrains Mono', monospace; font-size: 30px; font-weight: 700; letter-spacing: -0.03em; color: var(--accent); }
+    /* How credit works */
+    .how { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 12px; }
+    .how-c { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
+    .how-c .n { font-family: var(--font-mono); font-size: 13px; color: var(--accent); font-weight: 700; }
+    .how-c h4 { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; margin: 10px 0 8px; }
+    .how-c p { font-size: 13.5px; color: var(--soft); line-height: 1.55; }
+    .how-c p a { font-weight: 700; }
 
-  .btn {
-    display: block; text-align: center; margin-top: 16px;
-    font-size: 14px; font-weight: 600; padding: 12px; border-radius: 10px;
-    background: var(--accent); color: var(--on-accent);
-  }
+    /* Modal */
+    .modal-scrim { position: fixed; inset: 0; background: rgba(0,0,0,.72); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 200; padding: 20px; }
+    .modal-scrim.open { display: flex; }
+    .modal { background: var(--panel); border: 1px solid var(--line-strong); border-radius: 20px; width: 100%; max-width: 440px; padding: 32px; box-shadow: 0 40px 120px -30px rgba(0,0,0,.8); }
+    .modal .m-cap { font-size: 12px; color: var(--soft); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+    .modal h3 { font-size: 26px; font-weight: 800; letter-spacing: -0.03em; margin: 8px 0 20px; }
+    .modal .m-line { display: flex; justify-content: space-between; align-items: baseline; padding: 12px 0; border-top: 1px solid var(--line); font-size: 14px; color: var(--soft); }
+    .modal .m-line b { color: var(--ink); font-family: var(--font-mono); font-size: 15px; }
+    .modal .m-line.tot { border-top: 1px solid var(--line-strong); margin-top: 4px; }
+    .modal .m-line.tot span { color: var(--ink); font-weight: 700; }
+    .modal .m-line.tot b { color: var(--accent); font-size: 22px; }
+    .modal .m-line .bonus { color: var(--accent); }
+    .modal .m-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+    .modal .pay-note { display: flex; align-items: center; gap: 8px; justify-content: center; font-size: 12px; color: var(--muted); margin-top: 14px; }
+    .modal .pay-note svg { width: 13px; height: 13px; }
+    .modal .close { background: none; border: none; color: var(--soft); font-size: 13px; cursor: pointer; padding: 8px; }
+    .modal .close:hover { color: var(--ink); }
 
-  /* mini size card */
-  .t-card {
-    margin: 0 20px 20px; padding: 14px; border-radius: 12px;
-    background: var(--panel); border: 1px solid var(--line);
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .t-card .lbl { font-size: 13px; font-weight: 600; }
-  .t-card .sub { font-size: 11px; color: var(--soft); margin-top: 2px; }
-  .t-card .tag {
-    font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
-    color: var(--on-accent); background: var(--accent);
-    padding: 5px 10px; border-radius: 8px;
-  }
-
-  .desk-note {
-    position: absolute; font-family: 'Inter Tight', sans-serif;
-    color: #14140f;
-  }
-</style>
+    @media (max-width: 860px) {
+      .bc-hero { padding: 48px 20px 8px; }
+      .bc-hero h1 { font-size: 48px; }
+      .section { padding: 40px 20px; }
+      .packs, .how, .hub-flow { grid-template-columns: 1fr; }
+      .hub-arrow { transform: rotate(90deg); }
+      .custom { grid-template-columns: 1fr; }
+      .custom .c-r { flex-direction: column; align-items: stretch; }
+      .topnav { display: none; }
+    }
+  </style>
 </head>
-<body>
-
-  <!-- title -->
-  <div class="desk-note" style="left: 60px; top: 40px; width: 520px;">
-    <div style="font-size: 30px; font-weight: 700; letter-spacing: -0.02em;">Colourway comparison</div>
-    <div style="font-size: 14px; color: #6b6b63; margin-top: 6px;">Same brand slice across accents &amp; light/dark. Pan around · pinch to zoom.</div>
-  </div>
-
-  <!-- ============ TILE TEMPLATE via inline vars ============ -->
-
-  <!-- 1. Sprint (current) : lime on black -->
-  <div class="tile" style="left: 60px; top: 130px;
-      --bg:#0a0a0a; --panel:#141414; --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.14);
-      --ink:#fff; --soft:#8b8b8b; --accent:#9CFF2E; --on-accent:#0a0a0a;">
-    <div class="caption">01 · Sprint <span>current — lime on black</span></div>
-    <div class="t-nav"><div class="logo">m<span class="o-wheel" data-wheel></span>lli</div><div class="cta">Book</div></div>
-    <div class="t-hero">
-      <div class="pill"><span class="dot"></span> Same-day network</div>
-      <h1>Collect today,<br><em>deliver tomorrow.</em></h1>
-      <p>Dublin's same-day delivery network. Pick a collection and delivery slot.</p>
-      <div class="price-row"><span class="from">Pricing from</span><span class="amt">€7.99</span></div>
-      <div class="btn">Get a price</div>
+<body class="light">
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <a class="logo" href="index.html">
+      <span class="logo-mark"><span>&rsaquo;</span></span>
+      <span class="logo-word">m<span class="o-wheel"></span>lli</span>
+    </a>
+    <nav class="topnav">
+      <a href="sell.html">Sell more</a>
+      <a href="connect.html">Connect</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="buy-credit.html" class="active">Buy credit</a>
+      <a href="fit.html">Will it fit?</a>
+      <a href="zones.html">Coverage</a>
+      <a href="pricing.html#faqs">Help</a>
+    </nav>
+    <div class="topbar-cta">
+      <a class="signin" href="account.html">Sign in</a>
+      <a class="btn btn--accent btn--sm" href="booking.html">Send a parcel &rarr;</a>
     </div>
-    <div class="t-card"><div><div class="lbl">Small parcel</div><div class="sub">Perfume, phone, jewellery</div></div><div class="tag">€7.99</div></div>
-  </div>
+  </header>
 
-  <!-- 2. Deep postal green on black -->
-  <div class="tile" style="left: 500px; top: 130px;
-      --bg:#0a0a0a; --panel:#141414; --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.14);
-      --ink:#fff; --soft:#8b8b8b; --accent:#1F9E5A; --on-accent:#ffffff;">
-    <div class="caption">02 · Postal <span>deep green on black</span></div>
-    <div class="t-nav"><div class="logo">m<span class="o-wheel" data-wheel></span>lli</div><div class="cta">Book</div></div>
-    <div class="t-hero">
-      <div class="pill"><span class="dot"></span> Same-day network</div>
-      <h1>Collect today,<br><em>deliver tomorrow.</em></h1>
-      <p>Dublin's same-day delivery network. Pick a collection and delivery slot.</p>
-      <div class="price-row"><span class="from">Pricing from</span><span class="amt">€7.99</span></div>
-      <div class="btn">Get a price</div>
+  <!-- HERO -->
+  <section class="bc-hero">
+    <div class="from">Prepaid delivery credit</div>
+    <h1>Top up once.<br>Send all month.</h1>
+    <p>Load a credit pack and every parcel draws down from your balance &mdash; no card at checkout, one clean receipt. Bigger packs come with <b>bonus credit</b>, and your <b>volume discount</b> applies automatically as you send.</p>
+    <p class="hub-note">Molli runs on a city-centre hub, so credit is at its best for businesses based in or supplying the core (D1, D2, D4, D6, D8). <a href="zones.html">Further out? Check your area &rarr;</a></p>
+  </section>
+
+  <!-- HUB & SPOKE -->
+  <section class="section divider-top" id="hub">
+    <div class="eyebrow">How Molli moves</div>
+    <h2 style="font-size: 34px; font-weight: 800; letter-spacing: -0.03em; margin: 12px 0 8px;">One central hub. Short loops. Same day.</h2>
+    <p style="font-size:15px; color:var(--soft); max-width:600px; margin:0 0 32px; line-height:1.55;">Every parcel runs through a single depot in the heart of the city. Keeping collection and delivery loops short is what lets us promise <b style="color:var(--accent)">same-day</b> &mdash; and it's why the model works best close to the hub.</p>
+    <div class="hub-flow">
+      <div class="hub-node">
+        <div class="hn-step">01 · Collect</div>
+        <div class="hn-h">We pick up from your door</div>
+        <div class="hn-p">A courier sweeps the core on scheduled runs and brings your parcels in.</div>
+      </div>
+      <div class="hub-arrow">&rarr;</div>
+      <div class="hub-node core">
+        <div class="hn-badge">The hub</div>
+        <div class="hn-h">One central depot</div>
+        <div class="hn-p">Everything sorts in one place, minutes from every city-centre address.</div>
+      </div>
+      <div class="hub-arrow">&rarr;</div>
+      <div class="hub-node">
+        <div class="hn-step">03 · Deliver</div>
+        <div class="hn-h">Back out on the next loop</div>
+        <div class="hn-p">Short spokes mean it's on a doorstep the same day &mdash; not sitting overnight.</div>
+      </div>
     </div>
-    <div class="t-card"><div><div class="lbl">Small parcel</div><div class="sub">Perfume, phone, jewellery</div></div><div class="tag">€7.99</div></div>
-  </div>
+    <p style="font-size:13px; color:var(--muted); margin-top:18px; line-height:1.5;">Works best if you're city-based &mdash; Dublin 1, 2, 4, 6 and 8 are right in the sweet spot, with a 2pm cut-off for same-day. Sending from further out? Order by <b>1pm</b> to make the midday run in &mdash; <a href="zones.html">talk to us</a> and we'll sort the best route.</p>
+  </section>
 
-  <!-- 3. Lime on white -->
-  <div class="tile" style="left: 940px; top: 130px;
-      --bg:#ffffff; --panel:#f6f6f1; --line:rgba(0,0,0,.08); --line-strong:rgba(0,0,0,.14);
-      --ink:#14140f; --soft:#6b6b63; --accent:#5CB308; --on-accent:#ffffff;">
-    <div class="caption">03 · Fresh <span>green on white</span></div>
-    <div class="t-nav"><div class="logo">m<span class="o-wheel" data-wheel data-dark></span>lli</div><div class="cta">Book</div></div>
-    <div class="t-hero">
-      <div class="pill"><span class="dot"></span> Same-day network</div>
-      <h1>Collect today,<br><em>deliver tomorrow.</em></h1>
-      <p>Dublin's same-day delivery network. Pick a collection and delivery slot.</p>
-      <div class="price-row"><span class="from">Pricing from</span><span class="amt">€7.99</span></div>
-      <div class="btn">Get a price</div>
+  <!-- PACKS -->
+  <section class="section" id="packs">
+    <div class="packs">
+      <!-- Starter -->
+      <div class="pack">
+        <div class="pk-name">Starter</div>
+        <div class="pk-price">€250</div>
+        <div class="pk-bonus empty">+€0 bonus</div>
+        <div class="pk-total">Balance loaded: <b>€250.00</b></div>
+        <ul>
+          <li><span class="tick">&#10003;</span><span>≈ 31 small parcels at the €7.99 base</span></li>
+          <li><span class="tick">&#10003;</span><span>Volume discount applied as you send</span></li>
+          <li><span class="tick">&#10003;</span><span>Balance never expires</span></li>
+        </ul>
+        <button class="btn btn--ghost btn--md buy" data-pack="Starter" data-pay="250" data-bonus="0">Buy now &rarr;</button>
+      </div>
+
+      <!-- Growth (best) -->
+      <div class="pack best">
+        <div class="flag">Most popular</div>
+        <div class="pk-name">Growth</div>
+        <div class="pk-price">€500</div>
+        <div class="pk-bonus">+€25 bonus credit</div>
+        <div class="pk-total">Balance loaded: <b>€525.00</b></div>
+        <ul>
+          <li><span class="tick">&#10003;</span><span>≈ 65 small parcels at the €7.99 base</span></li>
+          <li><span class="tick">&#10003;</span><span>Volume discount applied as you send</span></li>
+          <li><span class="tick">&#10003;</span><span>Priority support &amp; monthly statement</span></li>
+        </ul>
+        <button class="btn btn--accent btn--md buy" data-pack="Growth" data-pay="500" data-bonus="25">Buy now &rarr;</button>
+      </div>
+
+      <!-- Scale -->
+      <div class="pack">
+        <div class="pk-name">Scale</div>
+        <div class="pk-price">€1,000</div>
+        <div class="pk-bonus">+€75 bonus credit</div>
+        <div class="pk-total">Balance loaded: <b>€1,075.00</b></div>
+        <ul>
+          <li><span class="tick">&#10003;</span><span>≈ 134 small parcels at the €7.99 base</span></li>
+          <li><span class="tick">&#10003;</span><span>Best value &mdash; largest bonus credit</span></li>
+          <li><span class="tick">&#10003;</span><span>Dedicated account manager</span></li>
+        </ul>
+        <button class="btn btn--ghost btn--md buy" data-pack="Scale" data-pay="1000" data-bonus="75">Buy now &rarr;</button>
+      </div>
     </div>
-    <div class="t-card"><div><div class="lbl">Small parcel</div><div class="sub">Perfume, phone, jewellery</div></div><div class="tag">€7.99</div></div>
-  </div>
 
-  <!-- 4. Postal green on cream -->
-  <div class="tile" style="left: 1380px; top: 130px;
-      --bg:#f7f4ec; --panel:#efe9dc; --line:rgba(0,0,0,.09); --line-strong:rgba(0,0,0,.15);
-      --ink:#1c1a12; --soft:#6e6858; --accent:#12794a; --on-accent:#ffffff;">
-    <div class="caption">04 · Heritage <span>deep green on cream</span></div>
-    <div class="t-nav"><div class="logo">m<span class="o-wheel" data-wheel data-dark></span>lli</div><div class="cta">Book</div></div>
-    <div class="t-hero">
-      <div class="pill"><span class="dot"></span> Same-day network</div>
-      <h1>Collect today,<br><em>deliver tomorrow.</em></h1>
-      <p>Dublin's same-day delivery network. Pick a collection and delivery slot.</p>
-      <div class="price-row"><span class="from">Pricing from</span><span class="amt">€7.99</span></div>
-      <div class="btn">Get a price</div>
+    <!-- Custom -->
+    <div class="custom">
+      <div class="c-l">
+        <div class="cap">Custom top-up</div>
+        <h3>Load any amount you like.</h3>
+        <p>Enter your own figure &mdash; anything from &euro;50. Top-ups of &euro;500 or more earn the same 5% bonus credit as the Growth pack.</p>
+      </div>
+      <div class="c-r">
+        <div class="amt-field">
+          <span class="cur">€</span>
+          <input id="custom-amt" type="number" min="50" step="10" value="300" />
+        </div>
+        <button class="btn btn--accent btn--md" id="custom-buy">Buy now &rarr;</button>
+      </div>
     </div>
-    <div class="t-card"><div><div class="lbl">Small parcel</div><div class="sub">Perfume, phone, jewellery</div></div><div class="tag">€7.99</div></div>
-  </div>
+  </section>
 
-  <!-- 5. Amber on charcoal -->
-  <div class="tile" style="left: 280px; top: 620px;
-      --bg:#111010; --panel:#1b1917; --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.14);
-      --ink:#faf7f2; --soft:#9a9288; --accent:#FF9E2C; --on-accent:#1b1207;">
-    <div class="caption">05 · Warm <span>amber on charcoal</span></div>
-    <div class="t-nav"><div class="logo">m<span class="o-wheel" data-wheel></span>lli</div><div class="cta">Book</div></div>
-    <div class="t-hero">
-      <div class="pill"><span class="dot"></span> Same-day network</div>
-      <h1>Collect today,<br><em>deliver tomorrow.</em></h1>
-      <p>Dublin's same-day delivery network. Pick a collection and delivery slot.</p>
-      <div class="price-row"><span class="from">Pricing from</span><span class="amt">€7.99</span></div>
-      <div class="btn">Get a price</div>
+  <!-- HOW CREDIT WORKS -->
+  <section class="section divider-top" id="how">
+    <div class="eyebrow">How credit works</div>
+    <h2 style="font-size: 34px; font-weight: 800; letter-spacing: -0.03em; margin: 12px 0 28px;">Simple, and it never expires.</h2>
+    <div class="how">
+      <div class="how-c">
+        <div class="n">01</div>
+        <h4>Top up your balance</h4>
+        <p>Pick a pack or enter a custom amount. Pay once by card &mdash; the balance lands on your account instantly.</p>
+      </div>
+      <div class="how-c">
+        <div class="n">02</div>
+        <h4>Send with no checkout</h4>
+        <p>Every parcel draws down from your credit. No card at booking, no per-order payment &mdash; just book and go.</p>
+      </div>
+      <div class="how-c">
+        <div class="n">03</div>
+        <h4>Discount scales with you</h4>
+        <p>Your per-parcel rate drops with the volume you actually send &mdash; see the tiers on the <a href="pricing.html#volume">pricing page</a>.</p>
+      </div>
     </div>
-    <div class="t-card"><div><div class="lbl">Small parcel</div><div class="sub">Perfume, phone, jewellery</div></div><div class="tag">€7.99</div></div>
-  </div>
+  </section>
 
-  <!-- 6. Electric blue on ink -->
-  <div class="tile" style="left: 720px; top: 620px;
-      --bg:#0b0d12; --panel:#151821; --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.14);
-      --ink:#f2f5fb; --soft:#8890a3; --accent:#3D8BFF; --on-accent:#ffffff;">
-    <div class="caption">06 · Signal <span>blue on ink</span></div>
-    <div class="t-nav"><div class="logo">m<span class="o-wheel" data-wheel></span>lli</div><div class="cta">Book</div></div>
-    <div class="t-hero">
-      <div class="pill"><span class="dot"></span> Same-day network</div>
-      <h1>Collect today,<br><em>deliver tomorrow.</em></h1>
-      <p>Dublin's same-day delivery network. Pick a collection and delivery slot.</p>
-      <div class="price-row"><span class="from">Pricing from</span><span class="amt">€7.99</span></div>
-      <div class="btn">Get a price</div>
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div>
+      <a class="logo" href="index.html"><span class="logo-mark"><span>&rsaquo;</span></span><span class="logo-word">m<span class="o-wheel"></span>lli</span></a>
+      <div class="tag">molli.ie · Dublin's same-day parcel network<br /><span style="color:var(--muted)">Through streets broad &amp; narrow.</span></div>
     </div>
-    <div class="t-card"><div><div class="lbl">Small parcel</div><div class="sub">Perfume, phone, jewellery</div></div><div class="tag">€7.99</div></div>
-  </div>
+    <div class="col"><div class="col-title">Send</div><a href="booking.html">Parcels</a><a href="booking.html">Documents</a><a href="booking.html">Same-day</a><a href="pricing.html">Bulk &amp; API</a></div>
+    <div class="col"><div class="col-title">Business</div><a href="pricing.html">Account pricing</a><a href="buy-credit.html">Buy credit</a><a href="pricing.html">Case studies</a><a href="pricing.html">Contact sales</a></div>
+    <div class="col"><div class="col-title">Company</div><a href="#">About</a><a href="#">Jobs</a><a href="#">Sustainability</a><a href="#">Press</a></div>
+    <div class="col"><div class="col-title">Help</div><a href="account.html">Track a parcel</a><a href="pricing.html">Pricing</a><a href="#">Contact</a><a href="pricing.html#faqs">FAQ</a></div>
+  </footer>
+  <div class="legal">&copy; 2026 Molli Logistics Ltd. &middot; 23 Sir John Rogerson's Quay, Dublin 2 &middot; CRO 612 884</div>
 
-  <!-- 7. Coral / red on black -->
-  <div class="tile" style="left: 1160px; top: 620px;
-      --bg:#0c0a0a; --panel:#181414; --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.14);
-      --ink:#fbf5f4; --soft:#9a8d8b; --accent:#FF5A47; --on-accent:#ffffff;">
-    <div class="caption">07 · Punch <span>coral on black</span></div>
-    <div class="t-nav"><div class="logo">m<span class="o-wheel" data-wheel></span>lli</div><div class="cta">Book</div></div>
-    <div class="t-hero">
-      <div class="pill"><span class="dot"></span> Same-day network</div>
-      <h1>Collect today,<br><em>deliver tomorrow.</em></h1>
-      <p>Dublin's same-day delivery network. Pick a collection and delivery slot.</p>
-      <div class="price-row"><span class="from">Pricing from</span><span class="amt">€7.99</span></div>
-      <div class="btn">Get a price</div>
+  <!-- CHECKOUT MODAL -->
+  <div class="modal-scrim" id="scrim">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="m-cap">Confirm top-up</div>
+      <h3 id="m-title">Growth pack</h3>
+      <div class="m-line"><span>You pay</span><b id="m-pay">€500.00</b></div>
+      <div class="m-line" id="m-bonus-row"><span class="bonus">Bonus credit</span><b class="bonus" id="m-bonus">+€25.00</b></div>
+      <div class="m-line tot"><span>Credit added to balance</span><b id="m-total">€525.00</b></div>
+      <div class="m-actions">
+        <button class="btn btn--accent btn--md" id="m-pay-btn">Pay by card &rarr;</button>
+        <button class="close" id="m-close">Cancel</button>
+      </div>
+      <div class="pay-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Secure payment · powered by Stripe
+      </div>
     </div>
-    <div class="t-card"><div><div class="lbl">Small parcel</div><div class="sub">Perfume, phone, jewellery</div></div><div class="tag">€7.99</div></div>
   </div>
 
-  <!-- 8. Teal on navy -->
-  <div class="tile" style="left: 60px; top: 1110px;
-      --bg:#071316; --panel:#0e2027; --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.14);
-      --ink:#eafcfb; --soft:#7fa0a3; --accent:#16C7C0; --on-accent:#04191a;">
-    <div class="caption">08 · Marine <span>teal on navy</span></div>
-    <div class="t-nav"><div class="logo">m<span class="o-wheel" data-wheel></span>lli</div><div class="cta">Book</div></div>
-    <div class="t-hero">
-      <div class="pill"><span class="dot"></span> Same-day network</div>
-      <h1>Collect today,<br><em>deliver tomorrow.</em></h1>
-      <p>Dublin's same-day delivery network. Pick a collection and delivery slot.</p>
-      <div class="price-row"><span class="from">Pricing from</span><span class="amt">€7.99</span></div>
-      <div class="btn">Get a price</div>
-    </div>
-    <div class="t-card"><div><div class="lbl">Small parcel</div><div class="sub">Perfume, phone, jewellery</div></div><div class="tag">€7.99</div></div>
-  </div>
+  <script>
+    (function () {
+      var scrim = document.getElementById('scrim');
+      var mTitle = document.getElementById('m-title');
+      var mPay = document.getElementById('m-pay');
+      var mBonus = document.getElementById('m-bonus');
+      var mBonusRow = document.getElementById('m-bonus-row');
+      var mTotal = document.getElementById('m-total');
+      var payBtn = document.getElementById('m-pay-btn');
 
-  <!-- 9. Sage on off-white -->
-  <div class="tile" style="left: 500px; top: 1110px;
-      --bg:#f5f7f2; --panel:#eaeee3; --line:rgba(0,0,0,.08); --line-strong:rgba(0,0,0,.14);
-      --ink:#171a12; --soft:#6a6f60; --accent:#4B8B3B; --on-accent:#ffffff;">
-    <div class="caption">09 · Meadow <span>sage on off-white</span></div>
-    <div class="t-nav"><div class="logo">m<span class="o-wheel" data-wheel data-dark></span>lli</div><div class="cta">Book</div></div>
-    <div class="t-hero">
-      <div class="pill"><span class="dot"></span> Same-day network</div>
-      <h1>Collect today,<br><em>deliver tomorrow.</em></h1>
-      <p>Dublin's same-day delivery network. Pick a collection and delivery slot.</p>
-      <div class="price-row"><span class="from">Pricing from</span><span class="amt">€7.99</span></div>
-      <div class="btn">Get a price</div>
-    </div>
-    <div class="t-card"><div><div class="lbl">Small parcel</div><div class="sub">Perfume, phone, jewellery</div></div><div class="tag">€7.99</div></div>
-  </div>
+      function money(n) { return '€' + n.toLocaleString('en-IE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 
-  <!-- 10. Hi-vis yellow on black -->
-  <div class="tile" style="left: 940px; top: 1110px;
-      --bg:#0a0a0a; --panel:#151505; --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.14);
-      --ink:#ffffff; --soft:#8f8f7d; --accent:#FFE500; --on-accent:#0a0a0a;">
-    <div class="caption">10 · Hi-Vis <span>yellow on black</span></div>
-    <div class="t-nav"><div class="logo">m<span class="o-wheel" data-wheel></span>lli</div><div class="cta">Book</div></div>
-    <div class="t-hero">
-      <div class="pill"><span class="dot"></span> Same-day network</div>
-      <h1>Collect today,<br><em>deliver tomorrow.</em></h1>
-      <p>Dublin's same-day delivery network. Pick a collection and delivery slot.</p>
-      <div class="price-row"><span class="from">Pricing from</span><span class="amt">€7.99</span></div>
-      <div class="btn">Get a price</div>
-    </div>
-    <div class="t-card"><div><div class="lbl">Small parcel</div><div class="sub">Perfume, phone, jewellery</div></div><div class="tag">€7.99</div></div>
-  </div>
+      function openModal(name, pay, bonus) {
+        mTitle.textContent = name;
+        mPay.textContent = money(pay);
+        if (bonus > 0) {
+          mBonusRow.style.display = '';
+          mBonus.textContent = '+' + money(bonus);
+        } else {
+          mBonusRow.style.display = 'none';
+        }
+        mTotal.textContent = money(pay + bonus);
+        payBtn.textContent = 'Pay ' + money(pay) + ' by card →';
+        payBtn.disabled = false;
+        scrim.classList.add('open');
+      }
+      function closeModal() { scrim.classList.remove('open'); }
 
-  <!-- 11. Mono white on black -->
-  <div class="tile" style="left: 1380px; top: 1110px;
-      --bg:#0a0a0a; --panel:#161616; --line:rgba(255,255,255,.10); --line-strong:rgba(255,255,255,.18);
-      --ink:#ffffff; --soft:#8b8b8b; --accent:#ffffff; --on-accent:#0a0a0a;">
-    <div class="caption">11 · Mono <span>white on black</span></div>
-    <div class="t-nav"><div class="logo">m<span class="o-wheel" data-wheel></span>lli</div><div class="cta">Book</div></div>
-    <div class="t-hero">
-      <div class="pill"><span class="dot"></span> Same-day network</div>
-      <h1>Collect today,<br><em>deliver tomorrow.</em></h1>
-      <p>Dublin's same-day delivery network. Pick a collection and delivery slot.</p>
-      <div class="price-row"><span class="from">Pricing from</span><span class="amt">€7.99</span></div>
-      <div class="btn">Get a price</div>
-    </div>
-    <div class="t-card"><div><div class="lbl">Small parcel</div><div class="sub">Perfume, phone, jewellery</div></div><div class="tag">€7.99</div></div>
-  </div>
+      document.querySelectorAll('.buy').forEach(function (b) {
+        b.addEventListener('click', function () {
+          openModal(this.dataset.pack + ' pack', parseFloat(this.dataset.pay), parseFloat(this.dataset.bonus));
+        });
+      });
 
-  <!-- 12. Violet on ink -->
-  <div class="tile" style="left: 720px; top: 1600px;
-      --bg:#0c0a12; --panel:#17131f; --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.14);
-      --ink:#f3f0fb; --soft:#948ba8; --accent:#8B5CFF; --on-accent:#ffffff;">
-    <div class="caption">12 · Nocturne <span>violet on ink</span></div>
-    <div class="t-nav"><div class="logo">m<span class="o-wheel" data-wheel></span>lli</div><div class="cta">Book</div></div>
-    <div class="t-hero">
-      <div class="pill"><span class="dot"></span> Same-day network</div>
-      <h1>Collect today,<br><em>deliver tomorrow.</em></h1>
-      <p>Dublin's same-day delivery network. Pick a collection and delivery slot.</p>
-      <div class="price-row"><span class="from">Pricing from</span><span class="amt">€7.99</span></div>
-      <div class="btn">Get a price</div>
-    </div>
-    <div class="t-card"><div><div class="lbl">Small parcel</div><div class="sub">Perfume, phone, jewellery</div></div><div class="tag">€7.99</div></div>
-  </div>
+      document.getElementById('custom-buy').addEventListener('click', function () {
+        var v = parseFloat(document.getElementById('custom-amt').value) || 0;
+        if (v < 50) { v = 50; document.getElementById('custom-amt').value = 50; }
+        var bonus = v >= 500 ? Math.round(v * 0.05 * 100) / 100 : 0;
+        openModal('Custom top-up', v, bonus);
+      });
 
-<script>
-  // Inject the cartwheel SVG into every logo, coloured to the tile's ink.
-  document.querySelectorAll('[data-wheel]').forEach(function (el) {
-    var tile = el.closest('.tile');
-    var ink = getComputedStyle(tile).getPropertyValue('--ink').trim() || '#fff';
-    el.innerHTML = '<svg viewBox="0 0 100 100" width="100%" height="100%">'
-      + '<circle cx="50" cy="50" r="44" fill="none" stroke="' + ink + '" stroke-width="11"/>'
-      + '<circle cx="50" cy="50" r="7" fill="' + ink + '"/>'
-      + '<g stroke="' + ink + '" stroke-width="9">'
-      + '<line x1="50" y1="10" x2="50" y2="90"/><line x1="10" y1="50" x2="90" y2="50"/>'
-      + '<line x1="22" y1="22" x2="78" y2="78"/><line x1="78" y1="22" x2="22" y2="78"/></g></svg>';
-  });
-</script>
+      payBtn.addEventListener('click', function () {
+        this.disabled = true;
+        this.textContent = 'Redirecting to secure checkout…';
+        setTimeout(function () {
+          payBtn.textContent = '✓ Payment confirmed';
+          setTimeout(closeModal, 900);
+        }, 1100);
+      });
+
+      document.getElementById('m-close').addEventListener('click', closeModal);
+      scrim.addEventListener('click', function (e) { if (e.target === scrim) closeModal(); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+    })();
+  </script>
 </body>
 </html>

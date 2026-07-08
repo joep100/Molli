@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Molli — Pitch</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Inter+Tight:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  doc-page:not(:defined) { visibility: hidden; }
+
+  :root {
+    --accent: #3D8BFF;
+    --accent-rgb: 61, 139, 255;
+    --accent-tint: rgba(61, 139, 255, .10);
+    --ink: #14181a;
+    --soft: #565d59;
+    --muted: #9aa19c;
+    --line: rgba(18, 28, 22, .12);
+    --line-strong: rgba(18, 28, 22, .20);
+    --panel2: #f4f5f2;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  doc-page {
+    font-family: "Inter", -apple-system, "Segoe UI", sans-serif;
+    font-weight: 300;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+    line-height: 1.5;
+    font-size: 10.5pt;
+  }
+
+  h1, h2, h3, h4 { font-family: "Inter Tight", "Inter", sans-serif; letter-spacing: -0.03em; margin: 0; }
+
+  p { margin: 0; text-wrap: pretty; }
+  strong, b { font-weight: 600; }
+  .accent { color: var(--accent); }
+
+  /* wheel-in-wordmark */
+  .wheel {
+    display: inline-block; width: 0.62em; height: 0.62em; vertical-align: -0.01em;
+    margin: 0 -0.038em 0 -0.005em;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2314181a' stroke-width='3.5' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='10.2'/%3E%3Ccircle cx='12' cy='12' r='3.4' fill='%2314181a' stroke='none'/%3E%3Cline x1='12' y1='3.6' x2='12' y2='20.4'/%3E%3Cline x1='17.9' y1='6.1' x2='6.1' y2='17.9'/%3E%3Cline x1='17.9' y1='17.9' x2='6.1' y2='6.1'/%3E%3C/svg%3E") center/contain no-repeat;
+  }
+  .cover-brand-img { height: 30px; width: auto; display: block; }
+  .cover-mega-img { height: 150px; width: auto; display: block; margin: 0 0 30px -6px; }
+  .foot-logo { height: 15px; width: auto; display: block; }
+
+  /* ---------- COVER ---------- */
+  .cover { min-height: calc(297mm - 28mm); display: flex; flex-direction: column; break-after: page; }
+  .cover-top { display: flex; align-items: center; justify-content: space-between; }
+  .cover-brand { font-size: 26px; }
+  .cover-meta { font-family: var(--mono); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); text-align: right; line-height: 1.7; }
+  .cover-mid { margin-top: auto; margin-bottom: auto; padding: 40px 0; }
+  .cover-mega { font-size: 128px; line-height: .84; margin: 0 0 26px; }
+  .cover-h1 { font-size: 40px; font-weight: 800; line-height: 1.02; max-width: 15ch; margin: 0 0 20px; }
+  .cover-lead { font-size: 14pt; font-weight: 300; color: var(--soft); max-width: 46ch; line-height: 1.45; }
+  .cover-strip { display: flex; gap: 0; border-top: 1px solid var(--line); margin-top: 8px; }
+  .cover-stat { flex: 1; padding: 18px 0 4px; }
+  .cover-stat + .cover-stat { border-left: 1px solid var(--line); padding-left: 20px; }
+  .cover-stat .n { font-family: var(--mono); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: var(--accent); }
+  .cover-stat .l { font-size: 9pt; color: var(--soft); margin-top: 3px; }
+
+  /* ---------- SECTIONS ---------- */
+  section { break-inside: avoid; padding: 22px 0 4px; border-top: 1px solid var(--line); margin-top: 22px; }
+  section:first-of-type { border-top: none; margin-top: 0; }
+  .eyebrow { font-family: var(--mono); font-size: 8.5pt; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); display: flex; align-items: center; gap: 10px; }
+  .eyebrow .num { color: var(--muted); }
+  h2.sec { font-size: 22pt; font-weight: 800; line-height: 1.04; margin: 10px 0 12px; max-width: 24ch; }
+  .lede { font-size: 11.5pt; font-weight: 300; color: var(--soft); max-width: 62ch; line-height: 1.5; }
+
+  /* cards / grids */
+  .grid { display: grid; gap: 12px; margin-top: 16px; }
+  .g2 { grid-template-columns: 1fr 1fr; }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  .card { border: 1px solid var(--line); border-radius: 12px; padding: 16px 16px 17px; break-inside: avoid; }
+  .card h3 { font-size: 12pt; font-weight: 700; margin: 0 0 5px; }
+  .card p { font-size: 9.5pt; color: var(--soft); line-height: 1.45; }
+  .card .kicker { font-family: var(--mono); font-size: 8pt; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 9px; }
+
+  /* numbered steps */
+  .steps { counter-reset: s; display: grid; gap: 10px; margin-top: 16px; }
+  .step { display: grid; grid-template-columns: 40px 1fr; gap: 14px; align-items: start; break-inside: avoid; }
+  .step .n { font-family: var(--mono); font-size: 15px; font-weight: 700; color: var(--accent); border: 1px solid var(--line-strong); border-radius: 9px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+  .step h3 { font-size: 11.5pt; font-weight: 700; margin: 6px 0 3px; }
+  .step p { font-size: 9.5pt; color: var(--soft); line-height: 1.45; }
+
+  /* tick list */
+  ul.ticks { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 9px; }
+  ul.ticks li { display: grid; grid-template-columns: 20px 1fr; gap: 10px; font-size: 10pt; line-height: 1.4; align-items: start; }
+  ul.ticks .t { color: var(--accent); font-weight: 700; }
+  ul.ticks .s { color: var(--soft); }
+
+  /* callout */
+  .callout { background: var(--accent-tint); border: 1px solid rgba(var(--accent-rgb), .28); border-radius: 12px; padding: 15px 17px; margin-top: 16px; font-size: 10pt; color: var(--ink); line-height: 1.5; break-inside: avoid; }
+  .callout b { color: var(--accent); }
+
+  /* stat row */
+  .statrow { display: flex; gap: 0; border: 1px solid var(--line); border-radius: 12px; margin-top: 16px; overflow: hidden; }
+  .statrow .c { flex: 1; padding: 15px 16px; }
+  .statrow .c + .c { border-left: 1px solid var(--line); }
+  .statrow .n { font-family: var(--mono); font-size: 19px; font-weight: 700; color: var(--accent); letter-spacing: -0.02em; }
+  .statrow .l { font-size: 8.5pt; color: var(--soft); margin-top: 4px; line-height: 1.35; }
+
+  /* pricing table */
+  .ptable { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 10pt; }
+  .ptable th { text-align: left; font-family: var(--mono); font-size: 8pt; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding: 0 10px 9px; border-bottom: 1px solid var(--line-strong); }
+  .ptable td { padding: 11px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  .ptable tr:last-child td { border-bottom: none; }
+  .ptable .size { font-weight: 600; }
+  .ptable .ex { color: var(--soft); font-size: 9pt; }
+  .ptable .price { font-family: var(--mono); font-weight: 700; color: var(--accent); white-space: nowrap; }
+
+  .tiers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; }
+  .tier { border: 1px solid var(--line); border-radius: 11px; padding: 13px 13px 14px; text-align: center; break-inside: avoid; }
+  .tier.best { background: var(--accent); border-color: var(--accent); }
+  .tier.best .pk, .tier.best .band, .tier.best .off { color: #fff; }
+  .tier.best .pp { color: #fff; }
+  .tier .pk { font-family: var(--mono); font-size: 7.5pt; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .tier .band { font-size: 8.5pt; color: var(--soft); margin-top: 4px; }
+  .tier .pp { font-family: var(--mono); font-size: 20px; font-weight: 700; letter-spacing: -0.02em; margin: 8px 0 2px; }
+  .tier .off { font-size: 8pt; color: var(--muted); }
+
+  .footnote { font-size: 8pt; color: var(--muted); margin-top: 12px; line-height: 1.5; }
+
+  /* running footer */
+  .doc-foot { display: flex; align-items: center; justify-content: space-between; font-family: var(--mono); font-size: 8pt; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .doc-foot .wordmark { font-size: 11px; letter-spacing: -0.02em; }
+</style>
+</head>
+<body>
+<doc-page size="a4" margin="14mm">
+
+  <div slot="footer" class="doc-foot">
+    <img class="foot-logo" src="molli-logo.png" alt="Molli" />
+    <span>Dublin's same-day dispatch network</span>
+    <span>molli.ie</span>
+  </div>
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="cover-top">
+      <img class="cover-brand-img" src="molli-logo.png" alt="Molli" />
+      <div class="cover-meta">Pitch document<br />Retail &amp; partners<br />2026</div>
+    </div>
+    <div class="cover-mid">
+      <img class="cover-mega-img" src="molli-logo.png" alt="Molli" />
+      <h1 class="cover-h1">Store to door,<br /><span class="accent">Same day.</span></h1>
+      <p class="cover-lead">Molli is Dublin's same-day dispatch network for retailers — the only parcel network that collects your orders same day and delivers them across the city by 6pm.</p>
+    </div>
+    <div class="cover-strip">
+      <div class="cover-stat"><div class="n">by 6pm</div><div class="l">Every order, same day</div></div>
+      <div class="cover-stat"><div class="n">24</div><div class="l">Dublin postal codes</div></div>
+      <div class="cover-stat"><div class="n">€7.99</div><div class="l">Flat rate, from</div></div>
+      <div class="cover-stat"><div class="n">1 run</div><div class="l">A day, hub &amp; spoke</div></div>
+    </div>
+  </div>
+
+  <!-- 1 · WHAT IS MOLLI -->
+  <section>
+    <div class="eyebrow"><span class="num">01</span> What is Molli</div>
+    <h2 class="sec">A same-day parcel network built for Dublin retailers.</h2>
+    <p class="lede">Overnight carriers pick up today and deliver tomorrow. Molli collects your day's orders on a single scheduled run, sorts them at a central hub, and has them on the customer's doorstep <b>by 6pm the same day</b>. It's the one thing the big carriers can't do — and the thing shoppers now expect.</p>
+    <div class="grid g3">
+      <div class="card"><div class="kicker">Same-day</div><h3>Collect &amp; deliver in a day</h3><p>One run picks up the whole batch and it's delivered across Dublin by 6pm — not "there the day after."</p></div>
+      <div class="card"><div class="kicker">Local</div><h3>One city, done properly</h3><p>Tracked, photographed and signed for by a local team of riders — not a national network passing through.</p></div>
+      <div class="card"><div class="kicker">The name</div><h3>After Molly Malone</h3><p>Dublin's original one-woman logistics network, wheeling her barrow through streets broad and narrow.</p></div>
+    </div>
+  </section>
+
+  <!-- 2 · WHO IS IT FOR -->
+  <section>
+    <div class="eyebrow"><span class="num">02</span> Who is it for</div>
+    <h2 class="sec">Shops shipping a daily batch of medium-to-high-value orders.</h2>
+    <p class="lede">Molli is built for retailers sending several parcels a day of the kind of goods where speed and a careful doorstep win the repeat customer — small, valuable and time-sensitive.</p>
+    <div class="grid g3">
+      <div class="card"><h3>Core sectors</h3><p>Beauty &amp; skincare · health &amp; wellness · optical · pharmacy · jewellery · boutique &amp; high-end fashion.</p></div>
+      <div class="card"><h3>The sweet spot</h3><p>City-based senders shipping 10+ orders a day — where one rider carries several drops on a single run, so same-day works economically.</p></div>
+      <div class="card"><h3>In practice</h3><p>A Dundrum pharmacy sends ~25 orders a day: collected on the daily run, sorted at the hub, delivered by 6pm. We're built to scale that.</p></div>
+    </div>
+    <div class="callout">Molli has <b>one rule</b>: same-day needs a minimum of <b>10 orders a day</b> — and it's the model, not a sales gate. Same-day runs on <b>shared runs</b>: one rider collects your batch and clears several drops on a single loop, and that shared loop is what makes a 6pm promise affordable. Below roughly ten a day a run can't be filled — the economics, and the deadline, stop holding. Clear the batch and everything else is flexible: no contracts, no lock-in.</div>
+  </section>
+
+  <!-- 3 · HOW DOES IT WORK -->
+  <section>
+    <div class="eyebrow"><span class="num">03</span> How does it work</div>
+    <h2 class="sec">One scheduled run. Hub and spoke. Delivered by 6pm.</h2>
+    <p class="lede">A tight, single-round model is what keeps same-day fast and affordable. Here's the whole journey.</p>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><div><h3>You sell</h3><p>Orders arrive through your shop, your checkout, a CSV upload, our API, or a 30-second booking — however suits your setup.</p></div></div>
+      <div class="step"><div class="n">2</div><div><h3>We collect</h3><p>One scheduled run picks up the day's whole batch from your door. No drop-off, no post-office queue, no waiting in for a pickup window.</p></div></div>
+      <div class="step"><div class="n">3</div><div><h3>We sort</h3><p>Everything comes back to the central hub and is batched into geographic runs — the spoke of the wheel.</p></div></div>
+      <div class="step"><div class="n">4</div><div><h3>We deliver</h3><p>Out across Dublin and on the doorstep by 6pm — tracked, photographed and signed for, with proof of delivery back to you.</p></div></div>
+    </div>
+  </section>
+
+  <!-- 4 · WAYS TO INTEGRATE -->
+  <section>
+    <div class="eyebrow"><span class="num">04</span> Ways to integrate</div>
+    <h2 class="sec">Five ways to send — from one parcel to a full pipeline.</h2>
+    <p class="lede">Start with a single booking and grow into automatic dispatch. Every route uses the same network, the same price and the same by-6pm promise.</p>
+    <div class="grid g2">
+      <div class="card"><div class="kicker">Self-serve</div><h3>One-off booking</h3><p>Book a single parcel in about 30 seconds — addresses, size, done. Ideal for getting started and ad-hoc sends.</p></div>
+      <div class="card"><div class="kicker">Batch</div><h3>Bulk CSV upload</h3><p>Drop in the day's orders as a spreadsheet and book the whole run at once. No integration required.</p></div>
+      <div class="card"><div class="kicker">Plug-in · free</div><h3>Store plugins</h3><p>Native Shopify, WooCommerce and Squarespace apps put Molli at your checkout so orders flow straight in.</p></div>
+      <div class="card"><div class="kicker">Automatic</div><h3>API</h3><p>Wire Molli into your own systems — orders create shipments automatically, labels and tracking come straight back.</p></div>
+    </div>
+    <div class="callout"><b>The countdown badge.</b> A free one-line widget for your product pages showing shoppers exactly how long they've got to order for same-day delivery — the live cut-off that turns a browse into a checkout.</div>
+  </section>
+
+  <!-- 5 · VEHICLES -->
+  <section>
+    <div class="eyebrow"><span class="num">05</span> Vehicles</div>
+    <h2 class="sec">The right vehicle for the route.</h2>
+    <p class="lede">Inside the canals a bike beats a van door-to-door; over longer distances the motorbike takes over. Matching the vehicle to the route is what keeps us fast and zero-fuss.</p>
+    <div class="grid g2">
+      <div class="card">
+        <div class="kicker">City centre · D1–D8</div>
+        <h3>Cargo bike</h3>
+        <p>Zero-emission and unbeatable in traffic — bus lanes, no gridlock, parks at the door. Carries all three sizes, up to <b>80×60×60&nbsp;cm and 30&nbsp;kg</b>.</p>
+      </div>
+      <div class="card">
+        <div class="kicker">Greater Dublin · D9–D24</div>
+        <h3>Motorbike</h3>
+        <p>Takes the open road past the city core where distance makes the bike win. Carries up to <b>40×30×30&nbsp;cm and 8&nbsp;kg</b>.</p>
+      </div>
+    </div>
+    <div class="callout">Because the cargo bike carries the big loads, the <b>largest parcels are a city-centre service</b> — within roughly 3&nbsp;km of the centre, where the bike can reach the door.</div>
+  </section>
+
+  <!-- 6 · COVERAGE -->
+  <section>
+    <div class="eyebrow"><span class="num">06</span> Coverage</div>
+    <h2 class="sec">All of Dublin, centred on O'Connell Bridge.</h2>
+    <p class="lede">The network radiates from the middle of the city. A deliberately tight radius is exactly what makes same-day possible at this price — short spokes, batched runs, no long-haul legs.</p>
+    <div class="statrow">
+      <div class="c"><div class="n">~3 km</div><div class="l">City-centre core · D1–D8 · cargo bike · all sizes</div></div>
+      <div class="c"><div class="n">~12 km</div><div class="l">Greater Dublin · D9–D24 · motorbike · smaller cap</div></div>
+      <div class="c"><div class="n">24</div><div class="l">Dublin postal codes covered, one flat price</div></div>
+    </div>
+    <div class="callout"><b>Why tight beats wide.</b> A central sorting hub with short delivery spokes means a rider clears several drops per run instead of crossing the county for one. That's the economics that lets us hold same-day at a flat rate — and why the biggest parcels stay in the cargo-bike centre.</div>
+  </section>
+
+  <!-- 7 · CUT-OFF TIMES -->
+  <section>
+    <div class="eyebrow"><span class="num">07</span> Cut-off times</div>
+    <h2 class="sec">Beat the cut-off, it's there by 6pm today.</h2>
+    <p class="lede">One run a day, everything delivered by 6pm. Your cut-off depends on where we collect — earlier further out, so the batch still makes the 6pm deadline.</p>
+    <div class="grid g2">
+      <div class="card"><div class="kicker">City centre · D1–D8</div><h3>Order by 2pm</h3><p>Collected on today's run and delivered across the city by 6pm this evening.</p></div>
+      <div class="card"><div class="kicker">Greater Dublin · D9–D24</div><h3>Order by 1pm</h3><p>An earlier cut-off gives the batch time to reach the hub and still deliver by 6pm.</p></div>
+    </div>
+    <div class="callout">Miss your cut-off and the order simply drops onto the <b>next working day's run</b>, delivered by 6pm — same flat price either way. The live countdown badge shows shoppers the deadline in real time.</div>
+  </section>
+
+  <!-- 8 · SIZES & WEIGHTS -->
+  <section>
+    <div class="eyebrow"><span class="num">08</span> Sizes &amp; weights</div>
+    <h2 class="sec">Three sizes. If it fits, we carry it.</h2>
+    <p class="lede">No measuring tape and no volumetric maths — pick the size that matches what you're sending. Our fit finder confirms it in seconds.</p>
+    <table class="ptable">
+      <thead><tr><th>Size</th><th>Typical contents</th><th>Up to</th><th style="text-align:right;">From</th></tr></thead>
+      <tbody>
+        <tr><td class="size">Small</td><td class="ex">Phone, perfume box</td><td class="ex">2&nbsp;kg</td><td class="price" style="text-align:right;">€7.99</td></tr>
+        <tr><td class="size">Medium</td><td class="ex">Shoebox, a book</td><td class="ex">8&nbsp;kg</td><td class="price" style="text-align:right;">€8.99</td></tr>
+        <tr><td class="size">Large *</td><td class="ex">Wine case, hamper</td><td class="ex">30&nbsp;kg</td><td class="price" style="text-align:right;">€9.99</td></tr>
+      </tbody>
+    </table>
+    <div class="statrow">
+      <div class="c"><div class="n">80×60×60</div><div class="l">Cargo-bike capacity · cm · city centre · up to 30&nbsp;kg</div></div>
+      <div class="c"><div class="n">40×30×30</div><div class="l">Motorbike capacity · cm · greater Dublin · up to 8&nbsp;kg</div></div>
+    </div>
+    <p class="footnote">* Large parcels are a city-centre service (within ~3&nbsp;km of the centre). We can't carry hazardous goods, restricted items, or anything over 30&nbsp;kg or bigger than the cargo-bike box.</p>
+  </section>
+
+  <!-- 9 · PRICING -->
+  <section>
+    <div class="eyebrow"><span class="num">09</span> Pricing</div>
+    <h2 class="sec">One flat price, anywhere in Dublin.</h2>
+    <p class="lede">D1 or D24, the rate's the same — only size and volume change it. There's never a card at checkout: you run on prepaid credit or a monthly account.</p>
+    <div class="callout" style="margin-top:14px;"><b>The more you send, the less each parcel costs.</b> The volume discount is set by the parcels you actually send — from 25 a day upward — and applies to both credit packs and monthly billing.</div>
+    <div class="tiers">
+      <div class="tier"><div class="pk">Base</div><div class="band">Under 25 / day</div><div class="pp">€7.99</div><div class="off">list rate</div></div>
+      <div class="tier"><div class="pk">Growth</div><div class="band">25–49 / day</div><div class="pp">€7.51</div><div class="off">6% off</div></div>
+      <div class="tier best"><div class="pk">Scale</div><div class="band">50–99 / day</div><div class="pp">€7.19</div><div class="off">10% off</div></div>
+      <div class="tier"><div class="pk">Enterprise</div><div class="band">100+ / day</div><div class="pp">€6.79</div><div class="off">15% off</div></div>
+    </div>
+    <div class="grid g2" style="margin-top:14px;">
+      <div class="card"><div class="kicker">Lowest rate</div><h3>Credit packs</h3><p>Prepay a pack (€250 / €500 / €1,000) for the lowest per-parcel rate. Balance never expires; every parcel books instantly.</p></div>
+      <div class="card"><div class="kicker">One invoice</div><h3>Monthly billing</h3><p>Settle one invoice at month-end from €9.99 a parcel, no prepay — the same volume discount still applies.</p></div>
+    </div>
+    <p class="footnote">Effective per-parcel prices shown for the Small rate; the same % comes off every size. Proof of delivery and photo are included free; signature required and insurance are optional add-ons. Final rate confirmed to your routes.</p>
+  </section>
+
+  <!-- 10 · BENEFITS -->
+  <section>
+    <div class="eyebrow"><span class="num">10</span> Benefits</div>
+    <h2 class="sec">Why retailers switch to Molli.</h2>
+    <ul class="ticks">
+      <li><span class="t">✓</span><span><b>Sell it today, deliver it today.</b> <span class="s">Same-day collection is the USP — the one thing overnight carriers can't match.</span></span></li>
+      <li><span class="t">✓</span><span><b>Higher conversion, fewer abandoned baskets.</b> <span class="s">A live cut-off on your product pages turns browsers into same-day buyers.</span></span></li>
+      <li><span class="t">✓</span><span><b>One flat price, affordable same-day.</b> <span class="s">Hub-and-spoke economics and a tight radius keep the rate low and predictable.</span></span></li>
+      <li><span class="t">✓</span><span><b>Nothing to manage.</b> <span class="s">No van, no drivers, no routing — hand over the batch and we do the rest.</span></span></li>
+      <li><span class="t">✓</span><span><b>Tracked, photographed, signed.</b> <span class="s">Proof of delivery comes back to you on every parcel, included free.</span></span></li>
+      <li><span class="t">✓</span><span><b>Rewards volume.</b> <span class="s">The more you batch onto a run, the less each parcel costs — growth that pays you back.</span></span></li>
+    </ul>
+  </section>
+
+  <!-- 11 · HOW TO GET STARTED -->
+  <section>
+    <div class="eyebrow"><span class="num">11</span> How to get started</div>
+    <h2 class="sec">Live in a day, not a quarter.</h2>
+    <p class="lede">Our one rule: same-day needs a minimum of <b>10 orders a day</b>. Beyond that there's no contract, no setup fee and no lock-in — the account itself is free. Three steps from first conversation to first delivery.</p>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><div><h3>Talk to us</h3><p>Tell us your sectors, daily volume and where you ship from. We confirm your per-parcel rate and the cut-off for your location.</p></div></div>
+      <div class="step"><div class="n">2</div><div><h3>Connect</h3><p>Add the free Shopify, WooCommerce or Squarespace plugin, wire in the API, or just start booking — then drop the countdown badge on your product pages. Five minutes, once.</p></div></div>
+      <div class="step"><div class="n">3</div><div><h3>Send your first run</h3><p>Top up a credit pack or open a monthly account, hand over the day's batch on your scheduled run — and it's across Dublin by 6pm.</p></div></div>
+    </div>
+    <div class="callout" style="margin-top:18px; text-align:center; font-size:11pt;"><b>Store to door, same day.</b> &nbsp;Talk to us about putting Molli at your checkout — molli.ie</div>
+  </section>
+
+</doc-page>
+<script src="doc-page.js"></script>
+</body>
+</html>

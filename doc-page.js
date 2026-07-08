@@ -1,257 +1,402 @@
-// @ds-adherence-ignore -- omelette starter scaffold (raw elements/hex/px by design)
-/* BEGIN USAGE */
-/**
- * <doc-page> — paged-document shell for printable HTML.
- *
- * On screen the document renders as a single continuous sheet on a desk
- * background (Google Docs' pageless view): you scroll one tall page card.
- * There is no manual page-splitting — write the whole document as normal
- * flow inside <doc-page> and the browser's print engine paginates it at
- * export.
- *
- * At print the component injects `@page { size: …; margin: 0 }` (which
- * leaves Chrome no margin box to draw its date/URL/page-count header in)
- * and moves the visual margin onto the sheet's own padding, so the printed
- * page has the same inset you see on screen. Standard break-hygiene rules
- * (`break-inside: avoid` on figures, code blocks, images and table rows;
- * `orphans/widows: 3`) are applied so paragraphs and groups split cleanly.
- * On screen and at print, headings default to `text-wrap: balance` and
- * body text (p, li, blockquote, figcaption) to `text-wrap: pretty`, so
- * the document avoids widowed/orphaned words; the defaults have zero
- * specificity, so any text-wrap you declare on those elements wins.
- *
- * Usage:
- *   <style>doc-page:not(:defined){visibility:hidden}</style>
- *   <doc-page size="letter" margin="0.75in">
- *     <h1>Title</h1>
- *     <p>…body…</p>
- *   </doc-page>
- *   <script src="doc-page.js"></script>
- *
- * Attributes:
- *   size    — letter | a4 | legal (default letter)
- *   width / height — explicit CSS lengths, override `size`
- *   margin  — printable inset on every page (default 0.75in)
- *
- * Running header/footer (optional): give an element `slot="header"` or
- * `slot="footer"` and it repeats on every printed page via
- * `position: fixed`. To keep body text from sliding under it, the
- * component prints inside a single-cell table whose <thead>/<tfoot> are
- * spacers sized to the header/footer height — browsers repeat thead/tfoot
- * on every page, so each sheet's content starts below the header and ends
- * above the footer. On screen the header/footer render once at the
- * top/bottom of the sheet.
- *
- * Author content as static HTML so the user can click-to-edit any text
- * directly. Do not set width/padding/background on the document body —
- * the component owns the sheet box.
- */
-/* END USAGE */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Molli API — Build same-day delivery into your checkout</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="theme-light.css" />
+  <style>
+    .dev-hero { max-width: 1180px; margin: 0 auto; padding: 52px 40px 8px; }
+    .dev-hero .pill { margin-bottom: 18px; }
+    .dev-hero h1 { font-size: 50px; line-height: 1.02; letter-spacing: -0.03em; font-weight: 800; margin: 0 0 16px; max-width: 720px; }
+    .dev-hero h1 .accent { color: var(--accent); }
+    .dev-hero .lead { font-size: 21px; color: var(--soft); max-width: 620px; line-height: 1.5; font-weight: 300; letter-spacing: -0.03em; }
+    .dev-hero .base { display: inline-flex; align-items: center; gap: 10px; margin-top: 22px; font-family: var(--font-mono); font-size: 13px; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 8px 15px; color: var(--soft); }
+    .dev-hero .base .m { color: var(--accent); font-weight: 700; }
 
-(() => {
-  const PAPER = {
-    letter: ['8.5in', '11in'],
-    a4: ['210mm', '297mm'],
-    legal: ['8.5in', '14in'],
-  };
-  const CSS_LENGTH = /^\d+(\.\d+)?(px|in|mm|cm|pt|pc)$/;
-  const safeLen = (v, fb) => (CSS_LENGTH.test((v || '').trim()) ? v.trim() : fb);
+    /* layout: sticky sidebar + content */
+    .dev-wrap { max-width: 1180px; margin: 0 auto; padding: 28px 40px 70px; display: grid; grid-template-columns: 210px 1fr; gap: 44px; align-items: start; }
+    .dev-nav { position: sticky; top: 90px; display: flex; flex-direction: column; gap: 2px; }
+    .dev-nav .grp { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin: 18px 0 8px; }
+    .dev-nav .grp:first-child { margin-top: 0; }
+    .dev-nav a { font-size: 14px; color: var(--soft); text-decoration: none; padding: 6px 10px; border-radius: 8px; border-left: 2px solid transparent; transition: .14s; }
+    .dev-nav a:hover { color: var(--ink); background: var(--panel); }
+    .dev-nav a.on { color: var(--accent); border-left-color: var(--accent); background: var(--accent-tint); }
 
-  const stylesheet = `
-    :host {
-      position: relative;
-      display: block;
-      min-height: 100vh;
-      background: #ece8dd;
-      padding: 48px 24px;
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-      --doc-page-w: 8.5in;
-      --doc-page-h: 11in;
-      --doc-page-margin: 0.75in;
-      --doc-hdr-h: 0px;
-      --doc-ftr-h: 0px;
-    }
-    .sheet {
-      width: var(--doc-page-w);
-      margin: 0 auto;
-      background: #fff;
-      box-shadow: 0 2px 14px rgba(20, 20, 19, 0.12);
-      border-radius: 2px;
-      box-sizing: border-box;
-      padding: var(--doc-page-margin);
-    }
-    .frame { width: 100%; border-collapse: collapse; }
-    .frame td, .frame th { padding: 0; text-align: left; font-weight: inherit; }
-    .hdr-space { height: var(--doc-hdr-h); }
-    .ftr-space { height: var(--doc-ftr-h); }
-    ::slotted([slot="header"]),
-    ::slotted([slot="footer"]) { display: block; box-sizing: border-box; }
-    @media print {
-      :host { background: none; padding: 0; min-height: 0; }
-      .sheet {
-        width: auto; margin: 0; box-shadow: none; border-radius: 0;
-        padding: 0 var(--doc-page-margin);
-      }
-      /* The thead/tfoot spacers repeat on every page, so they carry the
-       * vertical page margin (which the sheet's own padding cannot, since
-       * that padding is consumed once on the first/last page). The running
-       * header/footer are fixed inside that band. */
-      .hdr-space { height: max(var(--doc-page-margin), calc(var(--doc-hdr-h) + 0.35in)); }
-      .ftr-space { height: max(var(--doc-page-margin), calc(var(--doc-ftr-h) + 0.35in)); }
-      ::slotted([slot="header"]) {
-        position: fixed; top: 0; left: 0; right: 0; margin: 0;
-        padding: calc(var(--doc-page-margin) * 0.45) var(--doc-page-margin) 0;
-      }
-      ::slotted([slot="footer"]) {
-        position: fixed; bottom: 0; left: 0; right: 0; margin: 0;
-        padding: 0 var(--doc-page-margin) calc(var(--doc-page-margin) * 0.45);
-      }
-    }
-  `;
+    .dev-main { min-width: 0; }
+    .sec { padding: 10px 0 40px; border-bottom: 1px solid var(--line); margin-bottom: 40px; }
+    .sec:last-child { border-bottom: none; }
+    .sec > .eyebrow { font-size: 12px; letter-spacing: .15em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+    .sec h2 { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin: 10px 0 12px; }
+    .sec p { font-size: 15.5px; color: var(--soft); line-height: 1.62; max-width: 640px; margin: 0 0 18px; }
+    .sec p code, .inline-code { font-family: var(--font-mono); font-size: .88em; background: var(--panel2); border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px; color: var(--ink); }
+    .sec ul { margin: 0 0 18px; padding-left: 0; list-style: none; max-width: 640px; }
+    .sec ul li { position: relative; padding-left: 22px; font-size: 15px; color: var(--soft); line-height: 1.6; margin-bottom: 8px; }
+    .sec ul li::before { content: ''; position: absolute; left: 4px; top: 10px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 
-  class DocPage extends HTMLElement {
-    static get observedAttributes() { return ['size', 'width', 'height', 'margin']; }
+    /* endpoint chip */
+    .ep { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 9px 14px; margin-bottom: 18px; }
+    .ep .verb { font-weight: 700; font-size: 12px; letter-spacing: .04em; padding: 3px 8px; border-radius: 6px; }
+    .ep .verb.post { background: rgba(61,139,255,.16); color: var(--accent); }
+    .ep .verb.get { background: rgba(90,170,255,.16); color: #78b6ff; }
+    .ep .path { color: var(--ink); }
+    .ep .path .var { color: var(--soft); }
 
-    constructor() {
-      super();
-      this._root = this.attachShadow({ mode: 'open' });
-      this._mo = typeof MutationObserver === 'function'
-        ? new MutationObserver(() => this._scheduleMeasure())
-        : null;
-    }
+    /* code block with tabs */
+    .code { background: #0c0f0a; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; margin: 0 0 20px; }
+    .code-tabs { display: flex; align-items: center; gap: 2px; background: #10140d; border-bottom: 1px solid var(--line); padding: 6px 8px; }
+    .code-tab { font-family: var(--font-sans); font-size: 12.5px; font-weight: 600; color: var(--soft); background: none; border: none; padding: 6px 12px; border-radius: 7px; cursor: pointer; transition: .12s; }
+    .code-tab:hover { color: var(--ink); }
+    .code-tab.on { background: var(--accent-tint); color: var(--accent); }
+    .code-tab.resp { margin-left: auto; }
+    .code pre { margin: 0; padding: 18px 20px; overflow-x: auto; }
+    .code code { font-family: var(--font-mono); font-size: 13px; line-height: 1.7; color: #c9d4bb; white-space: pre; display: block; }
+    .code .pane { display: none; }
+    .code .pane.on { display: block; }
+    .tok-key { color: #3D8BFF; }
+    .tok-str { color: #d8b26b; }
+    .tok-num { color: #7ec8ff; }
+    .tok-com { color: #5f6b52; font-style: italic; }
+    .tok-verb { color: #3D8BFF; font-weight: 700; }
+    .tok-mut { color: #6b7560; }
 
-    get pageWidth() {
-      const named = PAPER[(this.getAttribute('size') || '').toLowerCase()];
-      return safeLen(this.getAttribute('width'), named ? named[0] : PAPER.letter[0]);
-    }
-    get pageHeight() {
-      const named = PAPER[(this.getAttribute('size') || '').toLowerCase()];
-      return safeLen(this.getAttribute('height'), named ? named[1] : PAPER.letter[1]);
-    }
-    get pageMargin() { return safeLen(this.getAttribute('margin'), '0.75in'); }
+    .note-card { display: flex; gap: 13px; align-items: flex-start; background: var(--accent-tint); border: 1px solid rgba(61,139,255,.28); border-radius: 12px; padding: 15px 17px; max-width: 640px; margin: 4px 0 0; }
+    .note-card .ic { color: var(--accent); flex: none; margin-top: 1px; }
+    .note-card .t { font-size: 14px; color: var(--ink); line-height: 1.55; }
+    .note-card .t b { color: var(--accent); }
 
-    connectedCallback() {
-      if (!this._sheet) this._render();
-      this._syncSize();
-      this._syncPrintPageRule();
-      this._ensureTextWrapDefaults();
-      if (this._mo) this._mo.observe(this, {
-        subtree: true, childList: true, characterData: true, attributes: true,
-      });
-      this._onResize = () => this._scheduleMeasure();
-      window.addEventListener('resize', this._onResize);
-      if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(() => this._scheduleMeasure());
-      }
-      this._scheduleMeasure();
-    }
+    /* param table */
+    .params { max-width: 660px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin: 0 0 22px; }
+    .prow { display: grid; grid-template-columns: 168px 1fr; gap: 16px; padding: 13px 16px; border-bottom: 1px solid var(--line); }
+    .prow:last-child { border-bottom: none; }
+    .prow .pn { font-family: var(--font-mono); font-size: 13px; color: var(--ink); }
+    .prow .pn .req { color: var(--accent); font-size: 10px; letter-spacing: .06em; display: block; margin-top: 3px; }
+    .prow .pn .type { color: var(--muted); font-size: 11.5px; display: block; margin-top: 3px; }
+    .prow .pd { font-size: 13.5px; color: var(--soft); line-height: 1.55; }
 
-    disconnectedCallback() {
-      window.removeEventListener('resize', this._onResize);
-      if (this._mo) this._mo.disconnect();
-      if (this._raf) { cancelAnimationFrame(this._raf); this._raf = null; }
-      // Drop the head rules when the last doc-page leaves, so a deleted
-      // document's @page geometry and text-wrap defaults can't apply to
-      // whatever replaces it.
-      if (!document.querySelector('doc-page')) {
-        ['doc-page-print', 'doc-page-text-wrap'].forEach((id) => {
-          const tag = document.getElementById(id);
-          if (tag) tag.remove();
+    /* events */
+    .events { display: grid; gap: 10px; max-width: 660px; }
+    .evt { display: flex; align-items: center; gap: 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 11px; padding: 13px 16px; }
+    .evt .en { font-family: var(--font-mono); font-size: 13px; color: var(--accent); font-weight: 600; min-width: 210px; }
+    .evt .ed { font-size: 13.5px; color: var(--soft); }
+
+    @media (max-width: 900px) {
+      .dev-hero { padding: 38px 20px 6px; } .dev-hero h1 { font-size: 34px; }
+      .dev-wrap { grid-template-columns: 1fr; padding: 20px 20px 60px; gap: 8px; }
+      .dev-nav { position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+      .dev-nav .grp { display: none; }
+      .prow { grid-template-columns: 1fr; gap: 4px; }
+    }
+  </style>
+</head>
+<body class="light">
+  <header class="topbar">
+    <a class="logo" href="index.html">
+      <span class="logo-mark"><span>&rsaquo;</span></span>
+      <span class="logo-word">m<span class="o-wheel"></span>lli</span>
+    </a>
+    <nav class="topnav">
+      <a href="sell.html">Sell more</a>
+      <a href="connect.html">Connect</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="buy-credit.html">Buy credit</a>
+      <a href="fit.html">Will it fit?</a>
+      <a href="zones.html">Coverage</a>
+      <a href="pricing.html#faqs">Help</a>
+    </nav>
+    <div class="topbar-cta">
+      <a class="signin" href="account.html">Sign in</a>
+      <a class="btn btn--accent btn--sm" href="business.html">Create business account &rarr;</a>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="dev-hero">
+    <span class="pill"><span class="dot"></span> Developer API</span>
+    <h1>Build same-day <span class="accent">into your checkout.</span></h1>
+    <p class="lead">A small REST API for retailers on a custom stack. Quote a live rate at checkout, push the order straight into your daily collection, and get status webhooks all the way to the doorstep. Most integrations are a day's work.</p>
+    <div class="base"><span class="m">BASE URL</span> https://api.molli.ie/v1</div>
+  </section>
+
+  <div class="dev-wrap">
+    <!-- SIDEBAR -->
+    <aside class="dev-nav" id="dev-nav">
+      <div class="grp">Getting started</div>
+      <a href="#auth" class="on">Authentication</a>
+      <a href="#flow">How it fits together</a>
+      <div class="grp">Endpoints</div>
+      <a href="#rates">Get a rate</a>
+      <a href="#shipments">Create a shipment</a>
+      <a href="#track">Track a shipment</a>
+      <div class="grp">Events</div>
+      <a href="#webhooks">Webhooks</a>
+      <div class="grp">Reference</div>
+      <a href="#test">Test mode</a>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="dev-main">
+
+      <!-- AUTH -->
+      <section class="sec" id="auth">
+        <div class="eyebrow">Getting started</div>
+        <h2>Authentication</h2>
+        <p>Every request is authenticated with a secret API key sent as a bearer token. You'll find your keys in your business account under <span class="inline-code">Settings &rsaquo; Developer</span> &mdash; a <span class="inline-code">sk_test_</span> key for the sandbox and a <span class="inline-code">sk_live_</span> key once you're ready. Keep the secret key server-side; never ship it in browser code.</p>
+        <div class="code">
+          <div class="code-tabs"><button class="code-tab on">Authorization header</button></div>
+          <div class="pane on"><pre><code><span class="tok-key">Authorization:</span> Bearer sk_live_3f9c2a7b41e84d06b8ce55a1</code></pre></div>
+        </div>
+        <div class="note-card">
+          <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></span>
+          <div class="t"><b>One account, one network.</b> The API books into the same scheduled collection as the dashboard &mdash; orders you push land in the day's batch and go out on your fixed pickup, delivered by 6pm.</div>
+        </div>
+      </section>
+
+      <!-- FLOW -->
+      <section class="sec" id="flow">
+        <div class="eyebrow">Getting started</div>
+        <h2>How it fits together</h2>
+        <p>Three calls cover the whole journey &mdash; from a shopper choosing same-day at your checkout to a delivered photo on the doorstep.</p>
+        <ul>
+          <li><b>At checkout</b> &mdash; call <span class="inline-code">POST /rates</span> with the delivery Eircode and the cart's size. If Molli is eligible you get a live price to show as a shipping option; if it's out of zone, too big, or past the cut-off, the rate simply isn't returned.</li>
+          <li><b>On payment</b> &mdash; call <span class="inline-code">POST /shipments</span> to drop the order into today's batch. You get back a tracking number and the collection it's assigned to.</li>
+          <li><b>Then</b> &mdash; we send <span class="inline-code">webhook</span> events as the parcel is collected, sorted, out for delivery, and delivered, so you can keep your customer updated under your own brand.</li>
+        </ul>
+      </section>
+
+      <!-- RATES -->
+      <section class="sec" id="rates">
+        <div class="eyebrow">Endpoints</div>
+        <h2>Get a rate</h2>
+        <p>Returns the same-day services available for a specific address and parcel, priced live by zone. Call this at checkout to decide whether to show Molli as a shipping option.</p>
+        <div class="ep"><span class="verb post">POST</span><span class="path">/v1/rates</span></div>
+        <div class="code">
+          <div class="code-tabs">
+            <button class="code-tab on" data-pane="r-curl">cURL</button>
+            <button class="code-tab" data-pane="r-node">Node</button>
+            <button class="code-tab resp" data-pane="r-resp">Response</button>
+          </div>
+          <div class="pane on" id="r-curl"><pre><code><span class="tok-verb">curl</span> https://api.molli.ie/v1/rates <span class="tok-mut">\</span>
+  -H <span class="tok-str">"Authorization: Bearer sk_live_3f9c2a7b41e8"</span> <span class="tok-mut">\</span>
+  -H <span class="tok-str">"Content-Type: application/json"</span> <span class="tok-mut">\</span>
+  -d <span class="tok-str">'{
+    "delivery":   { "eircode": "D06 X235" },
+    "collection": { "eircode": "D08 CTX3" },
+    "parcel":     { "weight_g": 480, "length_cm": 22, "width_cm": 14, "height_cm": 6 }
+  }'</span></code></pre></div>
+          <div class="pane" id="r-node"><pre><code><span class="tok-key">const</span> res = <span class="tok-key">await</span> fetch(<span class="tok-str">"https://api.molli.ie/v1/rates"</span>, {
+  method: <span class="tok-str">"POST"</span>,
+  headers: {
+    <span class="tok-key">"Authorization"</span>: <span class="tok-str">`Bearer ${process.env.MOLLI_KEY}`</span>,
+    <span class="tok-key">"Content-Type"</span>: <span class="tok-str">"application/json"</span>
+  },
+  body: <span class="tok-key">JSON</span>.stringify({
+    delivery:   { eircode: <span class="tok-str">"D06 X235"</span> },
+    collection: { eircode: <span class="tok-str">"D08 CTX3"</span> },
+    parcel:     { weight_g: <span class="tok-num">480</span>, length_cm: <span class="tok-num">22</span>, width_cm: <span class="tok-num">14</span>, height_cm: <span class="tok-num">6</span> }
+  })
+});
+<span class="tok-key">const</span> { rates } = <span class="tok-key">await</span> res.json();</code></pre></div>
+          <div class="pane" id="r-resp"><pre><code>{
+  <span class="tok-key">"rates"</span>: [
+    {
+      <span class="tok-key">"id"</span>:          <span class="tok-str">"rate_same_day"</span>,
+      <span class="tok-key">"service"</span>:     <span class="tok-str">"same_day"</span>,
+      <span class="tok-key">"name"</span>:        <span class="tok-str">"Same-day by Molli"</span>,
+      <span class="tok-key">"price_eur"</span>:   <span class="tok-num">7.99</span>,
+      <span class="tok-key">"zone"</span>:        <span class="tok-str">"city_centre"</span>,
+      <span class="tok-key">"order_before"</span>: <span class="tok-str">"14:00"</span>,
+      <span class="tok-key">"delivered_by"</span>: <span class="tok-str">"18:00"</span>
+    }
+  ],
+  <span class="tok-key">"eligible"</span>: <span class="tok-num">true</span>   <span class="tok-com">// false + "reason" when out of zone / oversize / past cut-off</span>
+}</code></pre></div>
+        </div>
+        <div class="note-card">
+          <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+          <div class="t">Eligibility is handled for you &mdash; zone by Eircode, size against what a bike or van can carry, and the live cut-off. No same-day rate comes back when it can't be delivered today, so you never show a promise you can't keep.</div>
+        </div>
+      </section>
+
+      <!-- SHIPMENTS -->
+      <section class="sec" id="shipments">
+        <div class="eyebrow">Endpoints</div>
+        <h2>Create a shipment</h2>
+        <p>Books the order into today's scheduled collection and returns a tracking number and label. Send it once the customer has paid.</p>
+        <div class="ep"><span class="verb post">POST</span><span class="path">/v1/shipments</span></div>
+        <div class="params">
+          <div class="prow"><div class="pn">rate_id<span class="req">REQUIRED</span><span class="type">string</span></div><div class="pd">The <span class="inline-code">id</span> from the rate you showed at checkout.</div></div>
+          <div class="prow"><div class="pn">delivery<span class="req">REQUIRED</span><span class="type">object</span></div><div class="pd">Recipient <span class="inline-code">name</span>, <span class="inline-code">phone</span>, <span class="inline-code">address</span>, <span class="inline-code">eircode</span>.</div></div>
+          <div class="prow"><div class="pn">parcel<span class="req">REQUIRED</span><span class="type">object</span></div><div class="pd">Weight and dimensions, as sent to <span class="inline-code">/rates</span>.</div></div>
+          <div class="prow"><div class="pn">reference<span class="type">string</span></div><div class="pd">Your own order number &mdash; echoed back on every webhook.</div></div>
+          <div class="prow"><div class="pn">options<span class="type">object</span></div><div class="pd">Per-parcel extras. <span class="inline-code">insurance_eur</span> declares a value to cover (up to &euro;500). Photo proof of delivery and an en-route SMS to the recipient are included on every shipment &mdash; no flag needed.</div></div>
+        </div>
+        <div style="display:flex; gap:16px; align-items:center; background:linear-gradient(120deg, var(--accent-tint), rgba(var(--accent-rgb),.04)); border:1px solid rgba(var(--accent-rgb),.28); border-radius:14px; padding:18px 20px; margin:20px 0 4px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          <div style="font-size:13.5px; color:var(--soft); line-height:1.55;"><b style="color:var(--ink);">Insure per order, not per account.</b> Pass <span class="inline-code">insurance_eur</span> only on the parcels that need cover (€4.99, up to €500) — everything else ships with standard included cover.</div>
+        </div>
+        <div class="code">
+          <div class="code-tabs">
+            <button class="code-tab on" data-pane="s-curl">cURL</button>
+            <button class="code-tab resp" data-pane="s-resp">Response</button>
+          </div>
+          <div class="pane on" id="s-curl"><pre><code><span class="tok-verb">curl</span> https://api.molli.ie/v1/shipments <span class="tok-mut">\</span>
+  -H <span class="tok-str">"Authorization: Bearer sk_live_3f9c2a7b41e8"</span> <span class="tok-mut">\</span>
+  -H <span class="tok-str">"Content-Type: application/json"</span> <span class="tok-mut">\</span>
+  -d <span class="tok-str">'{
+    "rate_id": "rate_same_day",
+    "reference": "GRA-10482",
+    "delivery": {
+      "name": "Niamh O'\''Sullivan",
+      "phone": "+353 87 555 0142",
+      "address": "14 Grove Park, Rathmines",
+      "eircode": "D06 X235"
+    },
+    "parcel": { "weight_g": 480, "length_cm": 22, "width_cm": 14, "height_cm": 6 },
+    "options": { "insurance_eur": 250 }   <span class="tok-com">// omit to ship with standard included cover</span>
+  }'</span></code></pre></div>
+          <div class="pane" id="s-resp"><pre><code>{
+  <span class="tok-key">"id"</span>:         <span class="tok-str">"shp_8Kd2mQ9vX1"</span>,
+  <span class="tok-key">"tracking"</span>:   <span class="tok-str">"MOLLI-94821-D"</span>,
+  <span class="tok-key">"status"</span>:     <span class="tok-str">"booked"</span>,
+  <span class="tok-key">"reference"</span>:  <span class="tok-str">"GRA-10482"</span>,
+  <span class="tok-key">"collection"</span>: {
+    <span class="tok-key">"date"</span>:   <span class="tok-str">"2026-07-07"</span>,
+    <span class="tok-key">"window"</span>: <span class="tok-str">"13:00–13:30"</span>   <span class="tok-com">// your scheduled slot</span>
+  },
+  <span class="tok-key">"delivered_by"</span>: <span class="tok-str">"18:00"</span>,
+  <span class="tok-key">"label_url"</span>:    <span class="tok-str">"https://api.molli.ie/labels/shp_8Kd2mQ9vX1.pdf"</span>,
+  <span class="tok-key">"track_url"</span>:    <span class="tok-str">"https://molli.ie/track/MOLLI-94821-D"</span>
+}</code></pre></div>
+        </div>
+      </section>
+
+      <!-- TRACK -->
+      <section class="sec" id="track">
+        <div class="eyebrow">Endpoints</div>
+        <h2>Track a shipment</h2>
+        <p>Fetch the current status and timeline for a shipment. Most integrations rely on webhooks instead of polling, but this is handy for an order page or a support lookup.</p>
+        <div class="ep"><span class="verb get">GET</span><span class="path">/v1/shipments/<span class="var">{id}</span></span></div>
+        <div class="code">
+          <div class="code-tabs">
+            <button class="code-tab on" data-pane="t-curl">cURL</button>
+            <button class="code-tab resp" data-pane="t-resp">Response</button>
+          </div>
+          <div class="pane on" id="t-curl"><pre><code><span class="tok-verb">curl</span> https://api.molli.ie/v1/shipments/shp_8Kd2mQ9vX1 <span class="tok-mut">\</span>
+  -H <span class="tok-str">"Authorization: Bearer sk_live_3f9c2a7b41e8"</span></code></pre></div>
+          <div class="pane" id="t-resp"><pre><code>{
+  <span class="tok-key">"id"</span>:       <span class="tok-str">"shp_8Kd2mQ9vX1"</span>,
+  <span class="tok-key">"tracking"</span>: <span class="tok-str">"MOLLI-94821-D"</span>,
+  <span class="tok-key">"status"</span>:   <span class="tok-str">"out_for_delivery"</span>,
+  <span class="tok-key">"rider"</span>:    <span class="tok-str">"Eamon"</span>,
+  <span class="tok-key">"eta"</span>:      <span class="tok-str">"2026-07-07T16:42:00Z"</span>,
+  <span class="tok-key">"events"</span>: [
+    { <span class="tok-key">"status"</span>: <span class="tok-str">"collected"</span>,        <span class="tok-key">"at"</span>: <span class="tok-str">"13:12"</span> },
+    { <span class="tok-key">"status"</span>: <span class="tok-str">"at_hub"</span>,           <span class="tok-key">"at"</span>: <span class="tok-str">"14:05"</span> },
+    { <span class="tok-key">"status"</span>: <span class="tok-str">"out_for_delivery"</span>, <span class="tok-key">"at"</span>: <span class="tok-str">"15:30"</span> }
+  ]
+}</code></pre></div>
+        </div>
+      </section>
+
+      <!-- WEBHOOKS -->
+      <section class="sec" id="webhooks">
+        <div class="eyebrow">Events</div>
+        <h2>Webhooks</h2>
+        <p>Point a URL at Molli under <span class="inline-code">Settings &rsaquo; Developer &rsaquo; Webhooks</span> and we'll POST a signed event every time a shipment changes state. Each payload carries your <span class="inline-code">reference</span> so you can match it to your own order.</p>
+        <div class="events">
+          <div class="evt"><span class="en">shipment.collected</span><span class="ed">Picked up on your scheduled run</span></div>
+          <div class="evt"><span class="en">shipment.at_hub</span><span class="ed">Sorted into a geographic run</span></div>
+          <div class="evt"><span class="en">shipment.out_for_delivery</span><span class="ed">With a rider, on the local loop</span></div>
+          <div class="evt"><span class="en">shipment.delivered</span><span class="ed">Delivered — photo &amp; signature attached</span></div>
+          <div class="evt"><span class="en">shipment.exception</span><span class="ed">Nobody home, refused, or address issue</span></div>
+        </div>
+        <div class="code" style="margin-top:22px;">
+          <div class="code-tabs"><button class="code-tab on">Example payload · shipment.delivered</button></div>
+          <div class="pane on"><pre><code>{
+  <span class="tok-key">"event"</span>:     <span class="tok-str">"shipment.delivered"</span>,
+  <span class="tok-key">"created"</span>:   <span class="tok-str">"2026-07-07T16:48:11Z"</span>,
+  <span class="tok-key">"data"</span>: {
+    <span class="tok-key">"id"</span>:        <span class="tok-str">"shp_8Kd2mQ9vX1"</span>,
+    <span class="tok-key">"tracking"</span>:  <span class="tok-str">"MOLLI-94821-D"</span>,
+    <span class="tok-key">"reference"</span>: <span class="tok-str">"GRA-10482"</span>,
+    <span class="tok-key">"proof"</span>: {
+      <span class="tok-key">"photo_url"</span>: <span class="tok-str">"https://api.molli.ie/proof/shp_8Kd2mQ9vX1.jpg"</span>,
+      <span class="tok-key">"signed_by"</span>: <span class="tok-str">"N. O'Sullivan"</span>
+    }
+  }
+}</code></pre></div>
+        </div>
+      </section>
+
+      <!-- TEST MODE -->
+      <section class="sec" id="test">
+        <div class="eyebrow">Reference</div>
+        <h2>Test mode</h2>
+        <p>Use your <span class="inline-code">sk_test_</span> key to build against the full API without booking a real collection or being charged. Test shipments move through every webhook state on an accelerated timeline so you can watch the whole journey in minutes.</p>
+        <ul>
+          <li>Eircode <span class="inline-code">D02 AF30</span> always resolves to the city-centre zone; <span class="inline-code">D24 KV82</span> to greater Dublin.</li>
+          <li>A parcel over the carry limits returns an ineligible rate with <span class="inline-code">reason: "oversize"</span>.</li>
+          <li>Set the delivery name to <span class="inline-code">Test Exception</span> to trigger a <span class="inline-code">shipment.exception</span> event.</li>
+        </ul>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;">
+          <a class="btn btn--accent btn--md" href="business.html">Get your API keys &rarr;</a>
+          <a class="btn btn--ghost btn--md" href="integrations.html">See the no-code integrations</a>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div>
+      <a class="logo" href="index.html"><span class="logo-mark"><span>&rsaquo;</span></span><span class="logo-word">m<span class="o-wheel"></span>lli</span></a>
+      <div class="tag">molli.ie · Dublin's same-day parcel network<br /><span style="color:var(--muted)">Through streets broad &amp; narrow.</span></div>
+    </div>
+    <div class="col"><div class="col-title">Service</div><a href="pricing.html">Pricing</a><a href="zones.html">Coverage</a><a href="fit.html">Fit finder</a><a href="booking.html">Book</a></div>
+    <div class="col"><div class="col-title">Retailers</div><a href="business.html">For retailers</a><a href="bulk.html">Bulk booking</a><a href="integrations.html">Store integration</a><a href="developers.html">API docs</a></div>
+    <div class="col"><div class="col-title">Account</div><a href="account.html">Sign in</a><a href="track.html">Track a delivery</a><a href="returns.html">Returns</a></div>
+    <div class="col"><div class="col-title">Company</div><a href="index.html#name">The name</a><a href="pricing.html#faqs">Help</a></div>
+  </footer>
+  <div class="legal">© 2026 Molli · molli.ie · Dublin, Ireland</div>
+
+  <script>
+    (function () {
+      // code tabs
+      document.querySelectorAll('.code').forEach(function (block) {
+        var tabs = block.querySelectorAll('.code-tab[data-pane]');
+        if (!tabs.length) return;
+        tabs.forEach(function (tab) {
+          tab.addEventListener('click', function () {
+            var id = tab.getAttribute('data-pane');
+            block.querySelectorAll('.code-tab').forEach(function (t) { t.classList.remove('on'); });
+            block.querySelectorAll('.pane').forEach(function (p) { p.classList.remove('on'); });
+            tab.classList.add('on');
+            var pane = block.querySelector('#' + id);
+            if (pane) pane.classList.add('on');
+          });
         });
+      });
+
+      // sidebar scroll-spy
+      var links = Array.prototype.slice.call(document.querySelectorAll('.dev-nav a'));
+      var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+      function spy() {
+        var y = window.scrollY + 130, cur = 0;
+        sections.forEach(function (s, i) { if (s && s.offsetTop <= y) cur = i; });
+        links.forEach(function (a) { a.classList.remove('on'); });
+        if (links[cur]) links[cur].classList.add('on');
       }
-    }
-
-    attributeChangedCallback() {
-      if (!this._sheet) return;
-      this._syncSize();
-      this._syncPrintPageRule();
-      this._scheduleMeasure();
-    }
-
-    _render() {
-      this._root.innerHTML = `
-        <style>${stylesheet}</style>
-        <style id="vars"></style>
-        <div class="sheet" data-screen-label="Document">
-          <table class="frame" role="presentation">
-            <thead><tr><th><div class="hdr-space"><slot name="header"></slot></div></th></tr></thead>
-            <tbody><tr><td class="body"><slot></slot></td></tr></tbody>
-            <tfoot><tr><td><div class="ftr-space"><slot name="footer"></slot></div></td></tr></tfoot>
-          </table>
-        </div>`;
-      this._sheet = this._root.querySelector('.sheet');
-      this._vars = this._root.getElementById('vars');
-    }
-
-    /** Runtime sizing lives in a shadow <style> :host rule, never on the
-     *  light-DOM host element, so serialize-persist can't write it back. */
-    _syncSize(hdrH, ftrH) {
-      this._vars.textContent = ':host{' +
-        '--doc-page-w:' + this.pageWidth + ';' +
-        '--doc-page-h:' + this.pageHeight + ';' +
-        '--doc-page-margin:' + this.pageMargin + ';' +
-        '--doc-hdr-h:' + (hdrH || 0) + 'px;' +
-        '--doc-ftr-h:' + (ftrH || 0) + 'px}';
-    }
-
-    /** @page is a no-op inside shadow DOM, so the rule lives in <head>.
-     *  Re-appended on every sync so it stays last in source order — the
-     *  @page cascade is source-order per descriptor, so this rule wins
-     *  over any other @page rule in the document. */
-    _syncPrintPageRule() {
-      const id = 'doc-page-print';
-      let tag = document.getElementById(id);
-      if (!tag) {
-        tag = document.createElement('style');
-        tag.id = id;
-      }
-      document.head.appendChild(tag);
-      tag.textContent =
-        '@page { size: ' + this.pageWidth + ' ' + this.pageHeight + '; margin: 0; } ' +
-        '@media print { html, body { margin: 0 !important; padding: 0 !important; background: none !important; height: auto !important; overflow: visible !important; } ' +
-        'h1,h2,h3,h4,h5,h6 { break-after: avoid; } ' +
-        'figure,pre,blockquote,img,svg,tr { break-inside: avoid; } ' +
-        'p,li { orphans: 3; widows: 3; } ' +
-        '* { -webkit-print-color-adjust: exact; print-color-adjust: exact; } ' +
-        '*, *::before, *::after { animation-delay: -99s !important; animation-duration: .001s !important; ' +
-        'animation-iteration-count: 1 !important; animation-fill-mode: both !important; ' +
-        'animation-play-state: running !important; transition-duration: 0s !important; } }';
-    }
-
-    /** Typographic defaults for document text: balance headings, avoid
-     *  widowed/orphaned words in body copy (browsers without text-wrap
-     *  support drop the declarations). Zero-specificity via :where() so
-     *  any text-wrap authored on those elements wins; document-level so the
-     *  rules reach the slotted (light DOM) content — shadow styles can't.
-     *  data-omelette-injected marks the tag for the host editor to strip
-     *  at serialize, so it is never written back as authored source. */
-    _ensureTextWrapDefaults() {
-      if (document.getElementById('doc-page-text-wrap')) return;
-      const tag = document.createElement('style');
-      tag.id = 'doc-page-text-wrap';
-      tag.setAttribute('data-omelette-injected', '');
-      tag.textContent =
-        ':where(h1,h2,h3,h4,h5,h6){text-wrap:balance}' +
-        ':where(p,li,blockquote,figcaption){text-wrap:pretty}';
-      document.head.appendChild(tag);
-    }
-
-    _scheduleMeasure() {
-      if (this._raf) return;
-      this._raf = requestAnimationFrame(() => { this._raf = null; this._measure(); });
-    }
-
-    /** Slot heights feed the print spacers (--doc-hdr-h / --doc-ftr-h), so
-     *  they re-measure on content mutation, resize, and font load. */
-    _measure() {
-      const hdr = this.querySelector(':scope > [slot="header"]');
-      const ftr = this.querySelector(':scope > [slot="footer"]');
-      this._syncSize(hdr ? hdr.offsetHeight : 0, ftr ? ftr.offsetHeight : 0);
-    }
-  }
-
-  if (!customElements.get('doc-page')) {
-    customElements.define('doc-page', DocPage);
-  }
-})();
+      window.addEventListener('scroll', spy, { passive: true });
+      spy();
+    })();
+  </script>
+</body>
+</html>
